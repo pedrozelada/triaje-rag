@@ -1,0 +1,1 @@
+"""Servicio RAG del backend: integra el motor de triaje con la API."""

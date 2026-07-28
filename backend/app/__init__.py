@@ -1,0 +1,1 @@
+"""Aplicación FastAPI del backend de triaje."""

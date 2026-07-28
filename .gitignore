@@ -1,0 +1,9 @@
+venv
+data
+.env
+chroma_db
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+triaje.db

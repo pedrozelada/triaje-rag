@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import api from '../../api/client'
 import type { Usuario } from '../../types'
+import PageHeader from '../../components/PageHeader'
 
 export default function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
@@ -29,16 +29,13 @@ export default function AdminUsuarios() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-gray-800">Gestión de Usuarios</h1>
-        <Link to="/admin" className="text-sm text-blue-600 hover:underline">← Volver al Dashboard</Link>
-      </div>
+      <PageHeader title="Gestión de Usuarios" subtitle={`${usuarios.length} usuario(s) registrado(s)`} />
 
       {loading ? (
         <p className="text-gray-500 text-center py-8">Cargando...</p>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-lg shadow-sm border overflow-x-auto">
+          <table className="w-full text-sm min-w-[600px]">
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Nombre</th>

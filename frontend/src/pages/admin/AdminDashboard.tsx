@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import api from '../../api/client'
 import type { Estadisticas } from '../../types'
+import PageHeader from '../../components/PageHeader'
 
 const COLOR_HEX: Record<string, string> = {
   rojo: '#EF4444',
@@ -34,26 +35,29 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-800">Panel de Administración</h1>
-        <div className="flex gap-2">
-          <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-            Usuarios
-          </Link>
-          <Link to="/admin/reportes" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-            Reportes
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title="Panel de Administración"
+        subtitle="Resumen general del sistema"
+        actions={
+          <div className="flex gap-2">
+            <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
+              Usuarios
+            </Link>
+            <Link to="/admin/reportes" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
+              Reportes
+            </Link>
+          </div>
+        }
+      />
 
       {/* Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Consultas" value={stats.total_consultas} />
         <StatCard label="Pacientes" value={stats.total_pacientes} />
         <StatCard label="Usuarios" value={stats.total_usuarios} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <StatCard label="Tiempo prom. respuesta" value={`${stats.promedio_tiempo_respuesta?.toFixed(2) ?? '—'}s`} />
         <StatCard label="Modelo más usado" value={stats.modelo_mas_usado || '—'} />
       </div>

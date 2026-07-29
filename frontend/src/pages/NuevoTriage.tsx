@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import api from '../api/client'
 import type { Paciente, TriageCreate } from '../types'
+import PageHeader from '../components/PageHeader'
+import FormField from '../components/FormField'
 
 export default function NuevoTriage() {
   const navigate = useNavigate()
@@ -26,7 +28,7 @@ export default function NuevoTriage() {
 
   const onSubmit = async (data: TriageCreate) => {
     if (!pacienteSeleccionado) {
-      setError('Selecciona un paciente primero.')
+      setError('Selecciona un paciente antes de continuar.')
       return
     }
     setError('')
@@ -39,8 +41,8 @@ export default function NuevoTriage() {
       const res = await api.post('/triage', payload)
       navigate(`/triage/resultado/${res.data.id}`)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error al procesar el triaje.'
-      setError(msg)
+      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      setError(detail || 'Error al procesar el triaje. Intenta nuevamente.')
     } finally {
       setLoading(false)
     }
@@ -48,19 +50,21 @@ export default function NuevoTriage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-xl font-bold text-gray-800 mb-6">Nuevo Triaje</h1>
+      <PageHeader title="Nuevo Triaje" subtitle="Evalúa al paciente con apoyo de IA" />
 
       {/* Buscar paciente */}
       {!pacienteSeleccionado ? (
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <h2 className="font-semibold text-gray-700 mb-3">Buscar Paciente</h2>
-          <input
-            type="text"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar por CI, nombre o apellido..."
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <FormField label="Buscar Paciente" required tooltip="Busca por CI, nombre o apellido (mínimo 2 caracteres)">
+            <input
+              type="text"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              placeholder="Ej: 12345678 o Juan Pérez"
+              maxLength={50}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </FormField>
           {resultados.length > 0 && (
             <ul className="mt-2 border rounded-md divide-y">
               {resultados.map((p) => (
@@ -76,7 +80,10 @@ export default function NuevoTriage() {
               ))}
             </ul>
           )}
-          <p className="text-xs text-gray-400 mt-2">
+          {busqueda.length >= 2 && resultados.length === 0 && (
+            <p className="text-sm text-gray-400 mt-2">Sin resultados. Intenta con otro término.</p>
+          )}
+          <p className="text-xs text-gray-400 mt-3">
             ¿Paciente nuevo?{' '}
             <button onClick={() => navigate('/pacientes/nuevo')} className="text-blue-600 underline">
               Registrar aquí
@@ -104,19 +111,19 @@ export default function NuevoTriage() {
 
       {/* Formulario de triaje */}
       {pacienteSeleccionado && (
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-sm border p-6 space-y-6">
-          {error && <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{error}</div>}
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-sm border p-6 space-y-6" noValidate>
+          {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
 
           {/* Signos vitales */}
           <div>
             <h2 className="font-semibold text-gray-700 mb-3">Signos Vitales</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <Field label="Temperatura (°C)" {...register('temperatura', { valueAsNumber: true })} type="number" step="0.1" />
-              <Field label="PA Sistólica" {...register('presion_sistolica', { valueAsNumber: true })} type="number" />
-              <Field label="PA Diastólica" {...register('presion_diastolica', { valueAsNumber: true })} type="number" />
-              <Field label="Frec. Cardíaca (bpm)" {...register('frecuencia_cardiaca', { valueAsNumber: true })} type="number" />
-              <Field label="Frec. Respiratoria" {...register('frecuencia_respiratoria', { valueAsNumber: true })} type="number" />
-              <Field label="SpO₂ (%)" {...register('spo2', { valueAsNumber: true })} type="number" />
+              <VitalField label="Temperatura (°C)" tooltip="Normal: 36.1 - 37.2" {...register('temperatura', { valueAsNumber: true })} type="number" step="0.1" min="30" max="45" placeholder="36.5" />
+              <VitalField label="PA Sistólica" tooltip="Normal: 90 - 140 mmHg" {...register('presion_sistolica', { valueAsNumber: true })} type="number" min="50" max="300" placeholder="120" />
+              <VitalField label="PA Diastólica" tooltip="Normal: 60 - 90 mmHg" {...register('presion_diastolica', { valueAsNumber: true })} type="number" min="30" max="200" placeholder="80" />
+              <VitalField label="Frec. Cardíaca (bpm)" tooltip="Normal: 60 - 100 bpm" {...register('frecuencia_cardiaca', { valueAsNumber: true })} type="number" min="20" max="300" placeholder="72" />
+              <VitalField label="Frec. Respiratoria" tooltip="Normal: 12 - 20 rpm" {...register('frecuencia_respiratoria', { valueAsNumber: true })} type="number" min="5" max="80" placeholder="16" />
+              <VitalField label="SpO₂ (%)" tooltip="Normal: 95 - 100%" {...register('spo2', { valueAsNumber: true })} type="number" min="50" max="100" placeholder="98" />
             </div>
           </div>
 
@@ -124,28 +131,32 @@ export default function NuevoTriage() {
           <div>
             <h2 className="font-semibold text-gray-700 mb-3">Descripción Clínica</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Motivo de consulta</label>
+              <FormField label="Motivo de consulta" tooltip="Resumen breve de la razón de la visita">
                 <input
                   {...register('motivo_consulta')}
+                  maxLength={100}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ej: Dolor torácico"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Síntomas y presentación</label>
+              </FormField>
+              <FormField
+                label="Síntomas y presentación"
+                required
+                tooltip="Describe inicio, localización, intensidad, síntomas asociados y evolución"
+                error={errors.sintomas?.message}
+              >
                 <textarea
-                  {...register('sintomas', { required: 'Describe los síntomas' })}
+                  {...register('sintomas', { required: 'Describe los síntomas del paciente para poder evaluar el triaje.' })}
                   rows={5}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  maxLength={2000}
+                  className={`w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.sintomas ? 'border-red-400 bg-red-50' : 'border-gray-300'
+                  }`}
                   placeholder={
                     'Sea lo más específico posible.\n\nEjemplo: Dolor opresivo iniciado hace 30 minutos, irradiado al brazo izquierdo, acompañado de dificultad respiratoria y sudoración fría.'
                   }
                 />
-                {errors.sintomas && (
-                  <p className="text-red-600 text-xs mt-1">{errors.sintomas.message}</p>
-                )}
-              </div>
+              </FormField>
             </div>
           </div>
 
@@ -163,14 +174,13 @@ export default function NuevoTriage() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Field({ label, ...props }: { label: string } & any) {
+function VitalField({ label, tooltip, ...props }: { label: string; tooltip?: string } & any) {
   return (
-    <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+    <FormField label={label} tooltip={tooltip}>
       <input
         {...props}
         className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-    </div>
+    </FormField>
   )
 }

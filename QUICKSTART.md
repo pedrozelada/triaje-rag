@@ -1,5 +1,8 @@
 # 🚀 Quick Start - Primeros Pasos
-
+python -m uvicorn backend.app.main:app --reload --port 8000                                     
+cd frontend
+npm install
+npm run dev
 ## 1️⃣ Instalación (5 minutos)
 
 ### Paso 1: Crear ambiente virtual
@@ -218,3 +221,5 @@ Ahora puedes:
 ---
 
 **¿Problemas?** Abre un issue o revisa el README completo.
+
+python -m uvicorn backend.app.main:app --reload --port 8000                                     

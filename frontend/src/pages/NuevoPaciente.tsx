@@ -2,12 +2,15 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import type { PacienteCreate } from '../types'
+import PageHeader from '../components/PageHeader'
+import FormField from '../components/FormField'
 
 export default function NuevoPaciente() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [form, setForm] = useState<PacienteCreate>({
     ci: '',
     nombre: '',
@@ -18,27 +21,58 @@ export default function NuevoPaciente() {
     direccion: '',
   })
 
-  const update = (field: keyof PacienteCreate, value: string) =>
+  const update = (field: keyof PacienteCreate, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
+    setFieldErrors((prev) => ({ ...prev, [field]: '' }))
+  }
+
+  const validarStep1 = (): boolean => {
+    const errs: Record<string, string> = {}
+    if (!form.ci.trim()) errs.ci = 'Ingresa el número de CI.'
+    else if (!/^\d{5,10}$/.test(form.ci.trim())) errs.ci = 'Solo números, entre 5 y 10 dígitos.'
+    if (!form.nombre.trim()) errs.nombre = 'Ingresa el nombre.'
+    else if (form.nombre.trim().length < 2) errs.nombre = 'Mínimo 2 caracteres.'
+    if (!form.apellido.trim()) errs.apellido = 'Ingresa el apellido.'
+    else if (form.apellido.trim().length < 2) errs.apellido = 'Mínimo 2 caracteres.'
+    if (!form.fecha_nacimiento) errs.fecha_nacimiento = 'Selecciona la fecha de nacimiento.'
+    else {
+      const fecha = new Date(form.fecha_nacimiento)
+      const hoy = new Date()
+      if (fecha > hoy) errs.fecha_nacimiento = 'La fecha no puede ser futura.'
+      if (fecha < new Date('1900-01-01')) errs.fecha_nacimiento = 'Fecha inválida.'
+    }
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      await api.post('/pacientes', form)
+      await api.post('/pacientes', {
+        ...form,
+        ci: form.ci.trim(),
+        nombre: form.nombre.trim(),
+        apellido: form.apellido.trim(),
+      })
       navigate('/pacientes')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error al registrar paciente.'
-      setError(msg)
+      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      setError(detail || 'Error al registrar paciente. Verifica los datos.')
     } finally {
       setLoading(false)
     }
   }
 
+  const inputClass = (field: string) =>
+    `w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+      fieldErrors[field] ? 'border-red-400 bg-red-50' : 'border-gray-300'
+    }`
+
   return (
     <div className="max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-gray-800 mb-6">Registrar Paciente</h1>
+      <PageHeader title="Registrar Paciente" subtitle="Completa los datos del paciente" />
 
       {/* Steps indicator */}
       <div className="flex gap-2 mb-6">
@@ -50,54 +84,52 @@ export default function NuevoPaciente() {
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border p-6 space-y-4">
-        {error && <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{error}</div>}
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border p-6 space-y-4" noValidate>
+        {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
 
         {step === 1 && (
           <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cédula de Identidad (CI)</label>
+            <FormField label="Cédula de Identidad (CI)" required tooltip="Solo números, sin guiones ni espacios" error={fieldErrors.ci}>
               <input
                 value={form.ci}
-                onChange={(e) => update('ci', e.target.value)}
-                required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => update('ci', e.target.value.replace(/\D/g, ''))}
+                maxLength={10}
+                inputMode="numeric"
+                className={inputClass('ci')}
                 placeholder="Ej: 12345678"
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+            </FormField>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField label="Nombre" required error={fieldErrors.nombre}>
                 <input
                   value={form.nombre}
                   onChange={(e) => update('nombre', e.target.value)}
-                  required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  maxLength={50}
+                  className={inputClass('nombre')}
+                  placeholder="Ej: Juan"
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+              </FormField>
+              <FormField label="Apellido" required error={fieldErrors.apellido}>
                 <input
                   value={form.apellido}
                   onChange={(e) => update('apellido', e.target.value)}
-                  required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  maxLength={50}
+                  className={inputClass('apellido')}
+                  placeholder="Ej: Pérez"
                 />
-              </div>
+              </FormField>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField label="Fecha de Nacimiento" required error={fieldErrors.fecha_nacimiento}>
                 <input
                   type="date"
                   value={form.fecha_nacimiento}
                   onChange={(e) => update('fecha_nacimiento', e.target.value)}
-                  required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  max={new Date().toISOString().split('T')[0]}
+                  className={inputClass('fecha_nacimiento')}
                 />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Sexo</label>
+              </FormField>
+              <FormField label="Sexo" required>
                 <select
                   value={form.sexo}
                   onChange={(e) => update('sexo', e.target.value)}
@@ -107,11 +139,11 @@ export default function NuevoPaciente() {
                   <option value="F">Femenino</option>
                   <option value="Otro">Otro</option>
                 </select>
-              </div>
+              </FormField>
             </div>
             <button
               type="button"
-              onClick={() => setStep(2)}
+              onClick={() => { if (validarStep1()) setStep(2) }}
               className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700"
             >
               Siguiente →
@@ -121,24 +153,25 @@ export default function NuevoPaciente() {
 
         {step === 2 && (
           <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+            <FormField label="Teléfono" tooltip="Número de contacto, solo números" error={fieldErrors.telefono}>
               <input
                 value={form.telefono}
-                onChange={(e) => update('telefono', e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Opcional"
+                onChange={(e) => update('telefono', e.target.value.replace(/[^\d+\-\s]/g, ''))}
+                maxLength={15}
+                inputMode="tel"
+                className={inputClass('telefono')}
+                placeholder="Ej: 71234567"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+            </FormField>
+            <FormField label="Dirección">
               <input
                 value={form.direccion}
                 onChange={(e) => update('direccion', e.target.value)}
+                maxLength={200}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Opcional"
+                placeholder="Ej: Av. Busch #123, Zona Central"
               />
-            </div>
+            </FormField>
             <div className="flex gap-3">
               <button
                 type="button"

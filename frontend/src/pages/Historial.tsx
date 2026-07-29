@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/client'
 import type { ConsultaTriage } from '../types'
+import PageHeader from '../components/PageHeader'
 
 const COLOR_MAP: Record<string, string> = {
   rojo: 'bg-red-100 text-red-800',
@@ -27,7 +28,7 @@ export default function Historial() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-gray-800 mb-6">Historial de Consultas</h1>
+      <PageHeader title="Historial de Consultas" subtitle={`${consultas.length} consulta(s)`} />
 
       {/* Filtros por color */}
       <div className="flex gap-2 mb-4 flex-wrap">

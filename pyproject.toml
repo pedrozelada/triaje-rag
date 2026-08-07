@@ -50,7 +50,7 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["src", "ui", "backend"]
+packages = ["ai_service", "ai_service.providers", "ui", "backend"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

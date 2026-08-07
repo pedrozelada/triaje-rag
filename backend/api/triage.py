@@ -11,7 +11,7 @@ from backend.db.models import ConsultaTriage, Paciente, Usuario
 from backend.db.session import get_db
 from backend.rag.service import rag_service
 from backend.schemas.triage import TriageCreate, TriageOut
-from src.models import DatosVitales
+from ai_service.models import DatosVitales
 
 router = APIRouter(prefix="/api/triage", tags=["triage"])
 

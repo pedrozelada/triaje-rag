@@ -9,13 +9,13 @@ import logging
 from dataclasses import dataclass, field
 from typing import Optional
 
-from src.models import DatosVitales
-from src.rag_pipeline import (
+from ai_service.models import DatosVitales
+from ai_service.rag_pipeline import (
     cargar_o_crear_indice,
     obtener_query_engine_con_vitales,
 )
-from src.llm_providers import get_llm_models
-from src.utils import obtener_nivel_urgencia_color
+from ai_service.providers import get_llm_models
+from ai_service.utils import obtener_nivel_urgencia_color
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@
 import logging
 import re
 from typing import Dict, Any, Tuple, Optional
-from src.models import DatosVitales
+from ai_service.models import DatosVitales
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
 """Tests para modelos de datos y validación de datos vitales."""
 
 import pytest
-from src.models import DatosVitales, DATOS_VITALES_DEFAULT
-from src.utils import validar_datos_vitales, obtener_nivel_urgencia_color
+from ai_service.models import DatosVitales, DATOS_VITALES_DEFAULT
+from ai_service.utils import validar_datos_vitales, obtener_nivel_urgencia_color
 
 
 class TestDatosVitales:

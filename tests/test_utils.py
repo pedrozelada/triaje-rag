@@ -1,8 +1,8 @@
 """Tests básicos del sistema RAG."""
 
 import pytest
-from src.errors import ConfigurationError
-from src.utils import (
+from ai_service.errors import ConfigurationError
+from ai_service.utils import (
     validar_entrada_pregunta,
     formatear_tiempo,
     obtener_respuesta_segura

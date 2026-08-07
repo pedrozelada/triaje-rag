@@ -15,9 +15,9 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.vector_stores.chroma import ChromaVectorStore
 import chromadb
 
-from src.errors import IndexInitializationError, QueryExecutionError
-from src.embeddings import get_embedding_model
-from src.models import DatosVitales
+from ai_service.errors import IndexInitializationError, QueryExecutionError
+from ai_service.embeddings import get_embedding_model
+from ai_service.models import DatosVitales
 
 logger = logging.getLogger(__name__)
 

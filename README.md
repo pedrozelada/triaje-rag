@@ -22,13 +22,17 @@ triaje-rag/
 ├── .env.example              # Template de variables de entorno
 ├── data/                     # PDFs de las NNAC
 ├── chroma_db/                # Base vectorial persistente
-├── src/                      # Motor RAG
+├── ai_service/               # Motor RAG (servicio de IA)
 │   ├── errors.py             # Excepciones custom
 │   ├── embeddings.py         # Embeddings multilingües
-│   ├── llm_providers.py      # Groq + Ollama
 │   ├── models.py             # DatosVitales dataclass
 │   ├── rag_pipeline.py       # Index + Query Engine
-│   └── utils.py              # Validaciones y formateo
+│   ├── utils.py              # Validaciones y formateo
+│   └── providers/            # Proveedores LLM (pluggable)
+│       ├── base.py           # Clase base LLMProvider
+│       ├── groq.py           # Groq (nube)
+│       ├── openai.py         # OpenAI (nube, opcional)
+│       └── ollama.py         # Local (Ollama/LM Studio)
 ├── backend/                  # API REST (FastAPI)
 │   ├── app/main.py           # App FastAPI + routers
 │   ├── api/                  # Endpoints
@@ -282,14 +286,14 @@ El servidor estará en `http://localhost:11434`
 - ✅ Auditoría completa (usuario, prompt, modelo, tiempo, tokens)
 - ✅ Logging completo
 
-## Motor RAG (`src/`)
+## Motor RAG (`ai_service/`)
 
 ### Módulos Principales
 
-#### `src.rag_pipeline`
+#### `ai_service.rag_pipeline`
 
 ```python
-from src.rag_pipeline import cargar_o_crear_indice, obtener_query_engine_con_vitales
+from ai_service.rag_pipeline import cargar_o_crear_indice, obtener_query_engine_con_vitales
 
 # Cargar índice
 index = cargar_o_crear_indice(data_dir="./data", chroma_path="./chroma_db")
@@ -301,14 +305,34 @@ query_engine = obtener_query_engine_con_vitales(index, llm_model, datos_vitales)
 response = query_engine.query("Descripción de síntomas")
 ```
 
-#### `src.llm_providers`
+#### `ai_service.providers`
 
 ```python
-from src.llm_providers import get_llm_models
+from ai_service.providers import get_llm_models
 
 models = get_llm_models()
 # {'Groq (Nube - Rápido)': Groq(...), 'Ollama (Local - Privado)': OpenAILike(...)}
 ```
+
+### Agregar un nuevo proveedor LLM
+
+La arquitectura de proveedores es **pluggable**. Para agregar un LLM de nube
+nuevo (Anthropic, Gemini, etc.):
+
+1. Crear `ai_service/providers/<nombre>.py` con una clase que herede `LLMProvider`
+   (usar `openai.py` como plantilla):
+   - `disponible()`: chequeo barato (API key presente, paquete instalado).
+   - `crear()`: instancia el LLM (import diferido dentro del método).
+2. Registrar la clase en la lista `PROVEEDORES` de `ai_service/providers/__init__.py`.
+3. Instalar el paquete de llama-index correspondiente.
+
+No hay que tocar backend, UI ni CLI: todos consumen `get_llm_models()`.
+
+| Proveedor | Activo si... | Variables |
+|-----------|--------------|-----------|
+| Groq | `GROQ_API_KEY` definida | `GROQ_MODEL`, `GROQ_TEMPERATURE`, `GROQ_MAX_TOKENS` |
+| OpenAI | `OPENAI_API_KEY` + paquete instalado | `OPENAI_MODEL`, `OPENAI_TEMPERATURE`, `OPENAI_MAX_TOKENS` |
+| Ollama | Siempre (se descarta si no responde) | `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_TIMEOUT` |
 
 ### Clasificación de urgencia (Manchester)
 

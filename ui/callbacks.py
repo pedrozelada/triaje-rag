@@ -3,16 +3,16 @@
 import time
 import logging
 from typing import Tuple, Dict, Any, Optional
-from src.rag_pipeline import obtener_query_engine, obtener_query_engine_con_vitales
-from src.models import DatosVitales, DATOS_VITALES_DEFAULT
-from src.utils import (
+from ai_service.rag_pipeline import obtener_query_engine, obtener_query_engine_con_vitales
+from ai_service.models import DatosVitales, DATOS_VITALES_DEFAULT
+from ai_service.utils import (
     validar_entrada_pregunta,
     formatear_fuentes_con_archivo,
     obtener_respuesta_segura,
     formatear_tiempo,
     validar_datos_vitales
 )
-from src.errors import QueryExecutionError
+from ai_service.errors import QueryExecutionError
 
 logger = logging.getLogger(__name__)
 

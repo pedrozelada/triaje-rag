@@ -6,9 +6,9 @@ import argparse
 import subprocess
 import os
 from config import DATA_DIR, CHROMA_PATH
-from src.rag_pipeline import cargar_o_crear_indice
-from src.llm_providers import get_llm_models
-from src.errors import RAGError
+from ai_service.rag_pipeline import cargar_o_crear_indice
+from ai_service.providers import get_llm_models
+from ai_service.errors import RAGError
 from ui.gradio_mejorada import crear_interfaz_gradio_mejorada
 
 logger = logging.getLogger(__name__)

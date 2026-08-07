@@ -6,7 +6,7 @@ import sys
 import pytest
 from fastapi.testclient import TestClient
 
-# Asegurar que la raíz esté en el path para imports de `backend` y `src`.
+# Asegurar que la raíz esté en el path para imports de `backend` y `ai_service`.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import date, timedelta

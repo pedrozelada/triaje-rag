@@ -185,7 +185,7 @@ OLLAMA_BASE_URL=http://localhost:1234/v1
 
 - **README.md** - Documentación completa
 - **UPGRADE_GUIDE.md** - Qué cambió en la refactorización
-- **src/** - Código fuente comentado
+- **ai_service/** - Código fuente del motor RAG comentado
 
 ## 🧪 Ejecutar Tests
 
@@ -199,7 +199,7 @@ pytest tests/ -v
 pytest tests/test_utils.py -v
 
 # Con cobertura
-pytest tests/ --cov=src --cov-report=html
+pytest tests/ --cov=ai_service --cov-report=html
 ```
 
 ## 💡 Tips
@@ -214,12 +214,10 @@ pytest tests/ --cov=src --cov-report=html
 Ahora puedes:
 
 1. ✅ Agregar más documentos a `data/`
-2. ✅ Personalizar el prompt en `src/rag_pipeline.py`
-3. ✅ Agregar nuevas funcionalidades en `src/`
+2. ✅ Personalizar el prompt en `ai_service/rag_pipeline.py`
+3. ✅ Agregar nuevas funcionalidades en `ai_service/`
 4. ✅ Crear interfaces alternas (Streamlit, FastAPI)
 
 ---
 
 **¿Problemas?** Abre un issue o revisa el README completo.
-
-python -m uvicorn backend.app.main:app --reload --port 8000                                     

@@ -20,6 +20,8 @@ class TriageCreate(BaseModel):
     # Clínica
     motivo_consulta: str | None = None
     sintomas: str | None = None
+    # Modelo LLM elegido por el usuario (None = prioridad por defecto)
+    modelo: str | None = None
 
 
 class TriageOut(BaseModel):

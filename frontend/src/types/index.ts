@@ -42,6 +42,7 @@ export interface TriageCreate {
   spo2?: number
   motivo_consulta?: string
   sintomas?: string
+  modelo?: string
 }
 
 export interface ConsultaTriage {

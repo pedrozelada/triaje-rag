@@ -13,11 +13,21 @@ export default function NuevoTriage() {
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState<Paciente | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [modelos, setModelos] = useState<string[]>([])
+  const [modeloSeleccionado, setModeloSeleccionado] = useState('')
+  const [cargandoModelos, setCargandoModelos] = useState(true)
 
   const { register, handleSubmit, formState: { errors } } = useForm<TriageCreate>()
 
   useEffect(() => {
     api.get('/pacientes?limit=200').then((res) => setPacientes(res.data))
+    api.get('/triage/modelos')
+      .then((res) => {
+        setModelos(res.data)
+        if (res.data.length > 0) setModeloSeleccionado(res.data[0])
+      })
+      .catch(() => setError('No se pudieron cargar los modelos LLM disponibles.'))
+      .finally(() => setCargandoModelos(false))
   }, [])
 
   const resultados = busqueda.length >= 2
@@ -37,6 +47,7 @@ export default function NuevoTriage() {
       const payload: TriageCreate = {
         ...data,
         paciente_id: pacienteSeleccionado.id,
+        ...(modeloSeleccionado ? { modelo: modeloSeleccionado } : {}),
       }
       const res = await api.post('/triage', payload)
       navigate(`/triage/resultado/${res.data.id}`)
@@ -160,9 +171,37 @@ export default function NuevoTriage() {
             </div>
           </div>
 
+          {/* Modelo LLM */}
+          <div>
+            <h2 className="font-semibold text-gray-700 mb-3">Modelo de IA</h2>
+            <FormField
+              label="Proveedor LLM"
+              required
+              tooltip="Elige el motor de IA para la evaluación: nube (Groq, OpenAI) o local (Ollama, sin internet)"
+            >
+              {cargandoModelos ? (
+                <p className="text-sm text-gray-400 py-2">Cargando modelos disponibles...</p>
+              ) : modelos.length > 0 ? (
+                <select
+                  value={modeloSeleccionado}
+                  onChange={(e) => setModeloSeleccionado(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {modelos.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-sm text-red-600 py-2">
+                  No hay modelos LLM disponibles. Verifica la configuración del servidor.
+                </p>
+              )}
+            </FormField>
+          </div>
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || cargandoModelos || modelos.length === 0}
             className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '⏳ Evaluando con IA...' : '🔍 Evaluar Triaje'}

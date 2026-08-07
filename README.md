@@ -4,7 +4,8 @@ Sistema de apoyo a la decisión clínica para postas rurales usando Retrieval-Au
 
 ## Características
 
-- ✅ **RAG Multimodal**: Groq (nube, rápido) + Ollama (local, privado)
+- ✅ **RAG Multimodal**: Groq (nube, rápido) + Ollama (local, privado) + OpenAI (opcional)
+- ✅ **Selección de LLM por consulta**: el usuario elige el proveedor en cada triaje
 - ✅ **Backend REST**: FastAPI con autenticación JWT, CRUD de pacientes y auditoría completa
 - ✅ **Frontend React**: Interfaz moderna con Vite + TypeScript + Tailwind CSS
 - ✅ **Triaje Manchester**: Clasificación por colores (rojo/naranja/amarillo/verde/azul)
@@ -38,20 +39,21 @@ triaje-rag/
 │   ├── api/                  # Endpoints
 │   │   ├── auth.py           # Login, registro, /me
 │   │   ├── pacientes.py      # CRUD pacientes
-│   │   ├── triage.py         # Consultas de triaje
+│   │   ├── triage.py         # Consultas de triaje + /modelos
 │   │   ├── informes.py       # Reportes por paciente
 │   │   ├── admin.py          # Estadísticas + usuarios
 │   │   └── deps.py           # Dependencias de auth
-│   ├── core/                 # Config + seguridad JWT
+│   ├── core/                 # Config (carga .env vía load_dotenv) + JWT
 │   ├── db/                   # SQLAlchemy models + session
-│   ├── rag/service.py        # Wrapper del motor RAG
+│   ├── rag/service.py        # Wrapper del motor RAG (listar_modelos, analizar)
 │   └── schemas/              # Pydantic schemas
 ├── frontend/                 # SPA React
 │   ├── src/
-│   │   ├── api/client.ts     # Axios con JWT automático
-│   │   ├── context/          # AuthContext
-│   │   ├── components/       # Layout, nav
-│   │   ├── pages/            # Todas las pantallas
+│   │   ├── api/client.ts     # Axios con JWT automático (401 interceptor)
+│   │   ├── context/          # AuthContext (sesión + rol)
+│   │   ├── components/       # Layout, Breadcrumb, PageHeader, FormField
+│   │   ├── pages/            # Pantallas clínicas
+│   │   │   └── admin/        # Pantallas de administración
 │   │   └── types/            # Interfaces TypeScript
 │   └── vite.config.ts        # Proxy /api → :8000
 ├── ui/                       # Interfaces legacy (Gradio/Streamlit)
@@ -161,9 +163,12 @@ La interfaz Gradio estará disponible en `http://localhost:7860`
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| `POST` | `/api/triage` | Crear consulta (ejecuta RAG) |
+| `POST` | `/api/triage` | Crear consulta (ejecuta RAG). Campo opcional `modelo` para elegir el proveedor LLM |
 | `GET` | `/api/triage` | Listar consultas (filtros: `paciente_id`, `nivel_urgencia`, `fecha_desde`, `fecha_hasta`) |
+| `GET` | `/api/triage/modelos` | Listar proveedores LLM disponibles (pobla el selector del frontend) |
 | `GET` | `/api/triage/{id}` | Obtener consulta |
+
+> ⚠️ `/api/triage/modelos` está declarado **antes** de `/{id}` en el router para evitar conflictos de ruta.
 
 #### Informes (`/api/informes`)
 
@@ -219,9 +224,9 @@ El endpoint de triaje soporta **auth opcional**: si hay token, se registra el us
 
 | Ruta | Pantalla | Rol |
 |------|----------|-----|
-| `/login` | Login + Registro | Público |
+| `/login` | Login + Registro (toggle de visibilidad de contraseña con icono de ojo) | Público |
 | `/` | Inicio (hub de acciones) | Todos |
-| `/triage/nuevo` | Nuevo triaje (buscar paciente + vitales + síntomas) | Clínico |
+| `/triage/nuevo` | Nuevo triaje (buscar paciente + vitales + síntomas + **selector de proveedor LLM**) | Clínico |
 | `/triage/resultado/:id` | Resultado IA (banner de color + evaluación) | Clínico |
 | `/pacientes` | Lista + búsqueda de pacientes | Clínico |
 | `/pacientes/nuevo` | Registro de paciente (por pasos) | Clínico |
@@ -236,9 +241,20 @@ El endpoint de triaje soporta **auth opcional**: si hay token, se registra el us
 
 ```
 Login → Inicio → Nuevo Triaje → Buscar Paciente → Signos Vitales + Síntomas
+  → Elegir Proveedor LLM (Groq / OpenAI / Ollama según disponibilidad)
   → [Evaluar Triaje] → Resultado IA (color + justificación + acciones)
   → [Guardar] / [Nueva Consulta] / [Ver Paciente]
 ```
+
+### Convenciones de UI/UX (aplicadas en todos los formularios)
+
+- Campos obligatorios marcados con **(*) rojo**; opcionales sin marca.
+- Icono **(?)** con tooltip en campos ambiguos (`FormField` con hover/click).
+- Validación en cliente y servidor; errores junto al campo con guía de corrección.
+- Los datos ingresados **nunca se borran** tras un error de validación.
+- Máscaras de entrada (CI solo números), `maxLength`, placeholders con ejemplos.
+- Diseño responsive: menú hamburguesa en móvil, nav con estado activo en desktop.
+- Breadcrumbs automáticos (`Breadcrumb`) + `PageHeader` en cada pantalla protegida.
 
 ### Ejecutar el frontend
 
@@ -334,6 +350,11 @@ No hay que tocar backend, UI ni CLI: todos consumen `get_llm_models()`.
 | OpenAI | `OPENAI_API_KEY` + paquete instalado | `OPENAI_MODEL`, `OPENAI_TEMPERATURE`, `OPENAI_MAX_TOKENS` |
 | Ollama | Siempre (se descarta si no responde) | `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_TIMEOUT` |
 
+> **Nota**: `backend/core/config.py` ejecuta `load_dotenv()` al arrancar, de modo
+> que las claves del `.env` estén en `os.environ` para los proveedores.
+> El orden en `PROVEEDORES` define la prioridad cuando no se especifica modelo
+> (actualmente: Groq → OpenAI → Ollama).
+
 ### Clasificación de urgencia (Manchester)
 
 | Color | Nivel | Tiempo de atención |
@@ -386,13 +407,13 @@ Verifica que:
 
 ## Mejoras Futuras
 
-- [ ] Agregar soporte para más modelos (Claude, GPT-4)
 - [ ] Exportar reportes a PDF
 - [ ] Caché de consultas frecuentes
 - [ ] Versioning de documentos NNAC
 - [ ] App móvil (React Native)
 - [ ] Migraciones con Alembic
 - [ ] Tests de integración del frontend
+- [ ] Code-splitting del bundle frontend (chunk actual > 500 kB)
 
 ## Licencia
 

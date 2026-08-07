@@ -47,6 +47,16 @@ class RAGService:
         if self._llm_models is None:
             self._llm_models = get_llm_models()
 
+    def listar_modelos(self) -> list[str]:
+        """Devuelve los nombres de los modelos LLM disponibles.
+
+        Solo carga los modelos (no el índice vectorial), por lo que es
+        liviano y se puede usar para poblar un selector en el frontend.
+        """
+        if self._llm_models is None:
+            self._llm_models = get_llm_models()
+        return list(self._llm_models.keys())
+
     def analizar(
         self,
         datos_vitales: DatosVitales,

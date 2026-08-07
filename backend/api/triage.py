@@ -44,7 +44,7 @@ def crear_triage(
 
     descripcion = datos.sintomas or datos.motivo_consulta or ""
     resultado = rag_service.analizar(
-        datos_vitales=datos_vitales, sintomas=descripcion
+        datos_vitales=datos_vitales, sintomas=descripcion, modelo_nombre=datos.modelo
     )
 
     consulta = ConsultaTriage(
@@ -91,6 +91,17 @@ def listar_triage(
     if fecha_hasta:
         query = query.filter(ConsultaTriage.fecha_hora <= fecha_hasta)
     return query.order_by(ConsultaTriage.fecha_hora.desc()).offset(skip).limit(limit).all()
+
+
+@router.get("/modelos", response_model=list[str])
+def listar_modelos():
+    """Lista los nombres de los modelos LLM disponibles para el triaje."""
+    try:
+        return rag_service.listar_modelos()
+    except Exception as e:
+        raise HTTPException(
+            status_code=503, detail=f"No hay modelos LLM disponibles: {e}"
+        )
 
 
 @router.get("/{consulta_id}", response_model=TriageOut)

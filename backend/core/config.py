@@ -1,7 +1,12 @@
 """Configuración centralizada del backend (FastAPI + SQLAlchemy)."""
 
 import os
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Cargar .env en os.environ para que los proveedores LLM (ai_service)
+# puedan leer GROQ_API_KEY / OPENAI_API_KEY directamente del entorno.
+load_dotenv()
 
 
 class Settings(BaseSettings):

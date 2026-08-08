@@ -3,61 +3,12 @@
 import os
 import sys
 
-import pytest
-from fastapi.testclient import TestClient
-
 # Asegurar que la raíz esté en el path para imports de `backend` y `ai_service`.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import date, timedelta
 
-from backend.db.base import Base
 from backend.db.models import calcular_edad
-from backend.db.session import engine, SessionLocal
-
-
-@pytest.fixture()
-def client():
-    # Usar SQLite en memoria para los tests (aislado del triaje.db real).
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-    from sqlalchemy.pool import StaticPool
-
-    test_engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-        future=True,
-    )
-    Base.metadata.create_all(bind=test_engine)
-    TestingSessionLocal = sessionmaker(bind=test_engine, future=True)
-
-    # Parchear la session del módulo deps/app para usar la BD de test.
-    import backend.db.session as db_session
-    import backend.api.deps as deps
-    import backend.app.main as main
-
-    db_session.engine = test_engine
-    db_session.SessionLocal = TestingSessionLocal
-    deps.get_db.__wrapped__ if hasattr(deps.get_db, "__wrapped__") else None
-    main.SessionLocal = TestingSessionLocal
-
-    from backend.app.main import app
-
-    # Reemplazar la dependencia get_db por una que use la BD de test.
-    def override_get_db():
-        db = TestingSessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[db_session.get_db] = override_get_db
-
-    with TestClient(app) as c:
-        yield c
-
-    Base.metadata.drop_all(bind=test_engine)
 
 
 class TestCalcularEdad:

@@ -10,6 +10,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from backend.api.deps import get_current_user
+from backend.core.security import hash_password
 from backend.db.models import ConsultaTriage, Paciente, Usuario, calcular_edad
 from backend.db.session import get_db
 from backend.schemas.admin import (
@@ -22,7 +23,7 @@ from backend.schemas.admin import (
     SexoCount,
     UsuarioActividad,
 )
-from backend.schemas.usuario import UsuarioOut, UsuarioUpdate
+from backend.schemas.usuario import UsuarioCreate, UsuarioOut, UsuarioUpdate
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -238,6 +239,34 @@ def listar_usuarios(
     return db.query(Usuario).offset(skip).limit(limit).all()
 
 
+@router.post("/usuarios", response_model=UsuarioOut, status_code=status.HTTP_201_CREATED)
+def crear_usuario(
+    datos: UsuarioCreate,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
+    """Crea un usuario nuevo desde el panel admin (solo admin)."""
+    _require_admin(usuario)
+
+    if db.query(Usuario).filter(Usuario.email == datos.email).first():
+        raise HTTPException(status_code=400, detail="El email ya está registrado.")
+    if db.query(Usuario).filter(Usuario.ci == datos.ci).first():
+        raise HTTPException(status_code=400, detail="La cédula ya está registrada.")
+
+    nuevo = Usuario(
+        ci=datos.ci,
+        nombre_completo=datos.nombre_completo,
+        email=datos.email,
+        password_hash=hash_password(datos.password),
+        rol=datos.rol,
+        centro_salud=datos.centro_salud,
+    )
+    db.add(nuevo)
+    db.commit()
+    db.refresh(nuevo)
+    return nuevo
+
+
 @router.put("/usuarios/{usuario_id}", response_model=UsuarioOut)
 def actualizar_usuario(
     usuario_id: int,
@@ -245,16 +274,73 @@ def actualizar_usuario(
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user),
 ):
-    """Actualiza un usuario: rol, estado activo, datos (solo admin)."""
+    """Actualiza un usuario: rol, estado activo, datos, contraseña (solo admin)."""
     _require_admin(usuario)
 
     target = db.get(Usuario, usuario_id)
     if not target:
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
 
-    for campo, valor in datos.model_dump(exclude_unset=True).items():
+    cambios = datos.model_dump(exclude_unset=True)
+    nueva_password = cambios.pop("password", None)
+
+    if datos.email and datos.email != target.email:
+        duplicado = (
+            db.query(Usuario)
+            .filter(Usuario.email == datos.email, Usuario.id != usuario_id)
+            .first()
+        )
+        if duplicado:
+            raise HTTPException(status_code=400, detail="El email ya está registrado.")
+
+    for campo, valor in cambios.items():
         setattr(target, campo, valor)
+    if nueva_password:
+        target.password_hash = hash_password(nueva_password)
 
     db.commit()
     db.refresh(target)
     return target
+
+
+@router.delete("/usuarios/{usuario_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
+    """Elimina un usuario (solo admin).
+
+    Las consultas de triaje asociadas se conservan con auditoría anónima
+    (usuario_id = NULL). Protecciones: no puede eliminarse a sí mismo ni
+    al último admin activo del sistema.
+    """
+    _require_admin(usuario)
+
+    if usuario_id == usuario.id:
+        raise HTTPException(
+            status_code=400, detail="No puedes eliminar tu propio usuario."
+        )
+
+    target = db.get(Usuario, usuario_id)
+    if not target:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    if target.rol == "admin" and target.activo:
+        otros_admins = (
+            db.query(Usuario)
+            .filter(Usuario.rol == "admin", Usuario.activo.is_(True), Usuario.id != usuario_id)
+            .count()
+        )
+        if otros_admins == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="No se puede eliminar al último administrador activo.",
+            )
+
+    # Conserva la auditoría de triajes: la FK queda en NULL (SET NULL)
+    db.query(ConsultaTriage).filter(ConsultaTriage.usuario_id == usuario_id).update(
+        {ConsultaTriage.usuario_id: None}, synchronize_session=False
+    )
+    db.delete(target)
+    db.commit()

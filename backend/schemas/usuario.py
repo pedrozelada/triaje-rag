@@ -13,12 +13,16 @@ class UsuarioCreate(BaseModel):
 
 
 class UsuarioUpdate(BaseModel):
-    """Schema para que admin actualice usuarios (todos los campos opcionales)."""
+    """Schema para que admin actualice usuarios (todos los campos opcionales).
+
+    `password` solo se envía si se quiere cambiar la contraseña.
+    """
     nombre_completo: str | None = None
     email: EmailStr | None = None
     rol: str | None = None
     centro_salud: str | None = None
     activo: bool | None = None
+    password: str | None = Field(default=None, min_length=6)
 
 
 class UsuarioOut(BaseModel):

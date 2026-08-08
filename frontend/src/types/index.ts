@@ -73,6 +73,38 @@ export interface NivelCount {
   cantidad: number
 }
 
+export interface SexoCount {
+  sexo: string
+  cantidad: number
+}
+
+export interface EdadRangeCount {
+  rango: string
+  cantidad: number
+}
+
+export interface DiaCount {
+  fecha: string
+  cantidad: number
+}
+
+export interface ModeloCount {
+  modelo: string
+  consultas: number
+  tokens: number
+}
+
+export interface UsuarioActividad {
+  usuario_id: number
+  nombre: string
+  consultas: number
+}
+
+export interface MotivoFrecuente {
+  palabra: string
+  cantidad: number
+}
+
 export interface Estadisticas {
   total_consultas: number
   total_pacientes: number
@@ -80,6 +112,13 @@ export interface Estadisticas {
   por_nivel: NivelCount[]
   promedio_tiempo_respuesta: number | null
   modelo_mas_usado: string | null
+  por_sexo: SexoCount[]
+  por_rango_edad: EdadRangeCount[]
+  consultas_por_dia: DiaCount[]
+  por_modelo: ModeloCount[]
+  total_tokens: number
+  actividad_usuarios: UsuarioActividad[]
+  motivos_frecuentes: MotivoFrecuente[]
 }
 
 export interface Token {

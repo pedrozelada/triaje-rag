@@ -181,7 +181,7 @@ La interfaz Gradio estará disponible en `http://localhost:7860`
 
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| `GET` | `/api/admin/estadisticas` | Estadísticas generales |
+| `GET` | `/api/admin/estadisticas` | Estadísticas generales: totales, urgencias, pacientes por sexo y rango etario, consultas por día (30d), uso por modelo LLM + tokens, actividad por usuario y palabras clave de motivos de consulta |
 | `GET` | `/api/admin/usuarios` | Listar usuarios |
 | `PUT` | `/api/admin/usuarios/{id}` | Actualizar usuario (rol, estado) |
 
@@ -233,7 +233,7 @@ El endpoint de triaje soporta **auth opcional**: si hay token, se registra el us
 | `/pacientes/:id` | Detalle + historial del paciente | Clínico |
 | `/pacientes/:id/editar` | Editar paciente | Clínico |
 | `/historial` | Todas las consultas (filtro por color) | Clínico |
-| `/admin` | Dashboard con estadísticas | Admin |
+| `/admin` | Dashboard con estadísticas (urgencias, demografía por sexo/edad, consultas 30 días, uso de modelos LLM, actividad por usuario, motivos frecuentes) | Admin |
 | `/admin/usuarios` | Gestión de usuarios | Admin |
 | `/admin/reportes` | Generación de reportes | Admin |
 

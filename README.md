@@ -182,6 +182,7 @@ La interfaz Gradio estará disponible en `http://localhost:7860`
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | `GET` | `/api/admin/estadisticas` | Estadísticas generales: totales, urgencias, pacientes por sexo y rango etario, consultas por día (30d), uso por modelo LLM + tokens, actividad por usuario y palabras clave de motivos de consulta |
+| `GET` | `/api/admin/estadisticas/triaje` | Estadísticas de triaje filtradas por período (`dias`, `fecha_desde`, `fecha_hasta`): demografía (sexo/edad), consultas por día, urgencias, motivos frecuentes y actividad por usuario |
 | `GET` | `/api/admin/usuarios` | Listar usuarios |
 | `POST` | `/api/admin/usuarios` | Crear usuario (valida email/CI duplicados) |
 | `PUT` | `/api/admin/usuarios/{id}` | Actualizar usuario (nombre, email, rol, centro, estado, contraseña opcional) |
@@ -235,7 +236,8 @@ El endpoint de triaje soporta **auth opcional**: si hay token, se registra el us
 | `/pacientes/:id` | Detalle + historial del paciente | Clínico |
 | `/pacientes/:id/editar` | Editar paciente | Clínico |
 | `/historial` | Todas las consultas (filtro por color) | Clínico |
-| `/admin` | Dashboard con estadísticas (urgencias, demografía por sexo/edad, consultas 30 días, uso de modelos LLM, actividad por usuario, motivos frecuentes) | Admin |
+| `/admin` | Dashboard de resumen: totales, indicadores de funcionamiento, urgencias por nivel y consultas de los últimos 30 días | Admin |
+| `/admin/estadisticas` | Estadísticas de triaje con filtros de período (30/90 días o rango personalizado): demografía por sexo/edad, consultas por fecha, urgencias, motivos frecuentes y actividad por usuario | Admin |
 | `/admin/usuarios` | CRUD de usuarios con modales y confirmación previa para acciones destructivas | Admin |
 | `/admin/reportes` | Generación de reportes | Admin |
 

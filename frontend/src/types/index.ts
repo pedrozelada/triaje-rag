@@ -121,6 +121,21 @@ export interface Estadisticas {
   motivos_frecuentes: MotivoFrecuente[]
 }
 
+export interface EstadisticasTriaje {
+  fecha_desde: string
+  fecha_hasta: string
+  total_consultas: number
+  por_nivel: NivelCount[]
+  promedio_tiempo_respuesta: number | null
+  modelo_mas_usado: string | null
+  por_sexo: SexoCount[]
+  por_rango_edad: EdadRangeCount[]
+  consultas_por_dia: DiaCount[]
+  total_tokens: number
+  actividad_usuarios: UsuarioActividad[]
+  motivos_frecuentes: MotivoFrecuente[]
+}
+
 export interface Token {
   access_token: string
   token_type: string

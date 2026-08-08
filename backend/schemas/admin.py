@@ -66,3 +66,21 @@ class EstadisticasOut(BaseModel):
     total_tokens: int = 0
     actividad_usuarios: list[UsuarioActividad] = []
     motivos_frecuentes: list[MotivoFrecuente] = []
+
+
+class EstadisticasTriajeOut(BaseModel):
+    """Estadísticas de triaje filtradas por un período de fechas."""
+    fecha_desde: date
+    fecha_hasta: date
+    total_consultas: int
+    por_nivel: list[NivelCount] = []
+    promedio_tiempo_respuesta: float | None = None
+    modelo_mas_usado: str | None = None
+    # Demografía de pacientes que consultaron en el período
+    por_sexo: list[SexoCount] = []
+    por_rango_edad: list[EdadRangeCount] = []
+    # Actividad temporal y operativa del período
+    consultas_por_dia: list[DiaCount] = []
+    total_tokens: int = 0
+    actividad_usuarios: list[UsuarioActividad] = []
+    motivos_frecuentes: list[MotivoFrecuente] = []

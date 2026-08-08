@@ -17,6 +17,7 @@ from backend.schemas.admin import (
     DiaCount,
     EdadRangeCount,
     EstadisticasOut,
+    EstadisticasTriajeOut,
     ModeloCount,
     MotivoFrecuente,
     NivelCount,
@@ -221,6 +222,180 @@ def obtener_estadisticas(
         por_rango_edad=por_rango_edad,
         consultas_por_dia=consultas_por_dia,
         por_modelo=por_modelo,
+        total_tokens=total_tokens,
+        actividad_usuarios=actividad_usuarios,
+        motivos_frecuentes=motivos_frecuentes,
+    )
+
+
+def _validar_rango(
+    dias: int | None, fecha_desde: date | None, fecha_hasta: date | None
+) -> tuple[datetime, datetime]:
+    """Resuelve el rango [desde, hasta] del período solicitado.
+
+    Prioridad: 1) rango explícito (fecha_desde/fecha_hasta), 2) días atrás,
+    3) último mes (30 días). Devuelve datetime inclusive para el filtro.
+    """
+    hoy = date.today()
+
+    if fecha_desde or fecha_hasta:
+        desde = fecha_desde or hoy
+        hasta = fecha_hasta or hoy
+        if desde > hasta:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="fecha_desde no puede ser posterior a fecha_hasta.",
+            )
+        return datetime.combine(desde, datetime.min.time()), datetime.combine(
+            hasta, datetime.max.time()
+        )
+
+    if dias is not None:
+        if dias < 1:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="dias debe ser mayor o igual a 1.",
+            )
+        return (
+            datetime.combine(hoy - timedelta(days=dias - 1), datetime.min.time()),
+            datetime.combine(hoy, datetime.max.time()),
+        )
+
+    return (
+        datetime.combine(hoy - timedelta(days=29), datetime.min.time()),
+        datetime.combine(hoy, datetime.max.time()),
+    )
+
+
+@router.get("/estadisticas/triaje", response_model=EstadisticasTriajeOut)
+def obtener_estadisticas_triaje(
+    dias: int | None = None,
+    fecha_desde: date | None = None,
+    fecha_hasta: date | None = None,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
+    """Estadísticas de triaje filtradas por período (solo admin).
+
+    Si se pasa `fecha_desde`/`fecha_hasta` se usa ese rango; si solo se pasa
+    `dias` se filtran los últimos N días; si no se pasa nada, se devuelven
+    los últimos 30 días (equivalente al comportamiento por defecto).
+    """
+    _require_admin(usuario)
+    desde, hasta = _validar_rango(dias, fecha_desde, fecha_hasta)
+
+    # Rango temporal de consultas (inclusive)
+    filtro = ConsultaTriage.fecha_hora >= desde
+    filtro = filtro & (ConsultaTriage.fecha_hora <= hasta)
+
+    # Total de consultas en el período
+    total_consultas = (
+        db.query(func.count(ConsultaTriage.id)).filter(filtro).scalar() or 0
+    )
+
+    # Conteo por nivel de urgencia
+    niveles_raw = (
+        db.query(ConsultaTriage.nivel_urgencia, func.count(ConsultaTriage.id))
+        .filter(filtro)
+        .group_by(ConsultaTriage.nivel_urgencia)
+        .all()
+    )
+    por_nivel = [
+        NivelCount(nivel=nivel or "sin_clasificar", cantidad=cantidad)
+        for nivel, cantidad in niveles_raw
+    ]
+
+    # Promedio de tiempo de respuesta en el período
+    promedio = (
+        db.query(func.avg(ConsultaTriage.tiempo_respuesta)).filter(filtro).scalar()
+    )
+    promedio_tiempo = round(float(promedio), 3) if promedio else None
+
+    # Modelo más usado en el período
+    modelo_row = (
+        db.query(ConsultaTriage.modelo_utilizado, func.count(ConsultaTriage.id))
+        .filter(filtro, ConsultaTriage.modelo_utilizado.isnot(None))
+        .group_by(ConsultaTriage.modelo_utilizado)
+        .order_by(func.count(ConsultaTriage.id).desc())
+        .first()
+    )
+    modelo_mas_usado = modelo_row[0] if modelo_row else None
+
+    # Demografía de los pacientes que consultaron en el período
+    demografia_raw = (
+        db.query(Paciente.sexo, Paciente.fecha_nacimiento)
+        .join(ConsultaTriage, ConsultaTriage.paciente_id == Paciente.id)
+        .filter(filtro)
+        .all()
+    )
+    por_sexo_counter: Counter[str] = Counter()
+    por_edad_counter: Counter[str] = Counter()
+    for sexo, nacimiento in demografia_raw:
+        por_sexo_counter[sexo] += 1
+        por_edad_counter[_rango_edad(calcular_edad(nacimiento))] += 1
+    por_sexo = [
+        SexoCount(sexo=sexo, cantidad=cantidad)
+        for sexo, cantidad in por_sexo_counter.items()
+    ]
+    por_rango_edad = [
+        EdadRangeCount(rango=_etiqueta_rango(i), cantidad=por_edad_counter.get(_etiqueta_rango(i), 0))
+        for i in range(len(RANGOS_EDAD))
+    ]
+
+    # Consultas por día dentro del rango (días sin datos en cero)
+    fechas_raw = (
+        db.query(ConsultaTriage.fecha_hora).filter(filtro).all()
+    )
+    por_fecha = Counter(fila[0].date() for fila in fechas_raw)
+    num_dias = (hasta.date() - desde.date()).days + 1
+    consultas_por_dia = [
+        DiaCount(fecha=desde.date() + timedelta(days=offset), cantidad=por_fecha.get(desde.date() + timedelta(days=offset), 0))
+        for offset in range(num_dias)
+    ]
+
+    # Tokens consumidos en el período
+    total_tokens = int(
+        db.query(func.coalesce(func.sum(ConsultaTriage.tokens_consumidos), 0))
+        .filter(filtro)
+        .scalar()
+    )
+
+    # Actividad por usuario (top 10, sin consultas anónimas) en el período
+    actividad_raw = (
+        db.query(Usuario.id, Usuario.nombre_completo, func.count(ConsultaTriage.id))
+        .join(ConsultaTriage, ConsultaTriage.usuario_id == Usuario.id)
+        .filter(filtro)
+        .group_by(Usuario.id)
+        .order_by(func.count(ConsultaTriage.id).desc())
+        .limit(10)
+        .all()
+    )
+    actividad_usuarios = [
+        UsuarioActividad(usuario_id=uid, nombre=nombre, consultas=consultas)
+        for uid, nombre, consultas in actividad_raw
+    ]
+
+    # Palabras clave frecuentes en motivos y síntomas del período
+    textos = [
+        texto
+        for fila in db.query(ConsultaTriage.motivo_consulta, ConsultaTriage.sintomas)
+        .filter(filtro)
+        .all()
+        for texto in fila
+        if texto
+    ]
+    motivos_frecuentes = _extraer_palabras_clave(textos, top_n=10)
+
+    return EstadisticasTriajeOut(
+        fecha_desde=desde.date(),
+        fecha_hasta=hasta.date(),
+        total_consultas=total_consultas,
+        por_nivel=por_nivel,
+        promedio_tiempo_respuesta=promedio_tiempo,
+        modelo_mas_usado=modelo_mas_usado,
+        por_sexo=por_sexo,
+        por_rango_edad=por_rango_edad,
+        consultas_por_dia=consultas_por_dia,
         total_tokens=total_tokens,
         actividad_usuarios=actividad_usuarios,
         motivos_frecuentes=motivos_frecuentes,

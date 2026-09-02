@@ -16,9 +16,11 @@ from backend.db.session import get_db
 from backend.schemas.admin import (
     DiaCount,
     EdadRangeCount,
+    EstadisticasLLMOut,
     EstadisticasOut,
     EstadisticasTriajeOut,
     ModeloCount,
+    ModeloRendimiento,
     MotivoFrecuente,
     NivelCount,
     SexoCount,
@@ -399,6 +401,81 @@ def obtener_estadisticas_triaje(
         total_tokens=total_tokens,
         actividad_usuarios=actividad_usuarios,
         motivos_frecuentes=motivos_frecuentes,
+    )
+
+
+@router.get("/estadisticas/llm", response_model=EstadisticasLLMOut)
+def obtener_estadisticas_llm(
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
+    """Estadísticas globales de uso y rendimiento de los modelos LLM (solo admin).
+
+    Considera todas las consultas del sistema (sin filtro de fechas).
+    """
+    _require_admin(usuario)
+
+    # Solo consultas con modelo registrado
+    filtro_modelo = ConsultaTriage.modelo_utilizado.isnot(None)
+
+    # Totales globales
+    total_consultas = (
+        db.query(func.count(ConsultaTriage.id)).filter(filtro_modelo).scalar() or 0
+    )
+    total_tokens = int(
+        db.query(func.coalesce(func.sum(ConsultaTriage.tokens_consumidos), 0))
+        .filter(filtro_modelo)
+        .scalar()
+    )
+
+    # Tiempos globales (promedio, mínimo, máximo)
+    tiempos = (
+        db.query(
+            func.avg(ConsultaTriage.tiempo_respuesta),
+            func.min(ConsultaTriage.tiempo_respuesta),
+            func.max(ConsultaTriage.tiempo_respuesta),
+        )
+        .filter(filtro_modelo, ConsultaTriage.tiempo_respuesta.isnot(None))
+        .one()
+    )
+    tiempo_promedio = round(float(tiempos[0]), 3) if tiempos[0] is not None else None
+    tiempo_minimo = round(float(tiempos[1]), 3) if tiempos[1] is not None else None
+    tiempo_maximo = round(float(tiempos[2]), 3) if tiempos[2] is not None else None
+
+    # Rendimiento por modelo: consultas, tokens y tiempos
+    modelo_raw = (
+        db.query(
+            ConsultaTriage.modelo_utilizado,
+            func.count(ConsultaTriage.id),
+            func.coalesce(func.sum(ConsultaTriage.tokens_consumidos), 0),
+            func.avg(ConsultaTriage.tiempo_respuesta),
+            func.min(ConsultaTriage.tiempo_respuesta),
+            func.max(ConsultaTriage.tiempo_respuesta),
+        )
+        .filter(filtro_modelo)
+        .group_by(ConsultaTriage.modelo_utilizado)
+        .order_by(func.count(ConsultaTriage.id).desc())
+        .all()
+    )
+    por_modelo = [
+        ModeloRendimiento(
+            modelo=modelo,
+            consultas=consultas,
+            tokens=int(tokens),
+            tiempo_promedio=round(float(prom), 3) if prom is not None else None,
+            tiempo_minimo=round(float(min_t), 3) if min_t is not None else None,
+            tiempo_maximo=round(float(max_t), 3) if max_t is not None else None,
+        )
+        for modelo, consultas, tokens, prom, min_t, max_t in modelo_raw
+    ]
+
+    return EstadisticasLLMOut(
+        total_consultas=total_consultas,
+        total_tokens=total_tokens,
+        tiempo_promedio=tiempo_promedio,
+        tiempo_minimo=tiempo_minimo,
+        tiempo_maximo=tiempo_maximo,
+        por_modelo=por_modelo,
     )
 
 

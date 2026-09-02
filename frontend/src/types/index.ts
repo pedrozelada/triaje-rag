@@ -136,6 +136,24 @@ export interface EstadisticasTriaje {
   motivos_frecuentes: MotivoFrecuente[]
 }
 
+export interface ModeloRendimiento {
+  modelo: string
+  consultas: number
+  tokens: number
+  tiempo_promedio: number | null
+  tiempo_minimo: number | null
+  tiempo_maximo: number | null
+}
+
+export interface EstadisticasLLM {
+  total_consultas: number
+  total_tokens: number
+  tiempo_promedio: number | null
+  tiempo_minimo: number | null
+  tiempo_maximo: number | null
+  por_modelo: ModeloRendimiento[]
+}
+
 export interface Token {
   access_token: string
   token_type: string

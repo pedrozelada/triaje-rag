@@ -10,6 +10,7 @@ const RUTA_NOMBRES: Record<string, string> = {
   'historial': 'Historial',
   'admin': 'Administración',
   'estadisticas': 'Estadísticas de Triaje',
+  'llm': 'Estadísticas de LLM',
   'usuarios': 'Usuarios',
   'reportes': 'Reportes',
 }

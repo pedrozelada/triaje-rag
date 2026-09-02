@@ -36,6 +36,16 @@ class ModeloCount(BaseModel):
     tokens: int
 
 
+class ModeloRendimiento(BaseModel):
+    """Rendimiento de un proveedor LLM: consultas, tokens y tiempos."""
+    modelo: str
+    consultas: int
+    tokens: int
+    tiempo_promedio: float | None = None
+    tiempo_minimo: float | None = None
+    tiempo_maximo: float | None = None
+
+
 class UsuarioActividad(BaseModel):
     """Cantidad de triajes realizados por un usuario."""
     usuario_id: int
@@ -84,3 +94,13 @@ class EstadisticasTriajeOut(BaseModel):
     total_tokens: int = 0
     actividad_usuarios: list[UsuarioActividad] = []
     motivos_frecuentes: list[MotivoFrecuente] = []
+
+
+class EstadisticasLLMOut(BaseModel):
+    """Estadísticas globales de uso y rendimiento de los modelos LLM."""
+    total_consultas: int
+    total_tokens: int
+    tiempo_promedio: float | None = None
+    tiempo_minimo: float | None = None
+    tiempo_maximo: float | None = None
+    por_modelo: list[ModeloRendimiento] = []

@@ -12,6 +12,7 @@ import EditarPaciente from './pages/EditarPaciente'
 import Historial from './pages/Historial'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminEstadisticas from './pages/admin/AdminEstadisticas'
+import AdminEstadisticasLLM from './pages/admin/AdminEstadisticasLLM'
 import AdminUsuarios from './pages/admin/AdminUsuarios'
 import AdminReportes from './pages/admin/AdminReportes'
 
@@ -45,6 +46,7 @@ function AppRoutes() {
         <Route path="/historial" element={<Historial />} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/estadisticas" element={<AdminRoute><AdminEstadisticas /></AdminRoute>} />
+        <Route path="/admin/estadisticas/llm" element={<AdminRoute><AdminEstadisticasLLM /></AdminRoute>} />
         <Route path="/admin/usuarios" element={<AdminRoute><AdminUsuarios /></AdminRoute>} />
         <Route path="/admin/reportes" element={<AdminRoute><AdminReportes /></AdminRoute>} />
       </Route>

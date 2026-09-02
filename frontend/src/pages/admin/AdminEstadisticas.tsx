@@ -125,6 +125,9 @@ export default function AdminEstadisticas() {
             <Link to="/admin" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
               Dashboard
             </Link>
+            <Link to="/admin/estadisticas/llm" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
+              Estadísticas de LLM
+            </Link>
             <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
               Usuarios
             </Link>

@@ -1,19 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import PageHeader from '../components/PageHeader'
 
 export default function Inicio() {
   const { usuario, isAdmin } = useAuth()
 
   return (
-    <div className="max-w-2xl mx-auto text-center py-12">
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">
-        Bienvenido/a, {usuario?.nombre_completo}
-      </h1>
-      <p className="text-gray-500 mb-10">
-        {usuario?.centro_salud || 'Centro de Salud'}
-      </p>
-
-      <div className="grid grid-cols-2 gap-4">
+    <div className="max-w-2xl mx-auto">
+      <PageHeader title="Inicio" subtitle={`Bienvenido/a, ${usuario?.nombre_completo ?? ''}`} />
+      <div className="grid grid-cols-2 gap-4 py-6">
         <ActionCard
           to="/triage/nuevo"
           icon="➕"

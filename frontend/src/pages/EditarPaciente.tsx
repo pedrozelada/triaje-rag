@@ -2,8 +2,10 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import type { Paciente } from '../types'
+import Mensaje from '../components/Mensaje'
 import PageHeader from '../components/PageHeader'
 import FormField from '../components/FormField'
+import { formatTelefono, soloCI, soloDigitos, mapearErrorServidor } from '../utils/masks'
 
 export default function EditarPaciente() {
   const { id } = useParams()
@@ -34,7 +36,7 @@ export default function EditarPaciente() {
   const validar = (): boolean => {
     const errs: Record<string, string> = {}
     if (!form.ci.trim()) errs.ci = 'Ingresa el número de CI.'
-    else if (!/^\d{5,10}$/.test(form.ci.trim())) errs.ci = 'Solo números, entre 5 y 10 dígitos.'
+    else if (!/^[A-Za-z0-9]{5,20}$/.test(form.ci.trim())) errs.ci = 'Solo letras y números, entre 5 y 20 caracteres.'
     if (!form.nombre.trim()) errs.nombre = 'Ingresa el nombre.'
     else if (form.nombre.trim().length < 2) errs.nombre = 'Mínimo 2 caracteres.'
     if (!form.apellido.trim()) errs.apellido = 'Ingresa el apellido.'
@@ -60,7 +62,13 @@ export default function EditarPaciente() {
       navigate(`/pacientes/${id}`)
     } catch (err: unknown) {
       const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      setError(detail || 'Error al actualizar. Verifica los datos.')
+      const erroresServidor = mapearErrorServidor(detail)
+      if (Object.keys(erroresServidor).length > 0) {
+        // Mostrar el error del servidor junto al campo correspondiente
+        setFieldErrors((prev) => ({ ...prev, ...erroresServidor }))
+      } else {
+        setError(detail || 'Error al actualizar. Verifica los datos.')
+      }
     } finally {
       setLoading(false)
     }
@@ -75,11 +83,11 @@ export default function EditarPaciente() {
     <div className="max-w-lg mx-auto">
       <PageHeader title="Editar Paciente" subtitle="Modifica los datos del paciente" />
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border p-6 space-y-4" noValidate>
-        {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
+        {error && <Mensaje variante="error" onCerrar={() => setError('')}>{error}</Mensaje>}
 
-        <FormField label="CI" required tooltip="Solo números, sin guiones" error={fieldErrors.ci}>
-          <input value={form.ci} onChange={(e) => update('ci', e.target.value.replace(/\D/g, ''))} maxLength={10} inputMode="numeric"
-            className={inputClass('ci')} placeholder="Ej: 12345678" />
+        <FormField label="CI" required tooltip="Números y letras, sin guiones ni espacios" error={fieldErrors.ci}>
+          <input value={form.ci} onChange={(e) => update('ci', soloCI(e.target.value))} maxLength={20}
+            className={inputClass('ci')} placeholder="Ej: 12345678 o 1234ABC" />
         </FormField>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField label="Nombre" required error={fieldErrors.nombre}>
@@ -106,9 +114,9 @@ export default function EditarPaciente() {
             </select>
           </FormField>
         </div>
-        <FormField label="Teléfono" tooltip="Número de contacto">
-          <input value={form.telefono} onChange={(e) => update('telefono', e.target.value.replace(/[^\d+\-\s]/g, ''))} maxLength={15} inputMode="tel"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: 71234567" />
+        <FormField label="Teléfono" tooltip="Número de contacto, solo números" error={fieldErrors.telefono}>
+          <input value={formatTelefono(form.telefono)} onChange={(e) => update('telefono', soloDigitos(e.target.value).slice(0, 15))} maxLength={19} inputMode="tel"
+            className={inputClass('telefono')} placeholder="Ej: 7123 4567" />
         </FormField>
         <FormField label="Dirección">
           <input value={form.direccion} onChange={(e) => update('direccion', e.target.value)} maxLength={200}

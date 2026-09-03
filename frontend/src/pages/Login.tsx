@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/client'
 import FormField from '../components/FormField'
+import Mensaje from '../components/Mensaje'
+import { soloCI, mapearErrorServidor } from '../utils/masks'
 
 export default function Login() {
   const { login } = useAuth()
@@ -33,7 +35,7 @@ export default function Login() {
     if (!nombre.trim()) errs.nombre = 'Ingresa tu nombre completo.'
     else if (nombre.trim().length < 3) errs.nombre = 'Mínimo 3 caracteres.'
     if (!ci.trim()) errs.ci = 'Ingresa tu número de CI.'
-    else if (!/^\d{5,10}$/.test(ci.trim())) errs.ci = 'Solo números, entre 5 y 10 dígitos.'
+    else if (!/^[A-Za-z0-9]{5,20}$/.test(ci.trim())) errs.ci = 'Solo letras y números, entre 5 y 20 caracteres.'
     if (!email.trim()) errs.email = 'Ingresa tu correo electrónico.'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = 'Formato inválido. Ejemplo: usuario@salud.gob.bo'
     if (!password) errs.password = 'Ingresa una contraseña.'
@@ -77,7 +79,12 @@ export default function Login() {
       setFieldErrors({})
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      setError(msg || 'Error al registrar. Intenta de nuevo.')
+      const erroresServidor = mapearErrorServidor(msg)
+      if (Object.keys(erroresServidor).length > 0) {
+        setFieldErrors((prev) => ({ ...prev, ...erroresServidor }))
+      } else {
+        setError(msg || 'Error al registrar. Intenta de nuevo.')
+      }
     } finally {
       setLoading(false)
     }
@@ -122,6 +129,9 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
+        <nav aria-label="Breadcrumb" className="mb-4 text-sm">
+          <span className="text-gray-800 font-medium">Inicio</span>
+        </nav>
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-800">🏥 Sistema de Triaje IA</h1>
           <p className="text-sm text-gray-500 mt-1">NNAC Bolivia - Apoyo a la decisión clínica</p>
@@ -129,8 +139,8 @@ export default function Login() {
 
         {mode === 'login' ? (
           <form onSubmit={handleLogin} className="bg-white rounded-lg shadow p-6 space-y-4" noValidate>
-            {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
-            {success && <div className="bg-green-50 border border-green-200 text-green-700 text-sm p-3 rounded">{success}</div>}
+            {error && <Mensaje variante="error" onCerrar={() => setError('')}>{error}</Mensaje>}
+            {success && <Mensaje variante="exito">{success}</Mensaje>}
 
             <FormField label="Email" required error={fieldErrors.email}>
               <input
@@ -164,7 +174,7 @@ export default function Login() {
           </form>
         ) : (
           <form onSubmit={handleRegistro} className="bg-white rounded-lg shadow p-6 space-y-4" noValidate>
-            {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
+            {error && <Mensaje variante="error" onCerrar={() => setError('')}>{error}</Mensaje>}
 
             <FormField label="Nombre completo" required error={fieldErrors.nombre}>
               <input
@@ -176,14 +186,13 @@ export default function Login() {
               />
             </FormField>
 
-            <FormField label="CI" required tooltip="Cédula de Identidad, solo números" error={fieldErrors.ci}>
+            <FormField label="CI" required tooltip="Cédula de Identidad: números y letras, sin guiones" error={fieldErrors.ci}>
               <input
                 value={ci}
-                onChange={(e) => { setCi(e.target.value.replace(/\D/g, '')); setFieldErrors(p => ({...p, ci: ''})) }}
-                maxLength={10}
-                inputMode="numeric"
+                onChange={(e) => { setCi(soloCI(e.target.value)); setFieldErrors(p => ({...p, ci: ''})) }}
+                maxLength={20}
                 className={inputClass('ci')}
-                placeholder="12345678"
+                placeholder="12345678 o 1234ABC"
               />
             </FormField>
 

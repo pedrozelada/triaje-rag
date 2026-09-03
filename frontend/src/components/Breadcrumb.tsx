@@ -19,7 +19,18 @@ export default function Breadcrumb() {
   const location = useLocation()
   const partes = location.pathname.split('/').filter(Boolean)
 
-  if (partes.length === 0) return null
+  // En la raíz, mostrar el breadcrumb con la ubicación actual "Inicio".
+  if (partes.length === 0) {
+    return (
+      <nav aria-label="Breadcrumb" className="mb-4">
+        <ol className="flex items-center gap-1 text-sm text-gray-500 flex-wrap">
+          <li>
+            <span className="text-gray-800 font-medium">Inicio</span>
+          </li>
+        </ol>
+      </nav>
+    )
+  }
 
   const crumbs = partes.map((parte, i) => {
     const ruta = '/' + partes.slice(0, i + 1).join('/')

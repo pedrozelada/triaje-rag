@@ -7,6 +7,7 @@ import {
 import api from '../../api/client'
 import type { EstadisticasTriaje } from '../../types'
 import PageHeader from '../../components/PageHeader'
+import Mensaje from '../../components/Mensaje'
 
 const COLOR_HEX: Record<string, string> = {
   rojo: '#EF4444',
@@ -99,7 +100,11 @@ export default function AdminEstadisticas() {
   }, [])
 
   if (loading) return <div className="text-center py-12 text-gray-500">Cargando estadísticas...</div>
-  if (!stats) return <div className="text-center py-12 text-red-600">{error || 'Error al cargar datos.'}</div>
+  if (!stats) return (
+    <div className="max-w-6xl mx-auto space-y-6">
+      <Mensaje variante="error">{error || 'Error al cargar datos.'}</Mensaje>
+    </div>
+  )
 
   const sexoData = stats.por_sexo.map((s) => ({
     name: SEXO_LABEL[s.sexo] || s.sexo,

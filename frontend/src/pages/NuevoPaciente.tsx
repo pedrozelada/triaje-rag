@@ -2,8 +2,10 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import type { PacienteCreate } from '../types'
+import Mensaje from '../components/Mensaje'
 import PageHeader from '../components/PageHeader'
 import FormField from '../components/FormField'
+import { formatTelefono, soloCI, soloDigitos, mapearErrorServidor } from '../utils/masks'
 
 export default function NuevoPaciente() {
   const navigate = useNavigate()
@@ -29,7 +31,7 @@ export default function NuevoPaciente() {
   const validarStep1 = (): boolean => {
     const errs: Record<string, string> = {}
     if (!form.ci.trim()) errs.ci = 'Ingresa el número de CI.'
-    else if (!/^\d{5,10}$/.test(form.ci.trim())) errs.ci = 'Solo números, entre 5 y 10 dígitos.'
+    else if (!/^[A-Za-z0-9]{5,20}$/.test(form.ci.trim())) errs.ci = 'Solo letras y números, entre 5 y 20 caracteres.'
     if (!form.nombre.trim()) errs.nombre = 'Ingresa el nombre.'
     else if (form.nombre.trim().length < 2) errs.nombre = 'Mínimo 2 caracteres.'
     if (!form.apellido.trim()) errs.apellido = 'Ingresa el apellido.'
@@ -59,7 +61,13 @@ export default function NuevoPaciente() {
       navigate('/pacientes')
     } catch (err: unknown) {
       const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      setError(detail || 'Error al registrar paciente. Verifica los datos.')
+      const erroresServidor = mapearErrorServidor(detail)
+      if (Object.keys(erroresServidor).length > 0) {
+        // Mostrar el error del servidor junto al campo correspondiente
+        setFieldErrors((prev) => ({ ...prev, ...erroresServidor }))
+      } else {
+        setError(detail || 'Error al registrar paciente. Verifica los datos.')
+      }
     } finally {
       setLoading(false)
     }
@@ -85,18 +93,17 @@ export default function NuevoPaciente() {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border p-6 space-y-4" noValidate>
-        {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
+        {error && <Mensaje variante="error" onCerrar={() => setError('')}>{error}</Mensaje>}
 
         {step === 1 && (
           <>
-            <FormField label="Cédula de Identidad (CI)" required tooltip="Solo números, sin guiones ni espacios" error={fieldErrors.ci}>
+            <FormField label="Cédula de Identidad (CI)" required tooltip="Números y letras, sin guiones ni espacios" error={fieldErrors.ci}>
               <input
                 value={form.ci}
-                onChange={(e) => update('ci', e.target.value.replace(/\D/g, ''))}
-                maxLength={10}
-                inputMode="numeric"
+                onChange={(e) => update('ci', soloCI(e.target.value))}
+                maxLength={20}
                 className={inputClass('ci')}
-                placeholder="Ej: 12345678"
+                placeholder="Ej: 12345678 o 1234ABC"
               />
             </FormField>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -155,12 +162,12 @@ export default function NuevoPaciente() {
           <>
             <FormField label="Teléfono" tooltip="Número de contacto, solo números" error={fieldErrors.telefono}>
               <input
-                value={form.telefono}
-                onChange={(e) => update('telefono', e.target.value.replace(/[^\d+\-\s]/g, ''))}
-                maxLength={15}
+                value={formatTelefono(form.telefono)}
+                onChange={(e) => update('telefono', soloDigitos(e.target.value).slice(0, 15))}
+                maxLength={19}
                 inputMode="tel"
                 className={inputClass('telefono')}
-                placeholder="Ej: 71234567"
+                placeholder="Ej: 7123 4567"
               />
             </FormField>
             <FormField label="Dirección">

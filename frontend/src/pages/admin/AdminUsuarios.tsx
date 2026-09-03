@@ -3,7 +3,10 @@ import api from '../../api/client'
 import type { Usuario } from '../../types'
 import PageHeader from '../../components/PageHeader'
 import FormField from '../../components/FormField'
+import Mensaje from '../../components/Mensaje'
 import { useAuth } from '../../context/AuthContext'
+import { soloCI } from '../../utils/masks'
+import { useTablaDatos, ThOrdenable, ControlesPaginacion, inputFiltroClass, EtiquetaFiltro } from '../../hooks/useTablaDatos'
 
 const ROLES: Usuario['rol'][] = ['admin', 'medico', 'enfermero_triage']
 
@@ -38,6 +41,9 @@ export default function AdminUsuarios() {
   const { usuario: usuarioActual } = useAuth()
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [loading, setLoading] = useState(true)
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroRol, setFiltroRol] = useState('todos')
+  const [filtroEstado, setFiltroEstado] = useState('todos')
 
   // Modal crear/editar
   const [modalAbierto, setModalAbierto] = useState(false)
@@ -92,7 +98,7 @@ export default function AdminUsuarios() {
   const validar = (): boolean => {
     const nuevos: Partial<Record<keyof FormUsuario, string>> = {}
     if (!form.ci.trim()) nuevos.ci = 'El CI es obligatorio.'
-    else if (!/^\d+$/.test(form.ci)) nuevos.ci = 'El CI debe contener solo números.'
+    else if (!/^[A-Za-z0-9]+$/.test(form.ci)) nuevos.ci = 'El CI solo puede contener letras y números.'
     if (!form.nombre_completo.trim()) nuevos.nombre_completo = 'El nombre es obligatorio.'
     if (!form.email.trim()) nuevos.email = 'El email es obligatorio.'
     else if (!/^\S+@\S+\.\S+$/.test(form.email)) nuevos.email = 'Formato de email inválido (ej: nombre@correo.com).'
@@ -190,11 +196,34 @@ export default function AdminUsuarios() {
       conError ? 'border-red-400 bg-red-50' : 'border-gray-300'
     }`
 
+  const filtrados = usuarios.filter((u) => {
+    const okTexto = !busqueda.trim() ||
+      `${u.nombre_completo} ${u.email} ${u.ci}`.toLowerCase().includes(busqueda.trim().toLowerCase())
+    const okRol = filtroRol === 'todos' || u.rol === filtroRol
+    const okEstado = filtroEstado === 'todos' || (filtroEstado === 'activo' ? u.activo : !u.activo)
+    return okTexto && okRol && okEstado
+  })
+
+  const tabla = useTablaDatos(filtrados, {
+    columnaInicial: 'nombre',
+    porPagina: 20,
+    obtenerValor: (u, col) => {
+      switch (col) {
+        case 'nombre': return u.nombre_completo
+        case 'email': return u.email
+        case 'centro': return u.centro_salud
+        case 'rol': return u.rol
+        case 'estado': return u.activo
+        default: return null
+      }
+    },
+  })
+
   return (
     <div className="space-y-4">
       <PageHeader
         title="Gestión de Usuarios"
-        subtitle={`${usuarios.length} usuario(s) registrado(s)`}
+        subtitle={`${filtrados.length} de ${usuarios.length} usuario(s) registrado(s)`}
         actions={
           <button
             onClick={abrirNuevo}
@@ -206,11 +235,33 @@ export default function AdminUsuarios() {
       />
 
       {errorGeneral && !modalAbierto && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-md px-4 py-3 flex justify-between items-center">
-          <span>{errorGeneral}</span>
-          <button onClick={() => setErrorGeneral('')} className="text-red-400 hover:text-red-600">✕</button>
-        </div>
+        <Mensaje variante="error" onCerrar={() => setErrorGeneral('')}>{errorGeneral}</Mensaje>
       )}
+
+      {/* Búsqueda y filtros */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <input
+          type="text"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar por nombre, email o CI..."
+          maxLength={50}
+          className={`${inputFiltroClass} flex-1 min-w-[200px]`}
+        />
+        <EtiquetaFiltro>Rol:</EtiquetaFiltro>
+        <select value={filtroRol} onChange={(e) => setFiltroRol(e.target.value)} className={inputFiltroClass}>
+          <option value="todos">Todos</option>
+          {ROLES.map((r) => (
+            <option key={r} value={r}>{r}</option>
+          ))}
+        </select>
+        <EtiquetaFiltro>Estado:</EtiquetaFiltro>
+        <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} className={inputFiltroClass}>
+          <option value="todos">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
 
       {loading ? (
         <p className="text-gray-500 text-center py-8">Cargando...</p>
@@ -219,16 +270,16 @@ export default function AdminUsuarios() {
           <table className="w-full text-sm min-w-[700px]">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Nombre</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Email</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Centro de Salud</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Estado</th>
+                <ThOrdenable columna="nombre" label="Nombre" ordenColumna={tabla.ordenColumna} ordenDireccion={tabla.ordenDireccion} ordenarPor={tabla.ordenarPor} />
+                <ThOrdenable columna="email" label="Email" ordenColumna={tabla.ordenColumna} ordenDireccion={tabla.ordenDireccion} ordenarPor={tabla.ordenarPor} />
+                <ThOrdenable columna="centro" label="Centro de Salud" ordenColumna={tabla.ordenColumna} ordenDireccion={tabla.ordenDireccion} ordenarPor={tabla.ordenarPor} />
+                <ThOrdenable columna="rol" label="Rol" ordenColumna={tabla.ordenColumna} ordenDireccion={tabla.ordenDireccion} ordenarPor={tabla.ordenarPor} />
+                <ThOrdenable columna="estado" label="Estado" ordenColumna={tabla.ordenColumna} ordenDireccion={tabla.ordenDireccion} ordenarPor={tabla.ordenarPor} />
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {usuarios.map((u) => {
+              {tabla.paginados.map((u) => {
                 const esYo = usuarioActual?.id === u.id
                 return (
                   <tr key={u.id} className="hover:bg-gray-50">
@@ -283,6 +334,13 @@ export default function AdminUsuarios() {
               })}
             </tbody>
           </table>
+          <ControlesPaginacion
+            paginaActual={tabla.paginaActual}
+            totalPaginas={tabla.totalPaginas}
+            cambiarPagina={tabla.cambiarPagina}
+            total={filtrados.length}
+            porPagina={20}
+          />
         </div>
       )}
 
@@ -308,8 +366,8 @@ export default function AdminUsuarios() {
                 type="text"
                 inputMode="numeric"
                 value={form.ci}
-                onChange={(e) => setForm({ ...form, ci: e.target.value.replace(/\D/g, '').slice(0, 30) })}
-                placeholder="Ej: 1234567"
+                onChange={(e) => setForm({ ...form, ci: soloCI(e.target.value).slice(0, 30) })}
+                placeholder="Ej: 1234567 o 1234ABC"
                 maxLength={30}
                 className={inputClass(errores.ci)}
               />

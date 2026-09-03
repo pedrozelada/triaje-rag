@@ -5,6 +5,7 @@ import api from '../api/client'
 import type { Paciente, TriageCreate } from '../types'
 import PageHeader from '../components/PageHeader'
 import FormField from '../components/FormField'
+import Mensaje from '../components/Mensaje'
 
 export default function NuevoTriage() {
   const navigate = useNavigate()
@@ -123,7 +124,7 @@ export default function NuevoTriage() {
       {/* Formulario de triaje */}
       {pacienteSeleccionado && (
         <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-sm border p-6 space-y-6" noValidate>
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded">{error}</div>}
+          {error && <Mensaje variante="error" onCerrar={() => setError('')}>{error}</Mensaje>}
 
           {/* Signos vitales */}
           <div>

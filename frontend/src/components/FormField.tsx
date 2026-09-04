@@ -29,7 +29,9 @@ export default function FormField({ label, required, tooltip, error, children }:
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
               onClick={() => setShowTooltip(!showTooltip)}
-              className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-[10px] font-bold flex items-center justify-center cursor-help hover:bg-gray-300 transition-colors"
+              onFocus={() => setShowTooltip(true)}
+              onBlur={() => setShowTooltip(false)}
+              className="w-4 h-4 rounded-full bg-gray-200 text-gray-500 text-[10px] font-bold flex items-center justify-center cursor-help hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               aria-label={`Ayuda: ${label}`}
             >
               ?

@@ -4,6 +4,7 @@ import api from '../api/client'
 import type { ConsultaTriage } from '../types'
 import PageHeader from '../components/PageHeader'
 import { useTablaDatos, ControlesPaginacion, inputFiltroClass } from '../hooks/useTablaDatos'
+import { formatoFechaHora } from '../utils/format'
 
 const COLOR_MAP: Record<string, string> = {
   rojo: 'bg-red-100 text-red-800',
@@ -92,7 +93,7 @@ export default function Historial() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500">
-                  {new Date(c.fecha_hora).toLocaleString('es-BO')}
+                  {formatoFechaHora(c.fecha_hora)}
                 </span>
                 {c.nivel_urgencia && (
                   <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${COLOR_MAP[c.nivel_urgencia] || 'bg-gray-100'}`}>
@@ -103,7 +104,7 @@ export default function Historial() {
               <p className="text-sm font-medium text-gray-800 mt-1">
                 {c.motivo_consulta || c.sintomas?.slice(0, 100) || 'Sin descripción'}
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 Paciente #{c.paciente_id} · {c.modelo_utilizado || 'N/D'} · {c.tiempo_respuesta?.toFixed(1)}s
               </p>
             </Link>

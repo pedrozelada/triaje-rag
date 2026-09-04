@@ -93,9 +93,9 @@ export default function NuevoTriage() {
             </ul>
           )}
           {busqueda.length >= 2 && resultados.length === 0 && (
-            <p className="text-sm text-gray-400 mt-2">Sin resultados. Intenta con otro término.</p>
+            <p className="text-sm text-gray-500 mt-2">Sin resultados. Intenta con otro término.</p>
           )}
-          <p className="text-xs text-gray-400 mt-3">
+          <p className="text-xs text-gray-500 mt-3">
             ¿Paciente nuevo?{' '}
             <button onClick={() => navigate('/pacientes/nuevo')} className="text-blue-600 underline">
               Registrar aquí
@@ -181,7 +181,7 @@ export default function NuevoTriage() {
               tooltip="Elige el motor de IA para la evaluación: nube (Groq, OpenAI) o local (Ollama, sin internet)"
             >
               {cargandoModelos ? (
-                <p className="text-sm text-gray-400 py-2">Cargando modelos disponibles...</p>
+                <p className="text-sm text-gray-500 py-2">Cargando modelos disponibles...</p>
               ) : modelos.length > 0 ? (
                 <select
                   value={modeloSeleccionado}

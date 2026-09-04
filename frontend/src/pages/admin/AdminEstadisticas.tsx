@@ -30,11 +30,8 @@ const SEXO_COLOR: Record<string, string> = {
   Otro: '#8B5CF6',
 }
 
-// "2026-08-07" → "07/08/2026"
-const formatoFecha = (fecha: string) => {
-  const partes = fecha.split('-')
-  return `${partes[2]}/${partes[1]}/${partes[0]}`
-}
+// "2026-08-07" → "07/08/2026" (formato unificado en utils/format.ts)
+import { formatoFecha } from '../../utils/format'
 
 // "2026-08-07" → "07/08"
 const formatoDia = (fecha: string) => {
@@ -210,7 +207,7 @@ export default function AdminEstadisticas() {
         </div>
 
         {/* Rango aplicado */}
-        <p className="text-xs text-gray-400 mt-3">
+        <p className="text-xs text-gray-500 mt-3">
           Período aplicado: <span className="font-medium text-gray-600">{formatoFecha(stats.fecha_desde)}</span> —{' '}
           <span className="font-medium text-gray-600">{formatoFecha(stats.fecha_hasta)}</span> ·{' '}
           <span className="font-medium text-gray-600">{stats.total_consultas} consultas</span>
@@ -300,7 +297,7 @@ export default function AdminEstadisticas() {
       {/* Motivos frecuentes */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h2 className="font-semibold text-gray-700 mb-1">Motivos de Consulta Frecuentes</h2>
-        <p className="text-xs text-gray-400 mb-4">Palabras clave de motivos y síntomas (no es un conteo clínico).</p>
+        <p className="text-xs text-gray-500 mb-4">Palabras clave de motivos y síntomas (no es un conteo clínico).</p>
         {stats.motivos_frecuentes.length > 0 ? (
           <ResponsiveContainer width="100%" height={Math.max(220, stats.motivos_frecuentes.length * 30)}>
             <BarChart data={stats.motivos_frecuentes} layout="vertical" margin={{ left: 8 }}>

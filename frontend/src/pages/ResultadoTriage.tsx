@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/client'
 import type { ConsultaTriage, NivelUrgencia } from '../types'
+import { formatoFechaHora, formatoNumero } from '../utils/format'
 
 const NIVELES: Record<NivelUrgencia, { color: string; bg: string; label: string; emoji: string }> = {
   rojo: { color: 'text-white', bg: 'bg-red-600', label: 'EMERGENCIA', emoji: '🔴' },
@@ -50,8 +51,8 @@ export default function ResultadoTriage() {
       <div className="bg-gray-50 rounded-lg border p-4 flex flex-wrap gap-6 text-sm text-gray-600">
         <span>⏱️ Tiempo: {consulta.tiempo_respuesta?.toFixed(2)}s</span>
         <span>🤖 Modelo: {consulta.modelo_utilizado || 'N/D'}</span>
-        <span>📅 {new Date(consulta.fecha_hora).toLocaleString('es-BO')}</span>
-        {consulta.tokens_consumidos && <span>🔢 Tokens: {consulta.tokens_consumidos}</span>}
+        <span>📅 {formatoFechaHora(consulta.fecha_hora)}</span>
+        {consulta.tokens_consumidos && <span>🔢 Tokens: {formatoNumero(consulta.tokens_consumidos)}</span>}
       </div>
 
       {/* Acciones */}
@@ -77,7 +78,7 @@ export default function ResultadoTriage() {
       </div>
 
       {/* Disclaimer */}
-      <p className="text-xs text-gray-400 text-center">
+      <p className="text-xs text-gray-500 text-center">
         ⚠️ Herramienta de apoyo a la decisión clínica. No reemplaza la evaluación médica profesional.
       </p>
     </div>

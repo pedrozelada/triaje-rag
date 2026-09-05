@@ -219,7 +219,6 @@ export default function Login() {
               >
                 <option value="enfermero_triage">Enfermero/a de Triaje</option>
                 <option value="medico">Médico/a</option>
-                <option value="admin">Administrador</option>
               </select>
             </FormField>
 

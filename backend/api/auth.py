@@ -9,7 +9,7 @@ from backend.core.security import (
     verify_password,
 )
 from backend.api.deps import get_current_user
-from backend.db.models import Usuario
+from backend.db.models import ROL_ENUM, Usuario
 from backend.db.session import get_db
 from backend.schemas.usuario import LoginRequest, Token, UsuarioCreate, UsuarioOut
 
@@ -18,7 +18,27 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.post("/registro", response_model=UsuarioOut, status_code=status.HTTP_201_CREATED)
 def registrar(usuario: UsuarioCreate, db: Session = Depends(get_db)):
-    """Crea un nuevo usuario (médico/enfermero/admin) con contraseña hasheada."""
+    """Crea un nuevo usuario con contraseña hasheada.
+
+    Seguridad:
+    - El rol debe ser válido (ver ROL_ENUM).
+    - El rol 'admin' solo se permite como *bootstrap*: únicamente mientras
+      no exista ningún administrador activo en la base de datos. Después,
+      los administradores solo pueden crearse desde el panel de administración.
+    """
+    if usuario.rol not in ROL_ENUM:
+        raise HTTPException(status_code=400, detail="Rol inválido.")
+
+    if usuario.rol == "admin":
+        hay_admin = (
+            db.query(Usuario).filter(Usuario.rol == "admin", Usuario.activo.is_(True)).first()
+        )
+        if hay_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Ya existe un administrador. Los administradores solo pueden crearse desde el panel de administración.",
+            )
+
     if db.query(Usuario).filter(Usuario.email == usuario.email).first():
         raise HTTPException(status_code=400, detail="El email ya está registrado.")
     if db.query(Usuario).filter(Usuario.ci == usuario.ci).first():

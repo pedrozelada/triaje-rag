@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from backend.api.deps import get_optional_user
+from backend.api.deps import get_current_user, get_optional_user
 from backend.db.models import ConsultaTriage, Paciente, Usuario
 from backend.db.session import get_db
 from backend.rag.service import rag_service
@@ -80,6 +80,7 @@ def listar_triage(
     fecha_desde: Optional[datetime] = Query(None, description="Filtrar desde fecha"),
     fecha_hasta: Optional[datetime] = Query(None, description="Filtrar hasta fecha"),
     db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
 ):
     query = db.query(ConsultaTriage)
     if paciente_id is not None:
@@ -105,7 +106,11 @@ def listar_modelos():
 
 
 @router.get("/{consulta_id}", response_model=TriageOut)
-def obtener_triage(consulta_id: int, db: Session = Depends(get_db)):
+def obtener_triage(
+    consulta_id: int,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
     consulta = db.get(ConsultaTriage, consulta_id)
     if not consulta:
         raise HTTPException(status_code=404, detail="Consulta no encontrada.")

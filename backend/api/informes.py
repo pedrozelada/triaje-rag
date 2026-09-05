@@ -4,7 +4,8 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.db.models import ConsultaTriage, Paciente
+from backend.api.deps import get_current_user
+from backend.db.models import ConsultaTriage, Paciente, Usuario
 from backend.db.session import get_db
 from backend.schemas.triage import TriageOut
 
@@ -12,7 +13,11 @@ router = APIRouter(prefix="/api/informes", tags=["informes"])
 
 
 @router.get("/paciente/{paciente_id}", response_model=list[TriageOut])
-def informe_paciente(paciente_id: int, db: Session = Depends(get_db)):
+def informe_paciente(
+    paciente_id: int,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
     """Historial completo de triaje de un paciente (para auditoría)."""
     if not db.get(Paciente, paciente_id):
         raise HTTPException(status_code=404, detail="Paciente no encontrado.")
@@ -25,7 +30,11 @@ def informe_paciente(paciente_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/paciente/{paciente_id}/texto")
-def informe_paciente_texto(paciente_id: int, db: Session = Depends(get_db)):
+def informe_paciente_texto(
+    paciente_id: int,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
     """Genera un informe en texto plano del historial del paciente."""
     paciente = db.get(Paciente, paciente_id)
     if not paciente:

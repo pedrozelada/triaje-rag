@@ -13,6 +13,13 @@ from backend.api import admin, auth, pacientes, triage, informes
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Advertencia de seguridad: secret key por defecto (solo para desarrollo).
+if settings.secret_key == "cambia-este-secreto-en-produccion":
+    logger.warning(
+        "⚠️ JWT_SECRET_KEY no configurada: se está usando el valor por defecto. "
+        "Define JWT_SECRET_KEY en el archivo .env antes de pasar a producción."
+    )
+
 app = FastAPI(
     title="Triaje Médico RAG API",
     description="Backend del sistema de triaje con RAG, CRUD de pacientes y auditoría.",

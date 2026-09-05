@@ -25,7 +25,7 @@ export default function Breadcrumb() {
       <nav aria-label="Breadcrumb" className="mb-4">
         <ol className="flex items-center gap-1 text-sm text-gray-500 flex-wrap">
           <li>
-            <span className="text-gray-800 font-medium">Inicio</span>
+            <span className="text-gray-800 font-medium"></span>
           </li>
         </ol>
       </nav>

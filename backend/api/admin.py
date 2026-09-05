@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from backend.api.deps import get_current_user
 from backend.core.security import hash_password
-from backend.db.models import ConsultaTriage, Paciente, Usuario, calcular_edad
+from backend.db.models import ROL_ENUM, ConsultaTriage, Paciente, Usuario, calcular_edad
 from backend.db.session import get_db
 from backend.schemas.admin import (
     DiaCount,
@@ -500,6 +500,9 @@ def crear_usuario(
     """Crea un usuario nuevo desde el panel admin (solo admin)."""
     _require_admin(usuario)
 
+    if datos.rol not in ROL_ENUM:
+        raise HTTPException(status_code=400, detail="Rol inválido.")
+
     if db.query(Usuario).filter(Usuario.email == datos.email).first():
         raise HTTPException(status_code=400, detail="El email ya está registrado.")
     if db.query(Usuario).filter(Usuario.ci == datos.ci).first():
@@ -528,6 +531,9 @@ def actualizar_usuario(
 ):
     """Actualiza un usuario: rol, estado activo, datos, contraseña (solo admin)."""
     _require_admin(usuario)
+
+    if datos.rol is not None and datos.rol not in ROL_ENUM:
+        raise HTTPException(status_code=400, detail="Rol inválido.")
 
     target = db.get(Usuario, usuario_id)
     if not target:

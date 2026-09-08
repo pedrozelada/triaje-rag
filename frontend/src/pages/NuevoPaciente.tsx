@@ -127,7 +127,7 @@ export default function NuevoPaciente() {
               </FormField>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Fecha de Nacimiento" required error={fieldErrors.fecha_nacimiento}>
+              <FormField label="Fecha de Nacimiento" required tooltip="Formato día/mes/año; no puede ser una fecha futura" error={fieldErrors.fecha_nacimiento}>
                 <input
                   type="date"
                   value={form.fecha_nacimiento}
@@ -136,7 +136,7 @@ export default function NuevoPaciente() {
                   className={inputClass('fecha_nacimiento')}
                 />
               </FormField>
-              <FormField label="Sexo" required>
+              <FormField label="Sexo" required tooltip="Sexo del paciente; 'Otro' para casos no binarios">
                 <select
                   value={form.sexo}
                   onChange={(e) => update('sexo', e.target.value)}

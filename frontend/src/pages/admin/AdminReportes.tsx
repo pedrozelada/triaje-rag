@@ -2,10 +2,14 @@ import { useState } from 'react'
 import api from '../../api/client'
 import PageHeader from '../../components/PageHeader'
 import FormField from '../../components/FormField'
+import { useAuth } from '../../context/AuthContext'
+import { formatoFechaHora } from '../../utils/format'
 
 export default function AdminReportes() {
+  const { usuario: usuarioActual } = useAuth()
   const [pacienteId, setPacienteId] = useState('')
   const [informe, setInforme] = useState('')
+  const [generadoEn, setGeneradoEn] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -23,9 +27,11 @@ export default function AdminReportes() {
     try {
       const res = await api.get(`/informes/paciente/${pacienteId.trim()}/texto`)
       setInforme(res.data.informe)
+      setGeneradoEn(formatoFechaHora(new Date()))
     } catch {
       setError('No se pudo generar el informe. Verifica que el ID del paciente exista.')
       setInforme('')
+      setGeneradoEn('')
     } finally {
       setLoading(false)
     }
@@ -68,7 +74,7 @@ export default function AdminReportes() {
       {/* Resultado */}
       {informe && (
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <h2 className="font-semibold text-gray-700">Informe Generado</h2>
             <button
               onClick={() => navigator.clipboard.writeText(informe)}
@@ -76,6 +82,12 @@ export default function AdminReportes() {
             >
               📋 Copiar
             </button>
+          </div>
+          {/* Metadatos del reporte: fecha, usuario y filtros utilizados */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mb-3 border-b pb-3">
+            <span>📅 Generado: {generadoEn}</span>
+            <span>👤 Usuario: {usuarioActual?.nombre_completo || '—'}</span>
+            <span>🔎 Filtro: Paciente #{pacienteId.trim()}</span>
           </div>
           <pre className="bg-gray-50 rounded-md p-4 text-xs text-gray-700 whitespace-pre-wrap overflow-auto max-h-96">
             {informe}

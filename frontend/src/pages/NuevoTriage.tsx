@@ -63,8 +63,10 @@ export default function NuevoTriage() {
       const res = await api.post('/triage', payload)
       navigate(`/triage/resultado/${res.data.id}`)
     } catch (err: unknown) {
-      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      setError(detail || 'Error al procesar el triaje. Intenta nuevamente.')
+      // Nunca mostrar texto técnico: solo mensajes curados del backend.
+      const detail = (err as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail
+      if (typeof detail === 'string' && detail.length > 0) setError(detail)
+      else setError('Error al procesar el triaje. Intenta nuevamente.')
     } finally {
       setLoading(false)
     }

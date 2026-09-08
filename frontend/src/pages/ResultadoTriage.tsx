@@ -17,6 +17,7 @@ export default function ResultadoTriage() {
   const navigate = useNavigate()
   const [consulta, setConsulta] = useState<ConsultaTriage | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mostrarPrompt, setMostrarPrompt] = useState(false)
 
   useEffect(() => {
     api.get(`/triage/${id}`).then((res) => setConsulta(res.data)).finally(() => setLoading(false))
@@ -46,6 +47,26 @@ export default function ResultadoTriage() {
           {consulta.respuesta_llm || 'Sin respuesta del modelo.'}
         </div>
       </div>
+
+      {/* Prompt utilizado (auditoría, colapsable) */}
+      {consulta.prompt_utilizado && (
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <button
+            type="button"
+            onClick={() => setMostrarPrompt((v) => !v)}
+            aria-expanded={mostrarPrompt}
+            className="flex w-full items-center justify-between font-semibold text-gray-700 hover:text-blue-700 transition-colors"
+          >
+            <span>🔍 Prompt Utilizado (auditoría)</span>
+            <span aria-hidden="true">{mostrarPrompt ? '▲' : '▼'}</span>
+          </button>
+          {mostrarPrompt && (
+            <pre className="mt-3 bg-gray-50 rounded-md p-4 text-xs text-gray-700 whitespace-pre-wrap overflow-auto max-h-96">
+              {consulta.prompt_utilizado}
+            </pre>
+          )}
+        </div>
+      )}
 
       {/* Metadatos */}
       <div className="bg-gray-50 rounded-lg border p-4 flex flex-wrap gap-6 text-sm text-gray-600">

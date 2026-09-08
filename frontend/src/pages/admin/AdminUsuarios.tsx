@@ -5,7 +5,7 @@ import PageHeader from '../../components/PageHeader'
 import FormField from '../../components/FormField'
 import Mensaje from '../../components/Mensaje'
 import { useAuth } from '../../context/AuthContext'
-import { soloCI } from '../../utils/masks'
+import { soloCI, mapearErrorServidor } from '../../utils/masks'
 import { useTablaDatos, ThOrdenable, ControlesPaginacion, inputFiltroClass, EtiquetaFiltro } from '../../hooks/useTablaDatos'
 
 const ROLES: Usuario['rol'][] = ['admin', 'medico', 'enfermero_triage']
@@ -33,9 +33,16 @@ type Confirmacion =
   | { tipo: 'eliminar'; usuario: Usuario }
   | { tipo: 'guardar_edicion' }
 
-const mensajeError = (e: unknown) =>
-  (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-  'Error inesperado. Intenta nuevamente.'
+const detalleDe = (e: unknown): unknown =>
+  (e as { response?: { data?: { detail?: unknown } } })?.response?.data?.detail
+
+// Nunca muestra texto técnico: solo details string curados por el backend.
+const mensajeError = (e: unknown) => {
+  const detail = detalleDe(e)
+  return typeof detail === 'string' && detail.length > 0
+    ? detail
+    : 'Error inesperado. Intenta nuevamente.'
+}
 
 export default function AdminUsuarios() {
   const { usuario: usuarioActual } = useAuth()
@@ -139,8 +146,16 @@ export default function AdminUsuarios() {
       cerrarModal()
       cargarUsuarios()
     } catch (e) {
-      // Conserva los datos ingresados y muestra el error del servidor
-      setErrorGeneral(mensajeError(e))
+      // Conserva los datos ingresados; si el error es de un campo, se muestra
+      // junto a ese campo; si no, banner general. Nunca texto técnico.
+      const erroresServidor = mapearErrorServidor(detalleDe(e))
+      if (Object.keys(erroresServidor).length > 0) {
+        if (erroresServidor.nombre) erroresServidor.nombre_completo = erroresServidor.nombre
+        delete erroresServidor.nombre
+        setErrores((prev) => ({ ...prev, ...erroresServidor }))
+      } else {
+        setErrorGeneral(mensajeError(e))
+      }
     } finally {
       setGuardando(false)
     }

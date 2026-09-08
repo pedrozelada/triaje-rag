@@ -50,6 +50,10 @@ def informe_paciente_texto(
     lineas = [
         "INFORME DE TRIAJE - HISTORIAL DEL PACIENTE",
         "=" * 50,
+        f"Generado: {datetime.now().strftime('%d/%m/%Y %H:%M')}",
+        f"Generado por: {usuario.nombre_completo}",
+        f"Filtro: Paciente #{paciente.id}",
+        "",
         f"Paciente: {paciente.nombre} {paciente.apellido}",
         f"C.I.: {paciente.ci}",
         f"Edad: {paciente.edad} años   Sexo: {paciente.sexo}",
@@ -65,6 +69,9 @@ def informe_paciente_texto(
         if c.respuesta_llm:
             lineas.append("Resultado:")
             lineas.append(c.respuesta_llm)
+        if c.prompt_utilizado:
+            lineas.append("Prompt utilizado (auditoría):")
+            lineas.append(c.prompt_utilizado)
         lineas.append("")
 
     return {"informe": "\n".join(lineas)}

@@ -7,15 +7,7 @@ import {
 import api from '../../api/client'
 import type { Estadisticas } from '../../types'
 import PageHeader from '../../components/PageHeader'
-
-const COLOR_HEX: Record<string, string> = {
-  rojo: '#EF4444',
-  naranja: '#F97316',
-  amarillo: '#EAB308',
-  verde: '#22C55E',
-  azul: '#3B82F6',
-  sin_clasificar: '#9CA3AF',
-}
+import { COLOR_MANCHESTER_HEX } from '../../utils/colores'
 
 // "2026-08-07" → "07/08"
 const formatoDia = (fecha: string) => {
@@ -39,7 +31,7 @@ export default function AdminDashboard() {
   const chartData = stats.por_nivel.map((n) => ({
     name: n.nivel,
     cantidad: n.cantidad,
-    fill: COLOR_HEX[n.nivel] || '#9CA3AF',
+    fill: COLOR_MANCHESTER_HEX[n.nivel] || COLOR_MANCHESTER_HEX.sin_clasificar,
   }))
 
   return (

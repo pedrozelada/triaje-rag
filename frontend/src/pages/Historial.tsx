@@ -5,14 +5,7 @@ import type { ConsultaTriage } from '../types'
 import PageHeader from '../components/PageHeader'
 import { useTablaDatos, ControlesPaginacion, inputFiltroClass } from '../hooks/useTablaDatos'
 import { formatoFechaHora } from '../utils/format'
-
-const COLOR_MAP: Record<string, string> = {
-  rojo: 'bg-red-100 text-red-800',
-  naranja: 'bg-orange-100 text-orange-800',
-  amarillo: 'bg-yellow-100 text-yellow-800',
-  verde: 'bg-green-100 text-green-800',
-  azul: 'bg-blue-100 text-blue-800',
-}
+import { claseNivel } from '../utils/colores'
 
 const FILTROS = ['todos', 'rojo', 'naranja', 'amarillo', 'verde', 'azul'] as const
 
@@ -96,7 +89,7 @@ export default function Historial() {
                   {formatoFechaHora(c.fecha_hora)}
                 </span>
                 {c.nivel_urgencia && (
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${COLOR_MAP[c.nivel_urgencia] || 'bg-gray-100'}`}>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${claseNivel(c.nivel_urgencia)}`}>
                     {c.nivel_urgencia}
                   </span>
                 )}

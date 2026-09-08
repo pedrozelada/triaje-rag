@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import api from '../api/client'
 import type { Paciente, TriageCreate } from '../types'
@@ -19,9 +19,19 @@ export default function NuevoTriage() {
   const [cargandoModelos, setCargandoModelos] = useState(true)
 
   const { register, handleSubmit, formState: { errors } } = useForm<TriageCreate>()
+  const [searchParams] = useSearchParams()
 
   useEffect(() => {
-    api.get('/pacientes?limit=200').then((res) => setPacientes(res.data))
+    // Preselección opcional del paciente vía query (?paciente_id=X)
+    const pidParam = searchParams.get('paciente_id')
+    api.get('/pacientes?limit=200').then((res) => {
+      setPacientes(res.data)
+      const pid = pidParam ? Number(pidParam) : null
+      if (pid) {
+        const encontrado = (res.data as Paciente[]).find((p) => p.id === pid)
+        if (encontrado) setPacienteSeleccionado(encontrado)
+      }
+    })
     api.get('/triage/modelos')
       .then((res) => {
         setModelos(res.data)

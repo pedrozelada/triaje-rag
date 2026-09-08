@@ -8,15 +8,7 @@ import api from '../../api/client'
 import type { EstadisticasTriaje } from '../../types'
 import PageHeader from '../../components/PageHeader'
 import Mensaje from '../../components/Mensaje'
-
-const COLOR_HEX: Record<string, string> = {
-  rojo: '#EF4444',
-  naranja: '#F97316',
-  amarillo: '#EAB308',
-  verde: '#22C55E',
-  azul: '#3B82F6',
-  sin_clasificar: '#9CA3AF',
-}
+import { COLOR_MANCHESTER_HEX } from '../../utils/colores'
 
 const SEXO_LABEL: Record<string, string> = {
   M: 'Masculino',
@@ -112,7 +104,7 @@ export default function AdminEstadisticas() {
   const chartData = stats.por_nivel.map((n) => ({
     name: n.nivel,
     cantidad: n.cantidad,
-    fill: COLOR_HEX[n.nivel] || '#9CA3AF',
+    fill: COLOR_MANCHESTER_HEX[n.nivel] || COLOR_MANCHESTER_HEX.sin_clasificar,
   }))
 
   const maxActividad = stats.actividad_usuarios[0]?.consultas || 1

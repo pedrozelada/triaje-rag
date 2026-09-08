@@ -2,14 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import type { Paciente, ConsultaTriage } from '../types'
-
-const COLOR_MAP: Record<string, string> = {
-  rojo: 'bg-red-100 text-red-800',
-  naranja: 'bg-orange-100 text-orange-800',
-  amarillo: 'bg-yellow-100 text-yellow-800',
-  verde: 'bg-green-100 text-green-800',
-  azul: 'bg-blue-100 text-blue-800',
-}
+import ModalConfirmacion from '../components/ModalConfirmacion'
+import { formatoFechaHora } from '../utils/format'
+import { claseNivel } from '../utils/colores'
 
 export default function PacienteDetalle() {
   const { id } = useParams()
@@ -17,6 +12,8 @@ export default function PacienteDetalle() {
   const [paciente, setPaciente] = useState<Paciente | null>(null)
   const [consultas, setConsultas] = useState<ConsultaTriage[]>([])
   const [loading, setLoading] = useState(true)
+  const [confirmarEliminar, setConfirmarEliminar] = useState(false)
+  const [eliminando, setEliminando] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -29,9 +26,14 @@ export default function PacienteDetalle() {
   }, [id])
 
   const handleEliminar = async () => {
-    if (!confirm('¿Eliminar este paciente y todas sus consultas?')) return
-    await api.delete(`/pacientes/${id}`)
-    navigate('/pacientes')
+    setEliminando(true)
+    try {
+      await api.delete(`/pacientes/${id}`)
+      navigate('/pacientes')
+    } catch {
+      setEliminando(false)
+      setConfirmarEliminar(false)
+    }
   }
 
   if (loading) return <div className="text-center py-12 text-gray-500">Cargando...</div>
@@ -57,13 +59,13 @@ export default function PacienteDetalle() {
               to={`/pacientes/${id}/editar`}
               className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200"
             >
-              Editar
+              ✏️ Editar
             </Link>
             <button
-              onClick={handleEliminar}
+              onClick={() => setConfirmarEliminar(true)}
               className="text-sm bg-red-50 text-red-700 px-3 py-1.5 rounded-md hover:bg-red-100"
             >
-              Eliminar
+              🗑 Eliminar
             </button>
           </div>
         </div>
@@ -74,7 +76,7 @@ export default function PacienteDetalle() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-700">Historial de Consultas ({consultas.length})</h2>
           <Link
-            to="/triage/nuevo"
+            to={`/triage/nuevo?paciente_id=${id}`}
             className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700"
           >
             + Nueva Consulta
@@ -93,10 +95,10 @@ export default function PacienteDetalle() {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    {new Date(c.fecha_hora).toLocaleString('es-BO')}
+                    {formatoFechaHora(c.fecha_hora)}
                   </span>
                   {c.nivel_urgencia && (
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${COLOR_MAP[c.nivel_urgencia] || 'bg-gray-100'}`}>
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${claseNivel(c.nivel_urgencia)}`}>
                       {c.nivel_urgencia}
                     </span>
                   )}
@@ -109,6 +111,25 @@ export default function PacienteDetalle() {
           </div>
         )}
       </div>
+
+      {/* Confirmación de eliminación (modal consistente con el sistema) */}
+      {confirmarEliminar && paciente && (
+        <ModalConfirmacion
+          titulo="Eliminar Paciente"
+          variante="peligro"
+          confirmando={eliminando}
+          textoConfirmar="Sí, Eliminar"
+          onConfirmar={handleEliminar}
+          onCancelar={() => setConfirmarEliminar(false)}
+          mensaje={
+            <>
+              Vas a eliminar a <strong>{paciente.nombre} {paciente.apellido}</strong> y{' '}
+              <strong>todas sus consultas de triaje</strong>. Esta acción{' '}
+              <strong>no se puede deshacer</strong>. ¿Deseas continuar?
+            </>
+          }
+        />
+      )}
     </div>
   )
 }

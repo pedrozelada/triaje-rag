@@ -16,6 +16,7 @@ export default function AdminReportes() {
   const [informe, setInforme] = useState('')
   const [generadoEn, setGeneradoEn] = useState('')
   const [loading, setLoading] = useState(false)
+  const [descargando, setDescargando] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -63,6 +64,32 @@ export default function AdminReportes() {
       setGeneradoEn('')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const descargarPdf = async () => {
+    if (!pacienteSel) return
+    setDescargando(true)
+    try {
+      // responseType 'blob' + JWT en el header (un <a href> simple no autenticaría)
+      const res = await api.get(`/informes/paciente/${pacienteSel.id}/pdf`, {
+        responseType: 'blob',
+      })
+      const url = URL.createObjectURL(res.data)
+      const a = document.createElement('a')
+      a.href = url
+      // Preferir el nombre que envía el backend (Content-Disposition)
+      const disposicion = res.headers['content-disposition'] as string | undefined
+      const coincidencia = disposicion?.match(/filename="?([^";]+)"?/i)
+      a.download = coincidencia?.[1] || `informe_paciente_${pacienteSel.id}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      setError('No se pudo descargar el PDF.')
+    } finally {
+      setDescargando(false)
     }
   }
 
@@ -130,13 +157,20 @@ export default function AdminReportes() {
             )}
           </div>
 
-          <div className="flex items-end">
+          <div className="flex items-end gap-2">
             <button
               onClick={generarInforme}
               disabled={loading || !pacienteSel}
               className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
             >
               {loading ? 'Generando...' : 'Generar Informe'}
+            </button>
+            <button
+              onClick={descargarPdf}
+              disabled={descargando || !pacienteSel}
+              className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 disabled:opacity-50 whitespace-nowrap"
+            >
+              {descargando ? 'Descargando...' : '📄 Descargar PDF'}
             </button>
           </div>
         </div>

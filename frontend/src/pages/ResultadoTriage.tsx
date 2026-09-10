@@ -57,7 +57,7 @@ export default function ResultadoTriage() {
             aria-expanded={mostrarPrompt}
             className="flex w-full items-center justify-between font-semibold text-gray-700 hover:text-blue-700 transition-colors"
           >
-            <span>🔍 Prompt Utilizado (auditoría)</span>
+            <span>Prompt Utilizado</span>
             <span aria-hidden="true">{mostrarPrompt ? '▲' : '▼'}</span>
           </button>
           {mostrarPrompt && (

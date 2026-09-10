@@ -7,3 +7,4 @@ streamlit==1.31.1
 chromadb==0.4.24
 sentence-transformers==3.0.0
 python-dotenv==1.0.0
+reportlab==5.0.1

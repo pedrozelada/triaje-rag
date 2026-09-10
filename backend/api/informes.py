@@ -1,10 +1,11 @@
 """Router de informes y auditoría."""
 
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from backend.api.deps import get_current_user
+from backend.api.informe_pdf import generar_pdf_informe_paciente
 from backend.db.models import ConsultaTriage, Paciente, Usuario
 from backend.db.session import get_db
 from backend.schemas.triage import TriageOut
@@ -75,3 +76,38 @@ def informe_paciente_texto(
         lineas.append("")
 
     return {"informe": "\n".join(lineas)}
+
+
+@router.get("/paciente/{paciente_id}/pdf")
+def informe_paciente_pdf(
+    paciente_id: int,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(get_current_user),
+):
+    """Genera el informe del historial del paciente como PDF (descarga directa)."""
+    paciente = db.get(Paciente, paciente_id)
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado.")
+
+    consultas = (
+        db.query(ConsultaTriage)
+        .filter(ConsultaTriage.paciente_id == paciente_id)
+        .order_by(ConsultaTriage.fecha_hora.asc())
+        .all()
+    )
+
+    try:
+        pdf_bytes = generar_pdf_informe_paciente(
+            paciente=paciente, consultas=consultas, usuario=usuario
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    nombre = (
+        f"informe_paciente_{paciente_id}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+    )
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{nombre}"'},
+    )

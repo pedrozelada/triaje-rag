@@ -176,6 +176,7 @@ La interfaz Gradio estará disponible en `http://localhost:7860`
 |--------|------|-------------|
 | `GET` | `/api/informes/paciente/{id}` | Historial JSON del paciente |
 | `GET` | `/api/informes/paciente/{id}/texto` | Historial en texto plano |
+| `GET` | `/api/informes/paciente/{id}/pdf` | Historial como PDF descargable (generado con ReportLab) |
 
 #### Administración (`/api/admin`) — requiere rol `admin`
 
@@ -413,7 +414,6 @@ Verifica que:
 
 ## Mejoras Futuras
 
-- [ ] Exportar reportes a PDF
 - [ ] Caché de consultas frecuentes
 - [ ] Versioning de documentos NNAC
 - [ ] App móvil (React Native)

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts'
 import api from '../../api/client'
 import type { EstadisticasLLM } from '../../types'
 import PageHeader from '../../components/PageHeader'
+import AdminNav from '../../components/AdminNav'
 
 const PALETA = ['#3B82F6', '#22C55E', '#F97316', '#8B5CF6', '#EC4899', '#EAB308', '#14B8A6']
 
@@ -39,22 +39,7 @@ export default function AdminEstadisticasLLM() {
       <PageHeader
         title="Estadísticas de LLM"
         subtitle="Rendimiento y uso de los modelos de lenguaje"
-        actions={
-          <div className="flex gap-2">
-            <Link to="/admin" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Dashboard
-            </Link>
-            <Link to="/admin/estadisticas" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Estadísticas de Triaje
-            </Link>
-            <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Usuarios
-            </Link>
-            <Link to="/admin/reportes" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Reportes
-            </Link>
-          </div>
-        }
+        actions={<AdminNav />}
       />
 
       {/* Resumen global */}

@@ -13,7 +13,7 @@ export default function Inicio() {
           to="/triage/nuevo"
           icon="➕"
           title="Nuevo Triaje"
-          desc="Evaluar paciente con IA"
+          desc="Evaluar paciente"
         />
         <ActionCard
           to="/pacientes"
@@ -27,19 +27,12 @@ export default function Inicio() {
           title="Historial"
           desc="Consultas anteriores"
         />
-        {isAdmin ? (
+        {isAdmin && (
           <ActionCard
             to="/admin"
             icon="📈"
             title="Administración"
             desc="Dashboard, usuarios, reportes"
-          />
-        ) : (
-          <ActionCard
-            to="/historial"
-            icon="📈"
-            title="Estadísticas"
-            desc="Resumen de actividad"
           />
         )}
       </div>

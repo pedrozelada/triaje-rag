@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import api from '../../api/client'
 import type { Usuario } from '../../types'
 import PageHeader from '../../components/PageHeader'
+import AdminNav from '../../components/AdminNav'
 import FormField from '../../components/FormField'
 import Mensaje from '../../components/Mensaje'
 import { useAuth } from '../../context/AuthContext'
@@ -240,12 +241,15 @@ export default function AdminUsuarios() {
         title="Gestión de Usuarios"
         subtitle={`${filtrados.length} de ${usuarios.length} usuario(s) registrado(s)`}
         actions={
-          <button
-            onClick={abrirNuevo}
-            className="text-sm bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
-          >
-            + Nuevo Usuario
-          </button>
+          <div className="flex flex-col gap-2 items-end">
+            <AdminNav />
+            <button
+              onClick={abrirNuevo}
+              className="text-sm bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
+            >
+              + Nuevo Usuario
+            </button>
+          </div>
         }
       />
 

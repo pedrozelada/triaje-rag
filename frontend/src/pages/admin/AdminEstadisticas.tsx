@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, AreaChart, Area,
@@ -7,6 +6,7 @@ import {
 import api from '../../api/client'
 import type { EstadisticasTriaje } from '../../types'
 import PageHeader from '../../components/PageHeader'
+import AdminNav from '../../components/AdminNav'
 import Mensaje from '../../components/Mensaje'
 import { COLOR_MANCHESTER_HEX } from '../../utils/colores'
 
@@ -114,22 +114,7 @@ export default function AdminEstadisticas() {
       <PageHeader
         title="Estadísticas de Triaje"
         subtitle="Análisis demográfico y actividad según el período seleccionado"
-        actions={
-          <div className="flex gap-2">
-            <Link to="/admin" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Dashboard
-            </Link>
-            <Link to="/admin/estadisticas/llm" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Estadísticas de LLM
-            </Link>
-            <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Usuarios
-            </Link>
-            <Link to="/admin/reportes" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Reportes
-            </Link>
-          </div>
-        }
+        actions={<AdminNav />}
       />
 
       {/* Selector de período */}

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   AreaChart, Area, Cell,
@@ -7,6 +6,7 @@ import {
 import api from '../../api/client'
 import type { Estadisticas } from '../../types'
 import PageHeader from '../../components/PageHeader'
+import AdminNav from '../../components/AdminNav'
 import { COLOR_MANCHESTER_HEX } from '../../utils/colores'
 
 // "2026-08-07" → "07/08"
@@ -39,22 +39,7 @@ export default function AdminDashboard() {
       <PageHeader
         title="Panel de Administración"
         subtitle="Resumen general del sistema"
-        actions={
-          <div className="flex gap-2">
-            <Link to="/admin/estadisticas" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Estadísticas de Triaje
-            </Link>
-            <Link to="/admin/estadisticas/llm" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Estadísticas de LLM
-            </Link>
-            <Link to="/admin/usuarios" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Usuarios
-            </Link>
-            <Link to="/admin/reportes" className="text-sm bg-gray-100 px-3 py-1.5 rounded-md hover:bg-gray-200">
-              Reportes
-            </Link>
-          </div>
-        }
+        actions={<AdminNav />}
       />
 
       {/* Resumen general */}

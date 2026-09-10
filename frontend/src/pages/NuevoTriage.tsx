@@ -74,7 +74,7 @@ export default function NuevoTriage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <PageHeader title="Nuevo Triaje" subtitle="Evalúa al paciente con apoyo de IA" />
+      <PageHeader title="Nuevo Triaje" subtitle="Evalúa al paciente" />
 
       {/* Buscar paciente */}
       {!pacienteSeleccionado ? (

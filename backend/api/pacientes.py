@@ -32,12 +32,22 @@ def crear_paciente(
 
 @router.get("", response_model=list[PacienteOut])
 def listar_pacientes(
+    q: str | None = None,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(get_current_user),
 ):
-    return db.query(Paciente).offset(skip).limit(limit).all()
+    """Lista pacientes con filtro opcional por CI, nombre o apellido (`q`)."""
+    query = db.query(Paciente)
+    if q and q.strip():
+        termino = f"%{q.strip()}%"
+        query = query.filter(
+            Paciente.ci.ilike(termino)
+            | Paciente.nombre.ilike(termino)
+            | Paciente.apellido.ilike(termino)
+        )
+    return query.order_by(Paciente.nombre, Paciente.apellido).offset(skip).limit(limit).all()
 
 
 @router.get("/{paciente_id}", response_model=PacienteOut)

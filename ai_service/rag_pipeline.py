@@ -191,25 +191,21 @@ def obtener_query_engine_con_vitales(
     Configura el Query Engine con datos vitales inyectados en el contexto.
 
     Los signos vitales se inyectan en el prompt vía `partial_format` para
-    que el LLM los tenga en cuenta. El LLM se pasa de forma local
-    (parámetro `llm=`) para evitar condiciones de carrera.
+    que el LLM los tenga en cuenta. Los valores no medidos se muestran como
+    "No registrado" (NUNCA se sustituyen por valores normales). El LLM se
+    pasa de forma local (parámetro `llm=`) para evitar condiciones de carrera.
 
     Args:
         index: VectorStoreIndex cargado
         llm_model: Instancia del modelo LLM
-        datos_vitales: DatosVitales con información del paciente
+        datos_vitales: DatosVitales con información del paciente (None = no medido)
 
     Returns:
         QueryEngine: Motor de consultas configurado con datos vitales
     """
-    # Formatar datos vitales para inyectar en el prompt
-    datos_str = f"""- Edad: {datos_vitales.edad} años
-- Sexo: {datos_vitales.sexo}
-- Temperatura: {datos_vitales.temperatura}°C
-- Presión Arterial: {datos_vitales.presion_sistolica}/{datos_vitales.presion_diastolica} mmHg
-- Frecuencia Cardíaca: {datos_vitales.frecuencia_cardiaca} bpm
-- Frecuencia Respiratoria: {datos_vitales.frecuencia_respiratoria} rpm
-- SpO2: {datos_vitales.saturacion}%"""
+    # Bloque de datos del paciente desde la fuente única de verdad
+    # (idéntico al texto de auditoría persistido en la BD).
+    datos_str = datos_vitales.a_texto_prompt()
 
     qa_prompt_tmpl = """Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.
 Tu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.
@@ -222,6 +218,10 @@ DATOS CLÍNICOS DEL PACIENTE:
 
 DESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:
 {query_str}
+
+IMPORTANTE: si algún signo vital figura como "No registrado", NO lo asumas ni
+inventes su valor: menciónalo como limitación en la justificación y clasifica
+con la información disponible.
 
 Responde en este formato EXACTO y sin añadir texto adicional:
 

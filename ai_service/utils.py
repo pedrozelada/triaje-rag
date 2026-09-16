@@ -71,23 +71,32 @@ def formatear_tiempo(segundos: float) -> str:
 def validar_datos_vitales(datos: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
     """
     Valida los datos vitales ingresados por el usuario.
-    
+
+    Los campos ausentes se tratan como NO medidos (None), nunca como valores
+    normales por defecto. Solo se rechazan valores PRESENTES fuera de rango.
+
     Args:
         datos: Diccionario con datos vitales
-        
+
     Returns:
         Tuple: (es_valido, mensaje_error)
     """
     try:
-        # Crear instancia de DatosVitales
+        def _num(clave: str, casteo):
+            valor = datos.get(clave)
+            return None if valor is None else casteo(valor)
+
+        # Crear instancia de DatosVitales (edad/sexo obligatorios; el resto
+        # puede estar ausente = no medido). Se castea para tolerar strings
+        # numéricos que llegan de interfaces legacy.
         vitales = DatosVitales(
             edad=int(datos.get("edad", 0)),
             sexo=datos.get("sexo", "M"),
-            temperatura=float(datos.get("temperatura", 37.0)),
-            presion_sistolica=int(datos.get("presion_sistolica", 120)),
-            presion_diastolica=int(datos.get("presion_diastolica", 80)),
-            frecuencia_cardiaca=int(datos.get("frecuencia_cardiaca", 70)),
-            saturacion=float(datos.get("saturacion", 98.0))
+            temperatura=_num("temperatura", float),
+            presion_sistolica=_num("presion_sistolica", int),
+            presion_diastolica=_num("presion_diastolica", int),
+            frecuencia_cardiaca=_num("frecuencia_cardiaca", int),
+            saturacion=_num("saturacion", float)
         )
         
         # Validar
@@ -137,51 +146,71 @@ def formatear_fuentes_con_archivo(response: Any) -> str:
         return "Error al procesar fuentes."
 
 
-def obtener_nivel_urgencia_color(respuesta: str) -> str:
+def obtener_nivel_urgencia_color(respuesta: str) -> Optional[str]:
     """
     Extrae el nivel de urgencia de la respuesta del LLM de forma robusta.
 
     Busca primero la línea estructurada "NIVEL DE URGENCIA: [valor]" que se
-    pide en el prompt. Si no la encuentra, aplica un parseo tolerante sobre
-    todo el texto como respaldo.
+    pide en el prompt. Si no la encuentra, aplica respaldos de ALTA precisión
+    (frases clínicas inequívocas). Nunca escanea palabras de color sueltas:
+    una negación como "no es rojo" o una mención en la justificación no debe
+    clasificar el caso.
 
     Args:
         respuesta: Texto de la respuesta del LLM
 
     Returns:
-        str: Nivel de urgencia (emergencia, urgencia_mayor, urgencia_menor, no_urgencia)
+        Optional[str]: Nivel (rojo, naranja, amarillo, verde, azul) o None si
+        no se pudo determinar (el llamador debe marcar el caso como
+        sin_clasificar para revisión manual, NUNCA asumir un nivel por defecto).
     """
+    if not respuesta:
+        return None
+
     # 1) Parseo estructurado de la línea "NIVEL DE URGENCIA: ..."
     match = re.search(
-        r"NIVEL\s+DE\s+URGENCIA\s*:\s*(.+)",
+        r"NIVEL\s+DE\s+URGENCIA\s*:\s*([^\n]*)",
         respuesta,
         flags=re.IGNORECASE
     )
     if match:
         valor = match.group(1).strip().lower()
-        for color in ("rojo", "naranja", "amarillo", "verde", "azul"):
-            if color in valor:
-                return color
-        # Respaldo textual dentro de la línea
-        if "emergencia" in valor:
-            return "rojo"
-        if "urgencia mayor" in valor:
-            return "naranja"
-        if "urgencia menor" in valor:
-            return "amarillo"
+        nivel = _nivel_desde_linea(valor)
+        if nivel:
+            return nivel
 
-    # 2) Respaldo: búsqueda tolerante en todo el texto
-    respuesta_lower = respuesta.lower()
+    # 2) Respaldo de alta precisión sobre todo el texto (solo frases
+    #    inequívocas: nunca palabras de color sueltas, para evitar que una
+    #    negación como "no es rojo" o una mención en la justificación
+    #    clasifique el caso).
+    return _nivel_desde_texto_libre(respuesta.lower())
+
+
+def _nivel_desde_linea(valor: str) -> Optional[str]:
+    """Resuelve el nivel desde el contenido de la línea estructurada.
+
+    Aquí sí se aceptan colores: el prompt pide llenar la línea con un color
+    de Manchester, por lo que la mención es de alta precisión.
+    """
     for color in ("rojo", "naranja", "amarillo", "verde", "azul"):
-        if color in respuesta_lower:
+        if re.search(rf"\b{color}\b", valor):
             return color
-    if "emergencia" in respuesta_lower:
+    return _nivel_desde_texto_libre(valor)
+
+
+def _nivel_desde_texto_libre(texto: str) -> Optional[str]:
+    """Frases clínicas inequívocas; None si no hay coincidencia."""
+    if "emergencia" in texto:
         return "rojo"
-    if "urgencia mayor" in respuesta_lower:
+    if "urgencia mayor" in texto:
         return "naranja"
-    if "urgencia menor" in respuesta_lower:
+    if "urgencia menor" in texto:
         return "amarillo"
-    return "verde"
+    if "no urgente" in texto or "no urgencia" in texto:
+        return "verde"
+    if "autosanamiento" in texto or "orientaci" in texto:
+        return "azul"
+    return None
 
 
 COLORES_URGENCIA = {

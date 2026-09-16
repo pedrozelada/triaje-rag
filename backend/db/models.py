@@ -9,6 +9,7 @@ from sqlalchemy import (
     Enum as SAEnum,
     ForeignKey,
     Integer,
+    JSON,
     Numeric,
     String,
     Text,
@@ -116,6 +117,9 @@ class ConsultaTriage(Base):
     modelo_utilizado: Mapped[str | None] = mapped_column(String, nullable=True)
     tiempo_respuesta: Mapped[float | None] = mapped_column(Numeric(10, 3), nullable=True)
     tokens_consumidos: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Reglas deterministas de seguridad activadas (lista de descripciones JSON).
+    # Auditoría de la capa de red flags independiente del LLM.
+    reglas_activadas: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
 
     paciente: Mapped["Paciente"] = relationship(back_populates="consultas")
     usuario: Mapped["Usuario | None"] = relationship(back_populates="consultas")

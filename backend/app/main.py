@@ -38,6 +38,30 @@ app.add_middleware(
 # Crear tablas al arrancar (SQLite/desarrollo). En producción usar Alembic.
 Base.metadata.create_all(bind=engine)
 
+
+def _migraciones_ligeras():
+    """Migraciones idempotentes para SQLite (puente hasta adoptar Alembic).
+
+    create_all no altera tablas existentes, así que las columnas nuevas se
+    agregan aquí con ALTER TABLE protegido por inspección.
+    """
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(engine)
+    if "consulta_triage" not in inspector.get_table_names():
+        return
+    columnas = {c["name"] for c in inspector.get_columns("consulta_triage")}
+    if "reglas_activadas" not in columnas:
+        with engine.begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE consulta_triage "
+                "ADD COLUMN reglas_activadas TEXT DEFAULT '[]' NOT NULL"
+            ))
+        logger.info("Migración aplicada: consulta_triage.reglas_activadas añadida.")
+
+
+_migraciones_ligeras()
+
 app.include_router(auth.router)
 app.include_router(pacientes.router)
 app.include_router(triage.router)

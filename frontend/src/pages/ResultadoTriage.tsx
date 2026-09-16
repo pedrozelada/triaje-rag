@@ -12,6 +12,14 @@ const NIVELES: Record<NivelUrgencia, { color: string; bg: string; label: string;
   azul: { color: 'text-white', bg: 'bg-blue-600', label: 'AUTOSANAMIENTO', emoji: '🔵' },
 }
 
+// Banner de seguridad: el nivel no pudo determinarse => revisión manual obligatoria.
+const SIN_CLASIFICAR = {
+  color: 'text-white',
+  bg: 'bg-gray-700',
+  label: 'SIN CLASIFICAR — REQUIERE REVISIÓN MANUAL',
+  emoji: '⚠️',
+}
+
 export default function ResultadoTriage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -27,7 +35,8 @@ export default function ResultadoTriage() {
   if (!consulta) return <div className="text-center py-12 text-red-600">Consulta no encontrada.</div>
 
   const nivel = consulta.nivel_urgencia as NivelUrgencia | null
-  const nivelInfo = nivel ? NIVELES[nivel] : null
+  const nivelInfo = nivel ? NIVELES[nivel] : SIN_CLASIFICAR
+  const reglas: string[] = consulta.reglas_activadas ?? []
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -37,6 +46,20 @@ export default function ResultadoTriage() {
           <span className="text-5xl">{nivelInfo.emoji}</span>
           <h1 className="text-3xl font-bold mt-3">{nivelInfo.label}</h1>
           <p className="text-sm opacity-80 mt-1 capitalize">Nivel: {nivel}</p>
+        </div>
+      )}
+
+      {/* Aviso: reglas de seguridad elevaron el nivel (independiente del LLM) */}
+      {reglas.length > 0 && (
+        <div className="bg-amber-50 border border-amber-300 rounded-lg p-4" role="alert">
+          <p className="font-semibold text-amber-800 text-sm">
+            ⚠️ Reglas de seguridad elevaron el nivel de urgencia
+          </p>
+          <ul className="mt-2 list-disc list-inside text-sm text-amber-800 space-y-1">
+            {reglas.map((regla, i) => (
+              <li key={i}>{regla}</li>
+            ))}
+          </ul>
         </div>
       )}
 

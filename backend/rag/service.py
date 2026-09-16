@@ -15,6 +15,7 @@ from ai_service.rag_pipeline import (
     obtener_query_engine_con_vitales,
 )
 from ai_service.providers import get_llm_models
+from ai_service.red_flags import Alerta, evaluar_reglas, nivel_maximo
 from ai_service.utils import obtener_nivel_urgencia_color
 
 logger = logging.getLogger(__name__)
@@ -31,6 +32,7 @@ class ResultadoTriage:
     tiempo_respuesta: float
     tokens_consumidos: Optional[int] = None
     fuentes: list = field(default_factory=list)
+    reglas_activadas: list[str] = field(default_factory=list)
 
 
 class RAGService:
@@ -82,18 +84,16 @@ class RAGService:
             modelo_usado = next(iter(self._llm_models))
             llm = self._llm_models[modelo_usado]
 
-        # Construir el texto del paciente que irá al prompt (auditoría)
+        # Construir el texto del paciente (auditoría) desde la fuente única
+        # de verdad: idéntico al bloque que ve el LLM en el prompt.
         prompt_utilizado = (
             f"DATOS CLÍNICOS DEL PACIENTE:\n"
-            f"- Edad: {datos_vitales.edad} años\n"
-            f"- Sexo: {datos_vitales.sexo}\n"
-            f"- Temperatura: {datos_vitales.temperatura}°C\n"
-            f"- PA: {datos_vitales.presion_sistolica}/{datos_vitales.presion_diastolica} mmHg\n"
-            f"- FC: {datos_vitales.frecuencia_cardiaca} bpm\n"
-            f"- FR: {datos_vitales.frecuencia_respiratoria} rpm\n"
-            f"- SpO2: {datos_vitales.saturacion}%\n"
+            f"{datos_vitales.a_texto_prompt()}\n"
             f"DESCRIPCIÓN: {sintomas}"
         )
+
+        # Reglas deterministas de seguridad (evaluadas SIEMPRE, antes del LLM).
+        alertas: list[Alerta] = evaluar_reglas(datos_vitales, sintomas)
 
         query_engine = obtener_query_engine_con_vitales(
             self._index, llm, datos_vitales
@@ -104,12 +104,24 @@ class RAGService:
         elapsed = time.time() - start
 
         respuesta_texto = str(getattr(response, "response", "") or "").strip()
-        nivel = obtener_nivel_urgencia_color(respuesta_texto)
+        nivel_llm = obtener_nivel_urgencia_color(respuesta_texto)
 
-        # Tokens: solo disponible en algunos LLM (Groq). None para local.
-        tokens = getattr(response, "metadata", {}).get("total_tokens") if hasattr(
-            response, "metadata"
-        ) else None
+        # Nivel final = el más urgente entre el LLM y las reglas. Las reglas
+        # NUNCA bajan el nivel del LLM; si el LLM no produjo nivel parseable
+        # pero hay reglas activas, manda el nivel de la regla.
+        nivel_reglas: Optional[str] = None
+        for alerta in alertas:
+            nivel_reglas = nivel_maximo(nivel_reglas, alerta.nivel)
+        nivel = nivel_maximo(nivel_llm, nivel_reglas)
+
+        if nivel_llm is None:
+            logger.warning(
+                "Respuesta del LLM sin nivel parseable (queda sin_clasificar para revisión manual)."
+            )
+
+        # Tokens: el uso real del LLM requiere instrumentar callbacks
+        # (TokenCountingHandler); sin eso se registra None, jamás un invento.
+        tokens: Optional[int] = None
 
         fuentes = []
         for node in getattr(response, "source_nodes", []) or []:
@@ -124,6 +136,7 @@ class RAGService:
             tiempo_respuesta=round(elapsed, 3),
             tokens_consumidos=tokens,
             fuentes=fuentes,
+            reglas_activadas=[alerta.descripcion for alerta in alertas],
         )
 
 

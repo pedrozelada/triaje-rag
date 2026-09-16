@@ -64,6 +64,7 @@ export interface ConsultaTriage {
   modelo_utilizado: string | null
   tiempo_respuesta: number | null
   tokens_consumidos: number | null
+  reglas_activadas: string[]
 }
 
 export type NivelUrgencia = 'rojo' | 'naranja' | 'amarillo' | 'verde' | 'azul'

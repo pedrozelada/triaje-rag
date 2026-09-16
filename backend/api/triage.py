@@ -30,19 +30,30 @@ def crear_triage(
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado.")
 
-    # Construir DatosVitales usando la edad calculada del paciente.
+    # Los vitales ausentes llegan como None (= no medido) y se muestran como
+    # "No registrado" en el prompt. NUNCA se sustituyen por valores normales.
     datos_vitales = DatosVitales(
         edad=paciente.edad,
         sexo=paciente.sexo,
-        temperatura=datos.temperatura or 37.0,
-        presion_sistolica=datos.presion_sistolica or 120,
-        presion_diastolica=datos.presion_diastolica or 80,
-        frecuencia_cardiaca=datos.frecuencia_cardiaca or 70,
-        frecuencia_respiratoria=datos.frecuencia_respiratoria or 16,
-        saturacion=datos.spo2 if datos.spo2 is not None else 98.0,
+        temperatura=datos.temperatura,
+        presion_sistolica=datos.presion_sistolica,
+        presion_diastolica=datos.presion_diastolica,
+        frecuencia_cardiaca=datos.frecuencia_cardiaca,
+        frecuencia_respiratoria=datos.frecuencia_respiratoria,
+        saturacion=datos.spo2,
     )
 
-    descripcion = datos.sintomas or datos.motivo_consulta or ""
+    # Defensa en profundidad: Pydantic ya validó los rangos, pero se revalida
+    # la coherencia clínica (p.ej. sistólica > diastólica) antes del RAG.
+    if not datos_vitales.es_valido():
+        raise HTTPException(
+            status_code=422,
+            detail="Signos vitales fuera de rango fisiológicamente posible. Verifica los valores.",
+        )
+
+    descripcion = "\n".join(
+        parte for parte in (datos.motivo_consulta, datos.sintomas) if parte
+    )
     resultado = rag_service.analizar(
         datos_vitales=datos_vitales, sintomas=descripcion, modelo_nombre=datos.modelo
     )
@@ -64,6 +75,7 @@ def crear_triage(
         modelo_utilizado=resultado.modelo_utilizado,
         tiempo_respuesta=resultado.tiempo_respuesta,
         tokens_consumidos=resultado.tokens_consumidos,
+        reglas_activadas=resultado.reglas_activadas,
     )
     db.add(consulta)
     db.commit()

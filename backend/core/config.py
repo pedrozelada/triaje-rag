@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 8  # 8 horas
 
-    # CORS (el frontend Streamlit/React correrá en otro puerto)
+    # CORS (el frontend React correrá en otro puerto)
     cors_origins: list[str] = ["http://localhost:8501", "http://localhost:3000"]
 
 

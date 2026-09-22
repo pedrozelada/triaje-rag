@@ -214,9 +214,9 @@ def _nivel_desde_texto_libre(texto: str) -> Optional[str]:
 
 
 COLORES_URGENCIA = {
-    "rojo": {"gradio": "#FF0000", "streamlit": "🔴", "hex": "#EF553B", "label": "ROJO - Emergencia"},
-    "naranja": {"gradio": "#FF6B35", "streamlit": "🟠", "hex": "#FF6B35", "label": "NARANJA - Urgencia Mayor"},
-    "amarillo": {"gradio": "#FFD700", "streamlit": "🟡", "hex": "#FECB52", "label": "AMARILLO - Urgencia Menor"},
-    "verde": {"gradio": "#00B050", "streamlit": "🟢", "hex": "#00CC96", "label": "VERDE - No Urgente"},
-    "azul": {"gradio": "#007BFF", "streamlit": "🔵", "hex": "#007BFF", "label": "AZUL - Autosanamiento"},
+    "rojo": {"hex": "#EF553B", "label": "ROJO - Emergencia"},
+    "naranja": {"hex": "#FF6B35", "label": "NARANJA - Urgencia Mayor"},
+    "amarillo": {"hex": "#FECB52", "label": "AMARILLO - Urgencia Menor"},
+    "verde": {"hex": "#00CC96", "label": "VERDE - No Urgente"},
+    "azul": {"hex": "#007BFF", "label": "AZUL - Autosanamiento"},
 }

@@ -20,7 +20,7 @@ source venv/bin/activate
 ### Paso 2: Instalar dependencias
 
 ```bash
-pip install -r requirements.txt
+pip install .
 ```
 
 ## 2️⃣ Configuración (3 minutos)
@@ -59,37 +59,25 @@ cp /ruta/a/nnac_urgencias.pdf data/
 
 ## 4️⃣ Ejecutar (1 minuto)
 
+Se necesitan **dos terminales**:
+
 ```bash
-python main.py
+# Terminal 1: Backend API (puerto 8000)
+uvicorn backend.app.main:app --reload --port 8000
+
+# Terminal 2: Frontend React (puerto 3000)
+cd frontend
+npm install
+npm run dev
 ```
 
-Verás en consola:
-
-```
-============================================================
-🏥 Sistema de Triaje Médico con RAG (NNAC Bolivia)
-============================================================
-
-📦 Cargando modelos LLM...
-✅ Modelos disponibles: ['Groq (Nube - Rápido)']
-
-📚 Inicializando índice vectorial...
-📂 Cargando documentos desde ./data ...
-✅ 2 documentos cargados.
-✅ Segmentado en 45 chunks.
-✅ Índice vectorial creado y guardado en ChromaDB.
-
-🎨 Creando interfaz Gradio...
-
-🚀 Lanzando aplicación...
-Accede a http://localhost:7860
-```
-
-Abre en tu navegador: **http://localhost:7860**
+Abre en tu navegador: **http://localhost:3000**
+- **Backend API**: http://localhost:8000
+- **Documentación API**: http://localhost:8000/docs
 
 ## 5️⃣ Usar la Aplicación
 
-1. **Selecciona modelo**: Groq (nube) o Ollama (local)
+1. **Selecciona modelo**: Groq (nube) u Ollama/local (LM Studio)
 2. **Ingresa síntomas**: Describe el caso del paciente
 3. **Haz click en "Evaluar Triaje"**
 4. **Revisa resultado**: 
@@ -168,7 +156,7 @@ ls data/
 # Linux/Mac: source venv/bin/activate
 
 # Reinstala dependencias
-pip install -r requirements.txt
+pip install .
 ```
 
 ### ❌ "Ollama connection refused"
@@ -216,7 +204,7 @@ Ahora puedes:
 1. ✅ Agregar más documentos a `data/`
 2. ✅ Personalizar el prompt en `ai_service/rag_pipeline.py`
 3. ✅ Agregar nuevas funcionalidades en `ai_service/`
-4. ✅ Crear interfaces alternas (Streamlit, FastAPI)
+4. ✅ Extender la API en `backend/` o el frontend React
 
 ---
 

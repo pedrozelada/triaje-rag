@@ -17,9 +17,8 @@ Sistema de apoyo a la decisión clínica para postas rurales usando Retrieval-Au
 
 ```
 triaje-rag/
-├── config.py                 # Configuración central
-├── main.py                   # Entry point (Gradio/Streamlit)
-├── requirements.txt          # Dependencias Python
+├── pyproject.toml            # Dependencias Python (pip install .)
+├── requirements-lock.txt     # Versiones fijadas del entorno
 ├── .env.example              # Template de variables de entorno
 ├── data/                     # PDFs de las NNAC
 ├── chroma_db/                # Base vectorial persistente
@@ -56,7 +55,7 @@ triaje-rag/
 │   │   │   └── admin/        # Pantallas de administración
 │   │   └── types/            # Interfaces TypeScript
 │   └── vite.config.ts        # Proxy /api → :8000
-├── ui/                       # Interfaces legacy (Gradio/Streamlit)
+├── backend/                  # API FastAPI (sistema real)
 └── tests/                    # Suite de tests
 ```
 
@@ -82,8 +81,12 @@ source venv/bin/activate
 ### 3. Instalar dependencias
 
 ```bash
-pip install -r requirements.txt
+pip install .
 ```
+
+> Las versiones exactas del entorno de desarrollo están fijadas en
+> `requirements-lock.txt`. Para reproducir el entorno tal cual:
+> `pip install -r requirements-lock.txt`.
 
 ### 4. Configurar variables de entorno
 
@@ -128,14 +131,6 @@ npm run dev
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **Documentación API**: http://localhost:8000/docs
-
-### Alternativa: Interfaz Gradio (legacy)
-
-```bash
-python main.py
-```
-
-La interfaz Gradio estará disponible en `http://localhost:7860`
 
 ## Backend API (FastAPI)
 
@@ -349,7 +344,7 @@ nuevo (Anthropic, Gemini, etc.):
 2. Registrar la clase en la lista `PROVEEDORES` de `ai_service/providers/__init__.py`.
 3. Instalar el paquete de llama-index correspondiente.
 
-No hay que tocar backend, UI ni CLI: todos consumen `get_llm_models()`.
+No hay que tocar backend ni CLI: todos consumen `get_llm_models()`.
 
 | Proveedor | Activo si... | Variables |
 |-----------|--------------|-----------|

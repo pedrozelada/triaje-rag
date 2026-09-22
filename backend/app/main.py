@@ -26,7 +26,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS para el frontend (Streamlit/React)
+# CORS para el frontend React
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,

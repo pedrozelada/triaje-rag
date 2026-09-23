@@ -129,3 +129,99 @@ class TestEvaluacionMultiple:
     def test_alerta_incluye_descripcion_legible(self):
         alertas = evaluar_reglas(vitales(saturacion=85.0), None)
         assert alertas and "SpO2" in alertas[0].descripcion
+
+
+class TestNegacionSintomas:
+    """Un hallazgo enunciado como AUSENTE no debe activar su regla."""
+
+    def test_caso_real_niega_dolor_toracico(self):
+        sintomas = (
+            "Dolor de garganta leve, congestión nasal, estornudos y cansancio. "
+            "Niega dificultad para respirar, dolor torácico o vómitos."
+        )
+        assert evaluar_reglas(vitales(), sintomas) == []
+
+    def test_niega_lista_larga_de_sintomas(self):
+        assert evaluar_reglas(
+            vitales(), "Niega fiebre, vómitos, diarrea y dolor torácico"
+        ) == []
+
+    def test_sin_dolor_toracico(self):
+        assert evaluar_reglas(vitales(), "Paciente estable, sin dolor torácico") == []
+
+    def test_no_presenta_ni_refiere(self):
+        assert evaluar_reglas(
+            vitales(), "No presenta dolor torácico ni dificultad respiratoria"
+        ) == []
+
+    def test_negacion_no_cruza_oraciones(self):
+        alertas = evaluar_reglas(
+            vitales(), "Niega vómitos. Ahora presenta dolor torácico opresivo."
+        )
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_negacion_no_cruza_salto_de_linea(self):
+        alertas = evaluar_reglas(
+            vitales(), "Niega vómitos y fiebre\nPresenta dolor torácico"
+        )
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_afirmacion_intermedia_rompe_la_negacion(self):
+        alertas = evaluar_reglas(vitales(), "Niega vómitos pero tiene dolor torácico")
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_cue_posterior_no_anula_el_hallazgo(self):
+        alertas = evaluar_reglas(vitales(), "Dolor torácico que no cede con reposo")
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_sin_dentro_de_palabra_no_es_cue(self):
+        assert evaluar_reglas(
+            vitales(), "Paciente con sinusitis sin dolor torácico"
+        ) == []
+
+    def test_hallazgo_afirmativo_sigue_disparando(self):
+        alertas = evaluar_reglas(vitales(), "Refiere dificultad para respirar desde ayer")
+        assert any(a.nivel == "naranja" for a in alertas)
+
+    def test_dificultad_para_respirar_y_falta_de_aire(self):
+        assert any(
+            a.nivel == "naranja"
+            for a in evaluar_reglas(vitales(), "Dificultad para respirar")
+        )
+        assert any(
+            a.nivel == "naranja" for a in evaluar_reglas(vitales(), "Falta de aire en reposo")
+        )
+        assert evaluar_reglas(
+            vitales(), "Niega dificultad para respirar y falta de aire"
+        ) == []
+
+    def test_doble_mencion_una_negada_y_otra_afirmada(self):
+        alertas = evaluar_reglas(
+            vitales(),
+            "Niega dolor torácico, sin embargo presenta dolor torácico al caminar",
+        )
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_sin_embargo_no_actua_como_negacion(self):
+        alertas = evaluar_reglas(
+            vitales(), "Sin embargo, dolor torácico irradiado al brazo izquierdo"
+        )
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_sin_embargo_con_verbo_afirmativo(self):
+        alertas = evaluar_reglas(vitales(), "Sin embargo, refiere dolor torácico")
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_punto_y_coma_corta_la_negacion(self):
+        alertas = evaluar_reglas(vitales(), "Niega vómitos; dolor torácico esta noche")
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_no_tuvo_con_mencion_afirmada_posterior(self):
+        alertas = evaluar_reglas(
+            vitales(),
+            "No tuvo dolor torácico previo, pero ahora presenta dolor torácico intenso",
+        )
+        assert any("torácico" in a.descripcion for a in alertas)
+
+    def test_no_tuvo_solo_no_dispara(self):
+        assert evaluar_reglas(vitales(), "No tuvo dolor torácico") == []

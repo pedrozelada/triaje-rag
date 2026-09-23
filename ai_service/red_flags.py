@@ -8,6 +8,11 @@ Escala Manchester (orden creciente de urgencia):
     azul < verde < amarillo < naranja < rojo
 
 Todos los umbrales son constantes nombradas para facilitar su ajuste clínico.
+
+Negación: las reglas de síntomas respetan que un hallazgo sea enunciado como
+AUSENTE ("niega dolor torácico", "sin dificultad respiratoria", "no presenta
+vómitos"). Un hallazgo negado de forma explícita no activa su alerta; un
+hallazgo enunciado en afirmativo sigue activándola siempre.
 """
 
 import re
@@ -74,7 +79,10 @@ _SINTOMAS_NARANJA: tuple[tuple[str, str], ...] = (
     (r"convulsion", "Convulsiones activas o recientes"),
     (r"inconsciente|sin\s+conciencia|no\s+responde", "Alteración de conciencia"),
     (r"sangrado\s+abundante|hemorragia\s+(abundante|masiva|activa)", "Sangrado abundante"),
-    (r"dificultad\s+respiratoria|disnea|ahogo", "Dificultad respiratoria"),
+    (
+        r"dificultad\s+(?:respiratoria|para\s+respirar)|disnea|ahogo|falta\s+de\s+aire",
+        "Dificultad respiratoria",
+    ),
     (r"vomito\s+con\s+sangre|hematemesis|vomita\s+sangre", "Hematemesis (vómito con sangre)"),
     (r"heces\s+con\s+sangre|melena|sangre\s+en\s+heces", "Sangrado digestivo bajo"),
     (r"dolor\s+abdominal\s+(severo|intenso)", "Dolor abdominal severo"),
@@ -92,14 +100,93 @@ def _normalizar(texto: str) -> str:
     return "".join(c for c in normalizado if unicodedata.category(c) != "Mn")
 
 
+# --- Negación explícita -----------------------------------------------------
+# El texto clínico suele enunciar la AUSENCIA de un hallazgo ("niega dolor
+# torácico"). Sin este tratamiento, el matching léxico activaría la alerta del
+# hallazgo negado (falso positivo que eleva el nivel indebidamente).
+#
+# Alcance de la negación: hacia adelante, dentro de la cláusula y hasta que
+# aparezca un cue afirmativo. Tres cuidados finos:
+#   1) "sin embargo" es contraste, no ausencia: no actúa como cue.
+#   2) el punto y coma corta el alcance, igual que el punto.
+#   3) se revisan TODAS las menciones de un síntoma en la cláusula, para no
+#      perder una mención afirmada que sigue a otra negada.
+
+#: Cue de negación: invalida los hallazgos enunciados a continuación.
+_CUES_NEGACION = re.compile(
+    r"\bniega\w*|\bnega\w*|\bnegad\w*"
+    r"|\bno\s+(?:presenta\w*|refiere\w*|tiene\w*|tuvo\w*|menciona\w*|reporta\w*"
+    r"|se\s+acompa\w*|se\s+evidencia\w*|hay)\b"
+    # "sin embargo" queda excluido: es un conector de contraste.
+    r"|\bsin\b(?!\s+embargo\b)|\bausencia\s+de\b|\blibre\s+de\b|\bnegativo\s+para\b"
+    r"|\bdescart\w*"
+)
+
+#: Cue de afirmación: si aparece ENTRE la negación y el hallazgo, rompe el
+#: alcance de la negación ("niega vómitos PERO TIENE dolor torácico").
+_CUES_AFIRMACION = re.compile(
+    r"\b(?:presenta\w*|refiere\w*|tiene\w*|siente\w*|pero|aunque|"
+    r"ahora|hoy|actualmente)\b"
+)
+
+#: Frontera de cláusula: el alcance de una negación nunca cruza estos signos.
+#: Incluye ";" además de ".", "!", "?" y salto de línea: dos ideas separadas
+#: por ";" no comparten alcance de negación.
+_FRONTERA_CLAUSULA = re.compile(r"[^.!?;\n]+")
+
+
+def _esta_negado(fragmento: str, pos_hallazgo: int) -> bool:
+    """Indica si un hallazgo está enunciado como AUSENTE en su cláusula.
+
+    El alcance de la negación es hacia adelante: solo anula hallazgos que
+    aparecen después del cue, mientras no exista un cue afirmativo en medio.
+    Así "niega dolor torácico" no dispara, pero "dolor torácico que no cede"
+    (cue posterior al hallazgo) sí lo hace.
+
+    Args:
+        fragmento: cláusula normalizada (sin tildes, minúsculas).
+        pos_hallazgo: posición inicial del hallazgo dentro del fragmento.
+
+    Returns:
+        True si el hallazgo está negado de forma explícita.
+    """
+    for cue in _CUES_NEGACION.finditer(fragmento):
+        if cue.end() > pos_hallazgo:
+            continue  # El cue aparece después del hallazgo: no lo niega.
+        if not _CUES_AFIRMACION.search(fragmento, cue.end(), pos_hallazgo):
+            return True
+    return False
+
+
 def _alerta_sintomas(texto: str | None) -> list[Alerta]:
+    """Evalúa los patrones de síntomas respetando la negación explícita.
+
+    El texto se evalúa cláusula por cláusula (separadas por ``. ; ! ?`` o
+    salto de línea) para que una negación no alcance a otra oración:
+    "Niega vómitos. Presenta dolor torácico." sí activa la alerta torácica.
+
+    Dentro de cada cláusula se revisan TODAS las coincidencias de un patrón
+    (no solo la primera): "niega dolor torácico, sin embargo presenta dolor
+    torácico al caminar" debe activarse por la segunda mención, aunque la
+    primera esté negada.
+    """
     if not texto:
         return []
     texto_normalizado = _normalizar(texto)
     alertas: list[Alerta] = []
-    for patron, descripcion in _SINTOMAS_NARANJA:
-        if re.search(patron, texto_normalizado):
-            alertas.append(Alerta(nivel="naranja", descripcion=descripcion))
+    descripciones_vistas: set[str] = set()
+
+    for clausula in _FRONTERA_CLAUSULA.finditer(texto_normalizado):
+        fragmento = clausula.group()
+        for patron, descripcion in _SINTOMAS_NARANJA:
+            if descripcion in descripciones_vistas:
+                continue  # Una alerta por patrón, como máximo.
+            for coincidencia in re.finditer(patron, fragmento):
+                if not _esta_negado(fragmento, coincidencia.start()):
+                    alertas.append(Alerta(nivel="naranja", descripcion=descripcion))
+                    descripciones_vistas.add(descripcion)
+                    break  # Ya se activó este patrón; no hace falta seguir.
+
     return alertas
 
 

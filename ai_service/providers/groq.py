@@ -2,7 +2,7 @@
 
 Variables de entorno:
     GROQ_API_KEY: (obligatoria) API key de Groq.
-    GROQ_MODEL: Modelo a usar (default: llama-3.1-8b-instant).
+    GROQ_MODEL: Modelo a usar (default: openai/gpt-oss-120b).
     GROQ_TEMPERATURE: Temperatura (default: 0.1).
     GROQ_MAX_TOKENS: Máximo de tokens de respuesta (default: 1024).
 """
@@ -33,7 +33,7 @@ class GroqProvider(LLMProvider):
                 "❌ GROQ_API_KEY no encontrada. Configura la variable en .env"
             )
 
-        modelo = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+        modelo = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
         temperature = float(os.getenv("GROQ_TEMPERATURE", "0.1"))
         max_tokens = int(os.getenv("GROQ_MAX_TOKENS", "1024"))
 

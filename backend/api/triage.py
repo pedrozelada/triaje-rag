@@ -34,6 +34,9 @@ def crear_triage(
     # "No registrado" en el prompt. NUNCA se sustituyen por valores normales.
     datos_vitales = DatosVitales(
         edad=paciente.edad,
+        # La edad en meses permite triar lactantes: con 0 años y sin este dato
+        # se perdería el grupo etario y se aplicarían umbrales de adulto.
+        edad_meses=paciente.edad_meses,
         sexo=paciente.sexo,
         temperatura=datos.temperatura,
         presion_sistolica=datos.presion_sistolica,

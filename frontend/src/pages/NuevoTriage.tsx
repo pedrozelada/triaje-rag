@@ -6,6 +6,8 @@ import type { Paciente, TriageCreate } from '../types'
 import PageHeader from '../components/PageHeader'
 import FormField from '../components/FormField'
 import Mensaje from '../components/Mensaje'
+import { formatoEdad } from '../utils/format'
+import { etiquetaGrupoEtario, grupoEtario, referenciaVital, type VitalReferenciable } from '../utils/rangosVitales'
 
 export default function NuevoTriage() {
   const navigate = useNavigate()
@@ -46,6 +48,13 @@ export default function NuevoTriage() {
         `${p.ci} ${p.nombre} ${p.apellido}`.toLowerCase().includes(busqueda.toLowerCase())
       ).slice(0, 5)
     : []
+
+  // Grupo etario del paciente seleccionado: define los rangos de referencia
+  // que se muestran y con los que el backend evaluará las alertas.
+  const grupo = pacienteSeleccionado
+    ? grupoEtario(pacienteSeleccionado.edad, pacienteSeleccionado.edad_meses)
+    : null
+  const esPediatrico = grupo !== null && grupo !== 'adulto' && grupo !== 'adulto_mayor'
 
   const onSubmit = async (data: TriageCreate) => {
     if (!pacienteSeleccionado) {
@@ -98,7 +107,7 @@ export default function NuevoTriage() {
                     className="w-full text-left px-4 py-2 hover:bg-blue-50 text-sm"
                   >
                     <span className="font-medium">{p.nombre} {p.apellido}</span>
-                    <span className="text-gray-500 ml-2">{p.edad} años · CI: {p.ci}</span>
+                    <span className="text-gray-500 ml-2">{formatoEdad(p.edad, p.edad_meses)} · CI: {p.ci}</span>
                   </button>
                 </li>
               ))}
@@ -121,7 +130,7 @@ export default function NuevoTriage() {
               {pacienteSeleccionado.nombre} {pacienteSeleccionado.apellido}
             </p>
             <p className="text-sm text-blue-600">
-              {pacienteSeleccionado.edad} años · {pacienteSeleccionado.sexo} · CI: {pacienteSeleccionado.ci}
+              {formatoEdad(pacienteSeleccionado.edad, pacienteSeleccionado.edad_meses)} · {pacienteSeleccionado.sexo} · CI: {pacienteSeleccionado.ci}
             </p>
           </div>
           <button
@@ -141,13 +150,25 @@ export default function NuevoTriage() {
           {/* Signos vitales */}
           <div>
             <h2 className="font-semibold text-gray-700 mb-3">Signos Vitales</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <VitalField label="Temperatura (°C)" tooltip="Normal: 36.1 - 37.2" {...register('temperatura', { valueAsNumber: true })} type="number" step="0.1" min="30" max="45" placeholder="36.5" />
-              <VitalField label="PA Sistólica" tooltip="Normal: 90 - 140 mmHg" {...register('presion_sistolica', { valueAsNumber: true })} type="number" min="50" max="300" placeholder="120" />
-              <VitalField label="PA Diastólica" tooltip="Normal: 60 - 90 mmHg" {...register('presion_diastolica', { valueAsNumber: true })} type="number" min="30" max="200" placeholder="80" />
-              <VitalField label="Frec. Cardíaca (bpm)" tooltip="Normal: 60 - 100 bpm" {...register('frecuencia_cardiaca', { valueAsNumber: true })} type="number" min="20" max="300" placeholder="72" />
-              <VitalField label="Frec. Respiratoria" tooltip="Normal: 12 - 20 rpm" {...register('frecuencia_respiratoria', { valueAsNumber: true })} type="number" min="5" max="80" placeholder="16" />
-              <VitalField label="SpO₂ (%)" tooltip="Normal: 95 - 100%" {...register('spo2', { valueAsNumber: true })} type="number" min="50" max="100" placeholder="98" />
+            {grupo && (
+              <p className="text-xs text-gray-500 mb-3">
+                Grupo etario del paciente: <span className="font-medium">{etiquetaGrupoEtario(grupo)}</span>.
+                {' '}Los rangos de referencia y las alertas automáticas se ajustan a esta edad.
+              </p>
+            )}
+            {esPediatrico && (
+              <Mensaje variante="info">
+                Paciente pediátrico: una FC elevada y una FR elevada son normales a esta edad.
+                El sistema compara los signos vitales con los rangos pediátricos, no con los de adulto.
+              </Mensaje>
+            )}
+            <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${esPediatrico ? 'mt-4' : ''}`}>
+              <VitalField label="Temperatura (°C)" tooltip={refTip('temperatura', grupo)} {...register('temperatura', { valueAsNumber: true })} type="number" step="0.1" min="30" max="45" placeholder="36.5" />
+              <VitalField label="PA Sistólica" tooltip={refTip('presion_sistolica', grupo)} {...register('presion_sistolica', { valueAsNumber: true })} type="number" min="40" max="300" placeholder="120" />
+              <VitalField label="PA Diastólica" tooltip={refTip('presion_diastolica', grupo)} {...register('presion_diastolica', { valueAsNumber: true })} type="number" min="20" max="200" placeholder="80" />
+              <VitalField label="Frec. Cardíaca (bpm)" tooltip={refTip('frecuencia_cardiaca', grupo)} {...register('frecuencia_cardiaca', { valueAsNumber: true })} type="number" min="20" max="300" placeholder="72" />
+              <VitalField label="Frec. Respiratoria" tooltip={refTip('frecuencia_respiratoria', grupo)} {...register('frecuencia_respiratoria', { valueAsNumber: true })} type="number" min="4" max="120" placeholder="16" />
+              <VitalField label="SpO₂ (%)" tooltip={refTip('spo2', grupo)} {...register('spo2', { valueAsNumber: true })} type="number" min="50" max="100" placeholder="98" />
             </div>
           </div>
 
@@ -223,6 +244,11 @@ export default function NuevoTriage() {
       )}
     </div>
   )
+}
+
+/** Tooltip con el rango de referencia del grupo etario (o el de adulto). */
+function refTip(vital: VitalReferenciable, grupo: ReturnType<typeof grupoEtario> | null): string {
+  return referenciaVital(vital, grupo ?? 'adulto')
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

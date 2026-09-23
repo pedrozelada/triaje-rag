@@ -18,6 +18,8 @@ export interface Paciente {
   telefono: string | null
   direccion: string | null
   edad: number
+  /** Edad en meses: obligatoria en la UI para pacientes menores de 1 año. */
+  edad_meses: number
   fecha_registro: string
   fecha_actualizacion: string | null
 }

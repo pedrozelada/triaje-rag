@@ -34,6 +34,20 @@ def calcular_edad(fecha_nacimiento: date) -> int:
     return edad
 
 
+def calcular_edad_en_meses(fecha_nacimiento: date) -> int:
+    """Calcula la edad en meses cumplidos desde la fecha de nacimiento.
+
+    Necesaria para los menores de 1 año: en años valen 0 y se perdería la
+    granularidad pediátrica (un neonato y un lactante de 11 meses no comparten
+    rangos de signos vitales).
+    """
+    hoy = date.today()
+    meses = (hoy.year - fecha_nacimiento.year) * 12 + (hoy.month - fecha_nacimiento.month)
+    if hoy.day < fecha_nacimiento.day:
+        meses -= 1  # Aún no cumple el mes en curso.
+    return max(meses, 0)
+
+
 class Paciente(Base):
     __tablename__ = "paciente"
 
@@ -60,6 +74,11 @@ class Paciente(Base):
     def edad(self) -> int:
         """Edad calculada dinámicamente (no se almacena)."""
         return calcular_edad(self.fecha_nacimiento)
+
+    @property
+    def edad_meses(self) -> int:
+        """Edad en meses cumplidos (calculada; permite triar lactantes)."""
+        return calcular_edad_en_meses(self.fecha_nacimiento)
 
 
 class Usuario(Base):

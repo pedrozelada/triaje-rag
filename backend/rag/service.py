@@ -7,6 +7,7 @@ modelo, tiempo, tokens) sin acoplarse a llama-index directamente.
 import time
 import logging
 from dataclasses import dataclass, field
+from threading import Lock
 from typing import Optional
 
 from ai_service.models import DatosVitales
@@ -41,13 +42,20 @@ class RAGService:
     def __init__(self):
         self._index = None
         self._llm_models = None
+        # El backend atiende requests en varios hilos: sin este lock, dos
+        # triajes simultáneos podían inicializar el índice y los modelos a la
+        # vez (trabajo duplicado y probes de red redundantes al primer arranque).
+        self._lock_inicializacion = Lock()
 
     def _inicializar(self):
-        """Carga el índice y los modelos de forma perezosa (singleton)."""
-        if self._index is None:
-            self._index = cargar_o_crear_indice()
-        if self._llm_models is None:
-            self._llm_models = get_llm_models()
+        """Carga el índice y los modelos de forma perezosa (singleton, thread-safe)."""
+        if self._index is not None and self._llm_models is not None:
+            return
+        with self._lock_inicializacion:
+            if self._index is None:
+                self._index = cargar_o_crear_indice()
+            if self._llm_models is None:
+                self._llm_models = get_llm_models()
 
     def listar_modelos(self) -> list[str]:
         """Devuelve los nombres de los modelos LLM disponibles.

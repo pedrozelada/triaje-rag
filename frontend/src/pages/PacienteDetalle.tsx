@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import type { Paciente, ConsultaTriage } from '../types'
 import ModalConfirmacion from '../components/ModalConfirmacion'
-import { formatoFechaHora } from '../utils/format'
+import { formatoEdad, formatoFechaHora } from '../utils/format'
 import { claseNivel } from '../utils/colores'
 
 export default function PacienteDetalle() {
@@ -49,7 +49,7 @@ export default function PacienteDetalle() {
               {paciente.nombre} {paciente.apellido}
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              {paciente.edad} años · {paciente.sexo} · CI: {paciente.ci}
+              {formatoEdad(paciente.edad, paciente.edad_meses)} · {paciente.sexo} · CI: {paciente.ci}
             </p>
             {paciente.telefono && <p className="text-sm text-gray-500">📞 {paciente.telefono}</p>}
             {paciente.direccion && <p className="text-sm text-gray-500">📍 {paciente.direccion}</p>}

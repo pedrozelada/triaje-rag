@@ -90,6 +90,47 @@ class TestDatosVitalesOpcionales:
         assert "diastólica no registrada" in texto
 
 
+class TestDatosVitalesLactante:
+    """Menores de 1 año: `edad` vale 0 y la granularidad viene de `edad_meses`."""
+
+    def test_lactante_con_meses_es_valido(self):
+        assert DatosVitales(edad=0, sexo="F", edad_meses=6).es_valido() is True
+
+    def test_neonato_es_valido(self):
+        assert DatosVitales(edad=0, sexo="M", edad_meses=0).es_valido() is True
+
+    def test_edad_cero_sin_meses_es_invalida(self):
+        """Sin meses no se puede determinar el grupo etario: se rechaza."""
+        assert DatosVitales(edad=0, sexo="M").es_valido() is False
+
+    def test_edad_cero_con_meses_absurdos_es_invalida(self):
+        assert DatosVitales(edad=0, sexo="M", edad_meses=40).es_valido() is False
+
+    def test_grupo_etario_se_deriva_de_la_edad(self):
+        assert DatosVitales(edad=0, sexo="M", edad_meses=6).grupo_etario == "lactante"
+        assert DatosVitales(edad=0, sexo="M", edad_meses=0).grupo_etario == "neonato"
+        assert DatosVitales(edad=3, sexo="M").grupo_etario == "preescolar"
+        assert DatosVitales(edad=40, sexo="M").grupo_etario == "adulto"
+
+    def test_fr_alta_es_valida_para_lactante(self):
+        """Un lactante en insuficiencia respiratoria puede superar 80 rpm."""
+        assert DatosVitales(
+            edad=0, sexo="M", edad_meses=2, frecuencia_respiratoria=100
+        ).es_valido() is True
+
+    def test_prompt_de_lactante_usa_meses_y_avisa_pediatrico(self):
+        texto = DatosVitales(edad=0, sexo="F", edad_meses=8).a_texto_prompt()
+        assert "8 meses" in texto
+        assert "Lactante" in texto
+        assert "pediátrico" in texto.lower()
+        assert "No registrado" in texto
+
+    def test_prompt_de_adulto_mantiene_formato_en_anios(self):
+        texto = DatosVitales(edad=35, sexo="F").a_texto_prompt()
+        assert "35 años" in texto
+        assert "pediátrico" not in texto.lower()
+
+
 class TestValidarDatosVitales:
     """Tests para validar_datos_vitales (dict -> Tuple[bool, str])."""
 
@@ -119,6 +160,26 @@ class TestValidarDatosVitales:
         })
         assert es_valido is False
         assert "formato" in msg.lower()
+
+    def test_dict_frecuencia_respiratoria_imposible_se_detecta(self):
+        """Regresión: la FR se omitía y un valor imposible pasaba la validación."""
+        es_valido, msg = validar_datos_vitales({
+            "edad": 30, "sexo": "M", "frecuencia_respiratoria": 2
+        })
+        assert es_valido is False
+        assert msg is not None
+
+    def test_dict_lactante_con_meses_es_valido(self):
+        es_valido, msg = validar_datos_vitales({
+            "edad": 0, "edad_meses": 6, "sexo": "F", "frecuencia_cardiaca": 130
+        })
+        assert es_valido is True
+        assert msg is None
+
+    def test_dict_lactante_sin_meses_es_invalido(self):
+        es_valido, msg = validar_datos_vitales({"edad": 0, "sexo": "F"})
+        assert es_valido is False
+        assert msg is not None
 
 
 class TestObtenerNivelUrgencia:

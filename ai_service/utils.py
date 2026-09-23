@@ -89,6 +89,7 @@ def validar_datos_vitales(datos: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
         # Crear instancia de DatosVitales (edad/sexo obligatorios; el resto
         # puede estar ausente = no medido). Se castea para tolerar strings
         # numéricos que llegan de interfaces legacy.
+        edad_meses = datos.get("edad_meses")
         vitales = DatosVitales(
             edad=int(datos.get("edad", 0)),
             sexo=datos.get("sexo", "M"),
@@ -96,7 +97,11 @@ def validar_datos_vitales(datos: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
             presion_sistolica=_num("presion_sistolica", int),
             presion_diastolica=_num("presion_diastolica", int),
             frecuencia_cardiaca=_num("frecuencia_cardiaca", int),
-            saturacion=_num("saturacion", float)
+            # Bug corregido: la frecuencia respiratoria se omitía, por lo que
+            # un valor imposible pasaba la validación sin ser detectado.
+            frecuencia_respiratoria=_num("frecuencia_respiratoria", int),
+            saturacion=_num("saturacion", float),
+            edad_meses=None if edad_meses is None else int(edad_meses),
         )
         
         # Validar

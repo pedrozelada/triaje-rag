@@ -4,6 +4,7 @@ import api from '../api/client'
 import type { Paciente } from '../types'
 import PageHeader from '../components/PageHeader'
 import { useTablaDatos, ThOrdenable, ControlesPaginacion, inputFiltroClass, EtiquetaFiltro } from '../hooks/useTablaDatos'
+import { formatoEdad } from '../utils/format'
 
 export default function Pacientes() {
   const [pacientes, setPacientes] = useState<Paciente[]>([])
@@ -94,7 +95,7 @@ export default function Pacientes() {
                 <tr key={p.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium">{p.nombre} {p.apellido}</td>
                   <td className="px-4 py-3 text-gray-600">{p.ci}</td>
-                  <td className="px-4 py-3 text-gray-600">{p.edad} años</td>
+                  <td className="px-4 py-3 text-gray-600">{formatoEdad(p.edad, p.edad_meses)}</td>
                   <td className="px-4 py-3 text-gray-600">{p.sexo}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">

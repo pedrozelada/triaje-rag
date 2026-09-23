@@ -7,10 +7,12 @@ el prompt de auditoría y la persistencia de reglas activadas.
 
 import os
 import sys
+from datetime import date, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import backend.rag.service as rag_service_module
+from ai_service.red_flags import evaluar_reglas
 from backend.rag.service import ResultadoTriage
 
 ADMIN = {
@@ -160,6 +162,63 @@ class TestValidacionVitales:
         data = r.json()
         assert data["temperatura"] == 38.5
         assert data["spo2"] == 96
+
+
+class TestTriajeLactante:
+    """Antes el sistema no podía triar bebés: `edad=0` rompía la validación.
+
+    Además, con umbrales de adulto un lactante con FC 140 / FR 40 (ambos
+    fisiológicos) generaba alertas rojas/naranjas falsas.
+    """
+
+    def _crear_lactante(self, client, headers, ci="8888881"):
+        hace_4_meses = (date.today() - timedelta(days=120)).isoformat()
+        r = client.post("/api/pacientes", json={
+            "ci": ci, "nombre": "Luz", "apellido": "Quispe",
+            "fecha_nacimiento": hace_4_meses, "sexo": "F",
+        }, headers=headers)
+        assert r.status_code == 201, r.text
+        assert r.json()["edad"] == 0
+        return r.json()["id"]
+
+    def test_lactante_puede_ser_triado(self, client, monkeypatch):
+        headers = registrar_y_loguear(client, ADMIN)
+        paciente_id = self._crear_lactante(client, headers)
+        capturado = _instalar_doble_analizar(monkeypatch)
+
+        r = client.post("/api/triage", json={
+            "paciente_id": paciente_id,
+            "frecuencia_cardiaca": 140,
+            "frecuencia_respiratoria": 40,
+            "temperatura": 37.2,
+            "sintomas": "Lactante con tos leve y buen estado general desde ayer",
+        }, headers=headers)
+        assert r.status_code == 201, r.text
+
+        # El grupo etario llega al motor de reglas con la edad en meses.
+        datos = capturado["datos_vitales"]
+        assert datos.grupo_etario == "lactante"
+        assert 0 < datos.edad_meses < 12
+        # FC 140 y FR 40 son normales en un lactante: CERO alertas falsas.
+        assert evaluar_reglas(datos, None) == []
+        assert r.json()["reglas_activadas"] == []
+
+    def test_lactante_grave_si_alerta(self, client, monkeypatch):
+        """La seguridad pediátrica no debe volverse permisiva."""
+        headers = registrar_y_loguear(client, ADMIN)
+        paciente_id = self._crear_lactante(client, headers, ci="8888882")
+        capturado = _instalar_doble_analizar(monkeypatch)
+
+        r = client.post("/api/triage", json={
+            "paciente_id": paciente_id,
+            "frecuencia_respiratoria": 85,
+            "spo2": 88,
+            "sintomas": "Lactante con dificultad respiratoria marcada y quejido",
+        }, headers=headers)
+        assert r.status_code == 201, r.text
+
+        alertas = evaluar_reglas(capturado["datos_vitales"], None)
+        assert any(a.nivel == "rojo" for a in alertas)
 
 
 class TestReglasYSinClasificar:

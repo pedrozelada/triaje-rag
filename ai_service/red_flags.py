@@ -7,7 +7,11 @@ parseable pero una regla se activa, manda el nivel de la regla.
 Escala Manchester (orden creciente de urgencia):
     azul < verde < amarillo < naranja < rojo
 
-Todos los umbrales son constantes nombradas para facilitar su ajuste clínico.
+Los umbrales de signos vitales NO son constantes: dependen del GRUPO ETARIO
+(neonato, lactante, preescolar, escolar, adolescente, adulto, adulto mayor),
+calculado desde la edad del paciente. Un lactante sano tiene FC 140 lpm y
+FR 40 rpm; aplicarles los umbrales de adulto generaría falsos positivos
+masivos. La tabla de umbrales vive en ``ai_service.rangos_pediatricos``.
 
 Negación: las reglas de síntomas respetan que un hallazgo sea enunciado como
 AUSENTE ("niega dolor torácico", "sin dificultad respiratoria", "no presenta
@@ -19,6 +23,15 @@ import re
 from dataclasses import dataclass
 
 from ai_service.models import DatosVitales
+from ai_service.rangos_pediatricos import (
+    ADULTO,
+    FC_POR_GRUPO,
+    FR_POR_GRUPO,
+    NOMBRES_CORTOS,
+    PAS_POR_GRUPO,
+    UmbralesVitales,
+    clasificar_grupo_etario,
+)
 
 # Orden Manchester: menor a mayor urgencia.
 ORDEN_MANCHESTER = ("azul", "verde", "amarillo", "naranja", "rojo")
@@ -35,32 +48,45 @@ def nivel_maximo(a: str | None, b: str | None) -> str | None:
 
 
 # --- Umbrales de signos vitales (se evalúan solo si el valor fue medido) ---
+#
+# Semántica, para un valor medido `v`:
+#     v < rojo_baja     -> rojo
+#     v > rojo_alta     -> rojo
+#     v < naranja_baja  -> naranja
+#     v >= naranja_alta -> naranja
+#     resto             -> sin alerta
+#
+# Las constantes siguientes son las del grupo ADULTO. Se conservan con su
+# nombre histórico por compatibilidad de tests/objetos de configuración; el
+# motor NO las usa directamente: consulta la tabla por grupo etario.
 
-# SpO2 (%): hipoxemia
+# SpO2 (%): hipoxemia. El umbral es común a todos los grupos etarios.
 SPO2_ROJO = 90.0   # < 90 -> rojo (hipoxemia severa)
 SPO2_NARANJA = 94.0  # < 94 (y >= 90) -> naranja (hipoxemia moderada)
 
-# PA sistólica (mmHg): hipotensión
-PAS_ROJO = 80.0    # < 80 -> rojo (shock)
-PAS_NARANJA = 90.0  # < 90 (y >= 80) -> naranja
+# PA sistólica (mmHg): hipotensión (umbral del grupo ADULTO).
+PAS_ROJO = PAS_POR_GRUPO[ADULTO].rojo
+PAS_NARANJA = PAS_POR_GRUPO[ADULTO].naranja
 
-# Frecuencia cardíaca (bpm)
-FC_ROJO_BAJA = 40.0
-FC_ROJO_ALTA = 160.0
-FC_NARANJA_ALTA = 140.0  # >= 140 (y <= 160) -> naranja
-FC_NARANJA_BAJA = 45.0   # < 45 (y >= 40) -> naranja
+# Frecuencia cardíaca (bpm) (umbrales del grupo ADULTO).
+_FC_ADULTO = FC_POR_GRUPO[ADULTO]
+FC_ROJO_BAJA = _FC_ADULTO.rojo_baja
+FC_ROJO_ALTA = _FC_ADULTO.rojo_alta
+FC_NARANJA_ALTA = _FC_ADULTO.naranja_alta
+FC_NARANJA_BAJA = _FC_ADULTO.naranja_baja
 
-# Temperatura (°C)
+# Temperatura (°C). El umbral es común a todos los grupos etarios.
 TEMP_ROJO_ALTA = 41.0
 TEMP_ROJO_BAJA = 33.0
 TEMP_NARANJA_ALTA = 40.0  # >= 40 (y < 41) -> naranja
 TEMP_NARANJA_BAJA = 35.0  # < 35 (y >= 33) -> naranja
 
-# Frecuencia respiratoria (rpm)
-FR_ROJO_BAJA = 8.0
-FR_ROJO_ALTA = 40.0
-FR_NARANJA_ALTA = 30.0  # >= 30 (y <= 40) -> naranja
-FR_NARANJA_BAJA = 12.0  # < 12 (y >= 8) -> naranja
+# Frecuencia respiratoria (rpm) (umbrales del grupo ADULTO).
+_FR_ADULTO = FR_POR_GRUPO[ADULTO]
+FR_ROJO_BAJA = _FR_ADULTO.rojo_baja
+FR_ROJO_ALTA = _FR_ADULTO.rojo_alta
+FR_NARANJA_ALTA = _FR_ADULTO.naranja_alta
+FR_NARANJA_BAJA = _FR_ADULTO.naranja_baja
 
 
 @dataclass(frozen=True)
@@ -190,8 +216,62 @@ def _alerta_sintomas(texto: str | None) -> list[Alerta]:
     return alertas
 
 
+def _alerta_umbrales(
+    valor: float,
+    umbrales: UmbralesVitales,
+    nombre: str,
+    unidad: str,
+    corto: str,
+    etiqueta_baja: str,
+    etiqueta_alta: str,
+) -> list[Alerta]:
+    """Aplica umbrales bilaterales (bajos y altos) a un signo vital.
+
+    Args:
+        valor: Valor medido del signo vital.
+        umbrales: Umbrales del grupo etario del paciente.
+        nombre: Nombre del signo vital para la descripción.
+        unidad: Unidad de medida.
+        corto: Nombre corto del grupo etario ("lactante", "adulto", ...).
+        etiqueta_baja: Descripción del hallazgo por debajo del rango.
+        etiqueta_alta: Descripción del hallazgo por encima del rango.
+
+    Returns:
+        Alertas activadas (0 o 1): las reglas son mutuamente excluyentes.
+    """
+    if valor < umbrales.rojo_baja or valor > umbrales.rojo_alta:
+        return [
+            Alerta(
+                "rojo",
+                f"{nombre} {valor:g} {unidad} (fuera de {umbrales.rojo_baja:.0f}-{umbrales.rojo_alta:.0f}"
+                f"): {etiqueta_baja}/{etiqueta_alta} extrema en {corto}",
+            )
+        ]
+    if valor >= umbrales.naranja_alta:
+        return [
+            Alerta(
+                "naranja",
+                f"{nombre} {valor:g} {unidad} (>= {umbrales.naranja_alta:.0f}): "
+                f"{etiqueta_alta} en {corto}",
+            )
+        ]
+    if valor < umbrales.naranja_baja:
+        return [
+            Alerta(
+                "naranja",
+                f"{nombre} {valor:g} {unidad} (< {umbrales.naranja_baja:.0f}): "
+                f"{etiqueta_baja} en {corto}",
+            )
+        ]
+    return []
+
+
 def evaluar_reglas(datos: DatosVitales, sintomas: str | None = None) -> list[Alerta]:
     """Evalúa todas las reglas deterministas sobre vitales + síntomas.
+
+    Los umbrales de los signos vitales se eligen según el GRUPO ETARIO del
+    paciente (calculado desde ``edad`` y ``edad_meses``), de modo que un
+    lactante con FC 140 bpm o FR 40 rpm no dispare alertas espurias.
 
     Args:
         datos: Signos vitales (los campos None = no medidos no disparan reglas).
@@ -202,30 +282,45 @@ def evaluar_reglas(datos: DatosVitales, sintomas: str | None = None) -> list[Ale
     """
     alertas: list[Alerta] = []
 
-    # --- SpO2 ---
+    grupo = clasificar_grupo_etario(datos.edad, datos.edad_meses)
+    corto = NOMBRES_CORTOS.get(grupo, grupo)
+
+    # --- SpO2 (umbral común a todos los grupos etarios) ---
     if datos.saturacion is not None:
         if datos.saturacion < SPO2_ROJO:
             alertas.append(Alerta("rojo", f"SpO2 {datos.saturacion}% (< {SPO2_ROJO:.0f}%): hipoxemia severa"))
         elif datos.saturacion < SPO2_NARANJA:
             alertas.append(Alerta("naranja", f"SpO2 {datos.saturacion}% (< {SPO2_NARANJA:.0f}%): hipoxemia moderada"))
 
-    # --- PA sistólica ---
+    # --- PA sistólica (hipotensión; umbral por grupo etario) ---
     if datos.presion_sistolica is not None:
-        if datos.presion_sistolica < PAS_ROJO:
-            alertas.append(Alerta("rojo", f"PA sistólica {datos.presion_sistolica} mmHg (< {PAS_ROJO:.0f}): hipotensión severa (shock)"))
-        elif datos.presion_sistolica < PAS_NARANJA:
-            alertas.append(Alerta("naranja", f"PA sistólica {datos.presion_sistolica} mmHg (< {PAS_NARANJA:.0f}): hipotensión moderada"))
+        pas = PAS_POR_GRUPO[grupo]
+        if datos.presion_sistolica < pas.rojo:
+            alertas.append(Alerta(
+                "rojo",
+                f"PA sistólica {datos.presion_sistolica} mmHg (< {pas.rojo:.0f}): "
+                f"hipotensión severa (shock) en {corto}",
+            ))
+        elif datos.presion_sistolica < pas.naranja:
+            alertas.append(Alerta(
+                "naranja",
+                f"PA sistólica {datos.presion_sistolica} mmHg (< {pas.naranja:.0f}): "
+                f"hipotensión moderada en {corto}",
+            ))
 
-    # --- Frecuencia cardíaca ---
+    # --- Frecuencia cardíaca (umbral por grupo etario) ---
     if datos.frecuencia_cardiaca is not None:
-        if datos.frecuencia_cardiaca < FC_ROJO_BAJA or datos.frecuencia_cardiaca > FC_ROJO_ALTA:
-            alertas.append(Alerta("rojo", f"FC {datos.frecuencia_cardiaca} bpm (fuera de {FC_ROJO_BAJA:.0f}-{FC_ROJO_ALTA:.0f}): bradicardia/taquicardia extrema"))
-        elif datos.frecuencia_cardiaca >= FC_NARANJA_ALTA:
-            alertas.append(Alerta("naranja", f"FC {datos.frecuencia_cardiaca} bpm (>= {FC_NARANJA_ALTA:.0f}): taquicardia severa"))
-        elif datos.frecuencia_cardiaca < FC_NARANJA_BAJA:
-            alertas.append(Alerta("naranja", f"FC {datos.frecuencia_cardiaca} bpm (< {FC_NARANJA_BAJA:.0f}): bradicardia"))
+        alertas.extend(_alerta_umbrales(
+            float(datos.frecuencia_cardiaca),
+            FC_POR_GRUPO[grupo],
+            "FC",
+            "bpm",
+            corto,
+            "bradicardia",
+            "taquicardia",
+        ))
 
-    # --- Temperatura ---
+    # --- Temperatura (umbral común a todos los grupos etarios) ---
     if datos.temperatura is not None:
         if datos.temperatura >= TEMP_ROJO_ALTA or datos.temperatura < TEMP_ROJO_BAJA:
             alertas.append(Alerta("rojo", f"Temperatura {datos.temperatura:.1f} °C (>= {TEMP_ROJO_ALTA:.0f} o < {TEMP_ROJO_BAJA:.0f}): hiper/hipotermia severa"))
@@ -234,14 +329,17 @@ def evaluar_reglas(datos: DatosVitales, sintomas: str | None = None) -> list[Ale
         elif datos.temperatura < TEMP_NARANJA_BAJA:
             alertas.append(Alerta("naranja", f"Temperatura {datos.temperatura:.1f} °C (< {TEMP_NARANJA_BAJA:.0f}): hipotermia"))
 
-    # --- Frecuencia respiratoria ---
+    # --- Frecuencia respiratoria (umbral por grupo etario) ---
     if datos.frecuencia_respiratoria is not None:
-        if datos.frecuencia_respiratoria < FR_ROJO_BAJA or datos.frecuencia_respiratoria > FR_ROJO_ALTA:
-            alertas.append(Alerta("rojo", f"FR {datos.frecuencia_respiratoria} rpm (fuera de {FR_ROJO_BAJA:.0f}-{FR_ROJO_ALTA:.0f}): bradipnea/taquipnea extrema"))
-        elif datos.frecuencia_respiratoria >= FR_NARANJA_ALTA:
-            alertas.append(Alerta("naranja", f"FR {datos.frecuencia_respiratoria} rpm (>= {FR_NARANJA_ALTA:.0f}): taquipnea"))
-        elif datos.frecuencia_respiratoria < FR_NARANJA_BAJA:
-            alertas.append(Alerta("naranja", f"FR {datos.frecuencia_respiratoria} rpm (< {FR_NARANJA_BAJA:.0f}): bradipnea"))
+        alertas.extend(_alerta_umbrales(
+            float(datos.frecuencia_respiratoria),
+            FR_POR_GRUPO[grupo],
+            "FR",
+            "rpm",
+            corto,
+            "bradipnea",
+            "taquipnea",
+        ))
 
     # --- Síntomas de alta precisión ---
     alertas.extend(_alerta_sintomas(sintomas))

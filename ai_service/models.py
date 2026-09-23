@@ -3,13 +3,23 @@
 from dataclasses import dataclass, asdict
 from typing import Optional
 
+from ai_service.rangos_pediatricos import (
+    clasificar_grupo_etario,
+    es_grupo_pediatrico,
+    etiqueta_grupo,
+)
+
 # Rangos fisiológicos canónicos (únicos para toda la app; el espejo de estos
 # límites vive en backend/schemas/triage.py para la validación HTTP).
 RANGO_TEMPERATURA = (30.0, 45.0)
 RANGO_PRESION_SISTOLICA = (40, 300)
 RANGO_PRESION_DIASTOLICA = (20, 200)
 RANGO_FRECUENCIA_CARDIACA = (20, 300)
-RANGO_FRECUENCIA_RESPIRATORIA = (4, 80)
+# Límite superior de FR ampliado a 120 rpm: un neonato o lactante en
+# insuficiencia respiratoria alcanza valores > 80, y con el tope anterior el
+# umbral ROJO pediátrico de taquipnea era inalcanzable (o el triaje se
+# rechazaba con 422 en lugar de alertar).
+RANGO_FRECUENCIA_RESPIRATORIA = (4, 120)
 RANGO_SATURACION = (50, 100)
 
 
@@ -30,6 +40,15 @@ class DatosVitales:
     frecuencia_cardiaca: Optional[int] = None
     frecuencia_respiratoria: Optional[int] = None
     saturacion: Optional[float] = None
+    # Edad en meses cumplidos. Necesaria para menores de 1 año, donde `edad`
+    # (en años) vale 0 y se perdería la granularidad pediátrica: un recién
+    # nacido y un lactante de 11 meses no comparten rangos de signos vitales.
+    edad_meses: Optional[int] = None
+
+    @property
+    def grupo_etario(self) -> str:
+        """Grupo etario clínico (neonato, lactante, ..., adulto mayor)."""
+        return clasificar_grupo_etario(self.edad, self.edad_meses)
 
     @staticmethod
     def _en_rango(valor: Optional[float], rango: tuple[float, float]) -> bool:
@@ -40,7 +59,18 @@ class DatosVitales:
 
     def es_valido(self) -> bool:
         """Valida los valores presentes (los ausentes no invalidan el triaje)."""
-        if not (0 < self.edad < 150):
+        # Se admite edad 0 (menores de 1 año). En ese caso la edad en meses es
+        # obligatoria: sin ella no se puede elegir el grupo etario ni, por
+        # tanto, los umbrales correctos de las reglas de seguridad.
+        if not (0 <= self.edad < 150):
+            return False
+
+        if self.edad == 0 and not (
+            self.edad_meses is not None and 0 <= self.edad_meses <= 23
+        ):
+            return False
+
+        if self.edad_meses is not None and self.edad_meses < 0:
             return False
 
         if self.sexo not in ["M", "F", "Otro"]:
@@ -113,17 +143,34 @@ class DatosVitales:
             "Otro": "Otro"
         }.get(self.sexo, self.sexo)
 
-        return f"""- Edad: {self.edad} años
+        grupo = self.grupo_etario
+        # Los menores de 1 año se expresan en meses: "0 años" no es información
+        # clínicamente utilizable y empujaría al LLM a aplicar normas de adulto.
+        if self.edad == 0 and self.edad_meses is not None:
+            edad_texto = f"{self.edad_meses} meses ({etiqueta_grupo(grupo)})"
+        else:
+            edad_texto = f"{self.edad} años ({etiqueta_grupo(grupo)})"
+
+        aviso_pediatrico = (
+            "\n- AVISO: paciente pediátrico. Usa los valores de referencia "
+            "normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques "
+            "umbrales de adulto."
+            if es_grupo_pediatrico(grupo)
+            else ""
+        )
+
+        return f"""- Edad: {edad_texto}
 - Sexo: {sexo_nombre}
 - Temperatura: {temperatura}
 - Presión Arterial: {presion}
 - Frecuencia Cardíaca: {fmt(self.frecuencia_cardiaca, "bpm")}
 - Frecuencia Respiratoria: {fmt(self.frecuencia_respiratoria, "rpm")}
-- SpO2: {fmt(self.saturacion, "%")}"""
+- SpO2: {fmt(self.saturacion, "%")}{aviso_pediatrico}"""
 
 
 # Instancia de referencia con todos los vitales ausentes (edad/sexo obligatorios).
-DATOS_VITALES_SIN_MEDICION = DatosVitales(edad=0, sexo="M")
+# Edad 0 con 0 meses = neonato: instancia válida y sin mediciones.
+DATOS_VITALES_SIN_MEDICION = DatosVitales(edad=0, sexo="M", edad_meses=0)
 
 # Compatibilidad: instancia con valores normales, explícitamente marcada como
 # demo (NO usar en la ruta clínica: solo UI legacy/tests).

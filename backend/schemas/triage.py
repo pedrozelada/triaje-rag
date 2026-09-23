@@ -23,7 +23,10 @@ class TriageCreate(BaseModel):
     presion_sistolica: int | None = Field(None, ge=40, le=300)
     presion_diastolica: int | None = Field(None, ge=20, le=200)
     frecuencia_cardiaca: int | None = Field(None, ge=20, le=300)
-    frecuencia_respiratoria: int | None = Field(None, ge=4, le=80)
+    # Tope de FR en 120 rpm: por encima de 80 rpm el umbral ROJO pediátrico de
+    # taquipnea (neonato/lactante) sería inalcanzable. Espejo de
+    # ai_service/models.RANGO_FRECUENCIA_RESPIRATORIA.
+    frecuencia_respiratoria: int | None = Field(None, ge=4, le=120)
     spo2: int | None = Field(None, ge=50, le=100)
     # Clínica: se exige descripción para que el RAG tenga algo que clasificar
     sintomas: str = Field(..., min_length=10, max_length=2000)

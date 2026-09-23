@@ -13,10 +13,19 @@ from ai_service.red_flags import (
     evaluar_reglas,
     nivel_maximo,
 )
+from ai_service.rangos_pediatricos import clasificar_grupo_etario
 
 
 def vitales(**kwargs) -> DatosVitales:
+    """Vitales de un adulto de 40 años (grupo ADULTO)."""
     base = dict(edad=40, sexo="M")
+    base.update(kwargs)
+    return DatosVitales(**base)
+
+
+def vitales_pediatricos(edad: int, edad_meses: int | None = None, **kwargs) -> DatosVitales:
+    """Vitales de un paciente pediátrico (con edad en meses si aplica)."""
+    base = dict(edad=edad, sexo="M", edad_meses=edad_meses)
     base.update(kwargs)
     return DatosVitales(**base)
 
@@ -225,3 +234,143 @@ class TestNegacionSintomas:
 
     def test_no_tuvo_solo_no_dispara(self):
         assert evaluar_reglas(vitales(), "No tuvo dolor torácico") == []
+
+
+class TestClasificacionGrupoEtario:
+    """La edad del paciente (en años y en meses) define el grupo etario."""
+
+    def test_grupos_basicos(self):
+        assert clasificar_grupo_etario(0, 0) == "neonato"
+        assert clasificar_grupo_etario(0, 1) == "lactante"
+        assert clasificar_grupo_etario(0, 11) == "lactante"
+        assert clasificar_grupo_etario(1) == "preescolar"
+        assert clasificar_grupo_etario(5) == "preescolar"
+        assert clasificar_grupo_etario(6) == "escolar"
+        assert clasificar_grupo_etario(11) == "escolar"
+        assert clasificar_grupo_etario(12) == "adolescente"
+        assert clasificar_grupo_etario(17) == "adolescente"
+        assert clasificar_grupo_etario(18) == "adulto"
+        assert clasificar_grupo_etario(64) == "adulto"
+        assert clasificar_grupo_etario(65) == "adulto_mayor"
+
+    def test_edad_en_meses_coherente_en_anios(self):
+        assert clasificar_grupo_etario(45, 540) == "adulto"
+
+
+class TestRedFlagsPediatricas:
+    """Umbrales por edad: lo fisiológico en un niño NO debe disparar alertas.
+
+    Es el riesgo central de CU-25: aplicar umbrales de adulto a la población
+    pediátrica produce falsos positivos masivos (falsas alertas rojas/naranjas).
+    """
+
+    def test_lactante_fr_35_no_alerta(self):
+        # FR 35 rpm es normal en un lactante; en adulto dispararía naranja.
+        assert evaluar_reglas(
+            vitales_pediatricos(0, 6, frecuencia_respiratoria=35), None
+        ) == []
+        assert evaluar_reglas(vitales(frecuencia_respiratoria=35), None) != []
+
+    def test_lactante_fr_40_no_alerta(self):
+        # El ejemplo explícito de la observación clínica (35-40 rpm normales).
+        assert evaluar_reglas(
+            vitales_pediatricos(0, 9, frecuencia_respiratoria=40), None
+        ) == []
+
+    def test_lactante_fc_140_no_alerta(self):
+        assert evaluar_reglas(
+            vitales_pediatricos(0, 6, frecuencia_cardiaca=140), None
+        ) == []
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=140), None) != []
+
+    def test_neonato_fr_en_limite_superior_normal_no_alerta(self):
+        assert evaluar_reglas(
+            vitales_pediatricos(0, 0, frecuencia_respiratoria=60), None
+        ) == []
+
+    def test_preescolar_fc_120_no_alerta(self):
+        assert evaluar_reglas(
+            vitales_pediatricos(3, frecuencia_cardiaca=120), None
+        ) == []
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=120), None) == []
+
+    def test_escolar_fc_120_no_alerta(self):
+        assert evaluar_reglas(
+            vitales_pediatricos(8, frecuencia_cardiaca=120), None
+        ) == []
+
+    def test_adolescente_fc_135_es_naranja(self):
+        # 135 bpm es silente en un adulto, pero taquicardia en un adolescente.
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=135), None) == []
+        assert any(
+            a.nivel == "naranja"
+            for a in evaluar_reglas(vitales_pediatricos(15, frecuencia_cardiaca=135), None)
+        )
+
+    def test_lactante_taquipnea_extrema_es_rojo(self):
+        assert any(
+            a.nivel == "rojo"
+            for a in evaluar_reglas(
+                vitales_pediatricos(0, 2, frecuencia_respiratoria=85), None
+            )
+        )
+
+    def test_lactante_taquicardia_extrema_es_rojo(self):
+        assert any(
+            a.nivel == "rojo"
+            for a in evaluar_reglas(
+                vitales_pediatricos(0, 4, frecuencia_cardiaca=230), None
+            )
+        )
+
+    def test_neonato_bradicardia_es_rojo(self):
+        assert any(
+            a.nivel == "rojo"
+            for a in evaluar_reglas(
+                vitales_pediatricos(0, 0, frecuencia_cardiaca=70), None
+            )
+        )
+
+    def test_pas_lactante_normal_no_alerta(self):
+        # PAS 85/50 es normal en un lactante y no debe alertar.
+        assert evaluar_reglas(
+            vitales_pediatricos(0, 8, presion_sistolica=85, presion_diastolica=50), None
+        ) == []
+
+    def test_pas_lactante_65_es_rojo(self):
+        assert any(
+            a.nivel == "rojo"
+            for a in evaluar_reglas(
+                vitales_pediatricos(0, 8, presion_sistolica=65, presion_diastolica=40), None
+            )
+        )
+
+    def test_pas_escolar_85_es_naranja(self):
+        assert any(
+            a.nivel == "naranja"
+            for a in evaluar_reglas(
+                vitales_pediatricos(8, presion_sistolica=85, presion_diastolica=50), None
+            )
+        )
+
+    def test_adulto_mayor_fc_125_es_naranja(self):
+        assert any(
+            a.nivel == "naranja"
+            for a in evaluar_reglas(
+                vitales_pediatricos(70, frecuencia_cardiaca=125), None
+            )
+        )
+
+    def test_descripcion_identifica_el_grupo_etario(self):
+        alertas = evaluar_reglas(
+            vitales_pediatricos(0, 2, frecuencia_respiratoria=85), None
+        )
+        assert alertas and any("lactante" in a.descripcion for a in alertas)
+
+    def test_umbrales_de_adulto_sin_cambios(self):
+        """Regresión: los umbrales históricos del grupo ADULTO se conservan."""
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=39), None) != []
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=161), None) != []
+        assert evaluar_reglas(vitales(frecuencia_cardiaca=160), None) != []
+        assert evaluar_reglas(vitales(frecuencia_respiratoria=30), None) != []
+        assert evaluar_reglas(vitales(frecuencia_respiratoria=29), None) == []

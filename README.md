@@ -27,6 +27,8 @@ triaje-rag/
 │   ├── embeddings.py         # Embeddings multilingües
 │   ├── models.py             # DatosVitales dataclass
 │   ├── rag_pipeline.py       # Index + Query Engine
+│   ├── red_flags.py          # Reglas deterministas de seguridad por grupo etario
+│   ├── rangos_pediatricos.py # Grupos etarios y umbrales de vitales por edad
 │   ├── utils.py              # Validaciones y formateo
 │   └── providers/            # Proveedores LLM (pluggable)
 │       ├── base.py           # Clase base LLMProvider
@@ -54,9 +56,9 @@ triaje-rag/
 │   │   ├── components/       # Layout, Breadcrumb, PageHeader, FormField
 │   │   ├── pages/            # Pantallas clínicas
 │   │   │   └── admin/        # Pantallas de administración
-│   │   └── types/            # Interfaces TypeScript
+│   │   ├── types/            # Interfaces TypeScript
+│   │   └── utils/            # Máscaras, formato y rangos de vitales
 │   └── vite.config.ts        # Proxy /api → :8000
-├── backend/                  # API FastAPI (sistema real)
 └── tests/                    # Suite de tests
 ```
 
@@ -305,6 +307,24 @@ El servidor estará en `http://localhost:11434`
 - ✅ Auditoría completa (usuario, prompt, modelo, tiempo, tokens)
 - ✅ Logging completo
 
+### Concurrencia con SQLite
+
+SQLite bloquea la base completa durante las escrituras. Para que varios
+enfermeros puedan registrar triajes en paralelo sin
+`sqlite3.OperationalError: database is locked`, `backend/db/session.py` aplica
+en cada conexión:
+
+| Ajuste | Valor | Motivo |
+|--------|-------|--------|
+| `timeout` (conexión) | 30 s | El escritor espera el lock en vez de fallar |
+| `PRAGMA journal_mode` | `WAL` | Los lectores no bloquean al escritor |
+| `PRAGMA busy_timeout` | 30 000 ms | Refuerzo del timeout a nivel de driver |
+| `PRAGMA synchronous` | `NORMAL` | Seguro y barato bajo WAL |
+| `PRAGMA foreign_keys` | `ON` | SQLite las ignora por defecto |
+
+Los PRAGMA se aplican sólo cuando `DATABASE_URL` apunta a SQLite (con
+PostgreSQL no se tocan).
+
 ## Motor RAG (`ai_service/`)
 
 ### Módulos Principales
@@ -374,6 +394,46 @@ No hay que tocar backend ni CLI: todos consumen `get_llm_models()`.
 | 🟡 Amarillo | Urgencia Menor | ~60 min |
 | 🟢 Verde | No Urgente | Diferible |
 | 🔵 Azul | Autosanamiento | Orientación |
+
+### Reglas deterministas de red flags (CU-25)
+
+`ai_service/red_flags.py` es una capa de seguridad independiente del LLM: sólo
+puede ELEVAR el nivel de urgencia, nunca bajarlo. Sus umbrales de signos
+vitales se parametrizan por **grupo etario** (tabla en
+`ai_service/rangos_pediatricos.py`), no con valores fijos de adulto.
+
+| Grupo | Edad |
+|-------|------|
+| Neonato | < 1 mes |
+| Lactante | 1-11 meses |
+| Preescolar | 1-5 años |
+| Escolar | 6-11 años |
+| Adolescente | 12-17 años |
+| Adulto | 18-64 años |
+| Adulto mayor | ≥ 65 años |
+
+Sin esta parametrización, un lactante con **FR 40 rpm** o **FC 140 bpm**
+(valores fisiológicos a esa edad) disparaba falsas alertas rojas/naranjas.
+La edad se obtiene de `fecha_nacimiento`; para los menores de 1 año se usa
+`edad_meses`, porque en años valen 0 y se perdería el grupo etario.
+
+Umbrales de alerta por grupo etario (valor fuera del rango → alerta):
+
+| Grupo | FR naranja | FR rojo | FC naranja | FC rojo | PAS rojo |
+|-------|-----------|---------|-----------|---------|----------|
+| Neonato | < 28 o ≥ 70 | < 20 o > 90 | < 90 o ≥ 180 | < 80 o > 220 | < 60 |
+| Lactante | < 22 o ≥ 60 | < 14 o > 80 | < 90 o ≥ 180 | < 70 o > 220 | < 70 |
+| Preescolar | < 18 o ≥ 40 | < 12 o > 55 | < 80 o ≥ 160 | < 60 o > 200 | < 75 |
+| Escolar | < 14 o ≥ 30 | < 10 o > 45 | < 70 o ≥ 140 | < 50 o > 180 | < 80 |
+| Adolescente | < 12 o ≥ 26 | < 8 o > 38 | < 55 o ≥ 130 | < 45 o > 170 | < 90 |
+| Adulto | < 12 o ≥ 30 | < 8 o > 40 | < 45 o ≥ 140 | < 40 o > 160 | < 80 |
+| Adulto mayor | < 12 o ≥ 24 | < 8 o > 32 | < 50 o ≥ 120 | < 40 o > 150 | < 90 |
+
+SpO2 (rojo < 90%, naranja < 94%) y temperatura (rojo ≥ 41 °C o < 33 °C,
+naranja ≥ 40 °C o < 35 °C) usan el mismo umbral en todos los grupos.
+
+> Los signos vitales no medidos llegan como `None` (= «No registrado») al
+> prompt del LLM y **nunca** se sustituyen por 0 ni por valores normales.
 
 ## Testing
 

@@ -14,6 +14,7 @@ import logging
 from typing import Dict, List, Type
 
 from ai_service.providers.base import LLMProvider
+from ai_service.providers.gemini import GeminiProvider
 from ai_service.providers.groq import GroqProvider
 from ai_service.providers.ollama import OllamaProvider
 from ai_service.providers.openai import OpenAIProvider
@@ -25,6 +26,7 @@ logger = logging.getLogger(__name__)
 #: cuando no se especifica un modelo explícitamente.
 PROVEEDORES: List[Type[LLMProvider]] = [
     GroqProvider,
+    GeminiProvider,
     OpenAIProvider,
     OllamaProvider,
 ]
@@ -71,6 +73,7 @@ __all__ = [
     "PROVEEDORES",
     "get_llm_models",
     "GroqProvider",
+    "GeminiProvider",
     "OllamaProvider",
     "OpenAIProvider",
 ]

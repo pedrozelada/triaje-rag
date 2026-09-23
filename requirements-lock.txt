@@ -36,6 +36,8 @@ frozenlist==1.8.0
 fsspec==2026.4.0
 gitdb==4.0.12
 GitPython==3.1.50
+google-auth==2.58.0
+google-genai==2.25.0
 googleapis-common-protos==1.75.0
 greenlet==3.5.1
 griffe==2.0.2
@@ -65,6 +67,7 @@ llama-index-embeddings-huggingface==0.7.0
 llama-index-embeddings-openai==0.5.2
 llama-index-indices-managed-llama-cloud==0.11.1
 llama-index-instrumentation==0.5.0
+llama-index-llms-google-genai==0.11.2
 llama-index-llms-groq==0.5.0
 llama-index-llms-openai==0.6.26
 llama-index-llms-openai-like==0.5.3
@@ -109,6 +112,7 @@ propcache==0.5.2
 protobuf==6.33.6
 pyarrow==24.0.0
 pyasn1==0.6.4
+pyasn1-modules==0.4.2
 pybase64==1.4.3
 pycparser==3.0
 pydantic==2.13.4

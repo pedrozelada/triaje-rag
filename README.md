@@ -4,7 +4,7 @@ Sistema de apoyo a la decisión clínica para postas rurales usando Retrieval-Au
 
 ## Características
 
-- ✅ **RAG Multimodal**: Groq (nube, rápido) + Ollama (local, privado) + OpenAI (opcional)
+- ✅ **RAG Multimodal**: Groq (nube, rápido) + Gemini (nube, Google) + Ollama (local, privado) + OpenAI (opcional)
 - ✅ **Selección de LLM por consulta**: el usuario elige el proveedor en cada triaje
 - ✅ **Backend REST**: FastAPI con autenticación JWT, CRUD de pacientes y auditoría completa
 - ✅ **Frontend React**: Interfaz moderna con Vite + TypeScript + Tailwind CSS
@@ -31,6 +31,7 @@ triaje-rag/
 │   └── providers/            # Proveedores LLM (pluggable)
 │       ├── base.py           # Clase base LLMProvider
 │       ├── groq.py           # Groq (nube)
+│       ├── gemini.py         # Google Gemini (nube)
 │       ├── openai.py         # OpenAI (nube, opcional)
 │       └── ollama.py         # Local (Ollama/LM Studio)
 ├── backend/                  # API REST (FastAPI)
@@ -329,7 +330,7 @@ response = query_engine.query("Descripción de síntomas")
 from ai_service.providers import get_llm_models
 
 models = get_llm_models()
-# {'Groq (Nube - Rápido)': Groq(...), 'Ollama (Local - Privado)': OpenAILike(...)}
+# {'Groq (Nube - Rápido)': Groq(...), 'Gemini (Nube - Google)': GoogleGenAI(...), 'Ollama (Local - Privado)': OpenAILike(...)}
 ```
 
 ### Agregar un nuevo proveedor LLM
@@ -349,13 +350,20 @@ No hay que tocar backend ni CLI: todos consumen `get_llm_models()`.
 | Proveedor | Activo si... | Variables |
 |-----------|--------------|-----------|
 | Groq | `GROQ_API_KEY` definida | `GROQ_MODEL`, `GROQ_TEMPERATURE`, `GROQ_MAX_TOKENS` |
+| Gemini | `GEMINI_API_KEY` + paquete instalado | `GEMINI_MODEL`, `GEMINI_TEMPERATURE`, `GEMINI_MAX_TOKENS`, `GEMINI_THINKING_BUDGET` |
 | OpenAI | `OPENAI_API_KEY` + paquete instalado | `OPENAI_MODEL`, `OPENAI_TEMPERATURE`, `OPENAI_MAX_TOKENS` |
 | Ollama | Siempre (se descarta si no responde) | `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_TIMEOUT` |
 
 > **Nota**: `backend/core/config.py` ejecuta `load_dotenv()` al arrancar, de modo
 > que las claves del `.env` estén en `os.environ` para los proveedores.
 > El orden en `PROVEEDORES` define la prioridad cuando no se especifica modelo
-> (actualmente: Groq → OpenAI → Ollama).
+> (actualmente: Groq → Gemini → OpenAI → Ollama).
+
+> **Gemini**: requiere `pip install llama-index-llms-google-genai`. El catálogo
+> rota: los modelos 2.x devuelven 404 para cuentas nuevas, por lo que el default
+> es `gemini-3.5-flash`. Para latencia baja en triaje se puede fijar
+> `GEMINI_THINKING_BUDGET=0` (los Gemini 3 razonan antes de responder y eso añade
+> segundos, además de consumir tokens del presupuesto).
 
 ### Clasificación de urgencia (Manchester)
 

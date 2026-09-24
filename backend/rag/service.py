@@ -8,16 +8,19 @@ import time
 import logging
 from dataclasses import dataclass, field
 from threading import Lock
-from typing import Optional
+from typing import Any, Optional
 
 from ai_service.models import DatosVitales
+from ai_service.indice import ParametrosIndice
 from ai_service.rag_pipeline import (
     cargar_o_crear_indice,
+    estado_indice,
     obtener_query_engine_con_vitales,
 )
 from ai_service.providers import get_llm_models
 from ai_service.red_flags import Alerta, evaluar_reglas, nivel_maximo
 from ai_service.utils import obtener_nivel_urgencia_color
+from backend.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +45,9 @@ class RAGService:
     def __init__(self):
         self._index = None
         self._llm_models = None
+        # Forma del índice (modelo de embeddings y segmentación) con la que se
+        # construyó lo que hay en disco: si no coincide, el índice se reconstruye.
+        self._parametros = ParametrosIndice()
         # El backend atiende requests en varios hilos: sin este lock, dos
         # triajes simultáneos podían inicializar el índice y los modelos a la
         # vez (trabajo duplicado y probes de red redundantes al primer arranque).
@@ -53,9 +59,33 @@ class RAGService:
             return
         with self._lock_inicializacion:
             if self._index is None:
-                self._index = cargar_o_crear_indice()
+                # Las rutas y la política de reconstrucción vienen de la
+                # configuración, para que DATA_DIR / CHROMA_PATH del README
+                # funcionen de verdad en lugar de quedar como valores fijos.
+                self._index = cargar_o_crear_indice(
+                    data_dir=settings.data_dir,
+                    chroma_path=settings.chroma_path,
+                    parametros=self._parametros,
+                    permitir_reconstruccion=settings.rag_reconstruccion_automatica,
+                )
             if self._llm_models is None:
                 self._llm_models = get_llm_models()
+
+    def precalentar(self) -> None:
+        """Deja el índice y los modelos cargados antes del primer triaje.
+
+        Se invoca desde el lifespan de FastAPI: sin esto, el primer paciente
+        atendido tras cada reinicio paga la carga del modelo de embeddings.
+        """
+        self._inicializar()
+
+    def estado_indice(self) -> dict[str, Any]:
+        """Estado del índice sin cargar modelos (solo lectura, para el panel admin)."""
+        return estado_indice(
+            data_dir=settings.data_dir,
+            chroma_path=settings.chroma_path,
+            parametros=self._parametros,
+        )
 
     def listar_modelos(self) -> list[str]:
         """Devuelve los nombres de los modelos LLM disponibles.

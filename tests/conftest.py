@@ -7,6 +7,12 @@ import os
 # Agregar root al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# El lifespan de FastAPI SÍ corre en los tests (el fixture usa
+# `with TestClient(app)`), y el lifespan precalienta el índice RAG. Sin esto,
+# cada test cargaría el índice y el modelo de embeddings. Debe fijarse antes de
+# importar `backend.core.config`, que lee el entorno al construirse.
+os.environ["RAG_PRECALENTAR_AL_ARRANCAR"] = "false"
+
 
 @pytest.fixture()
 def client():

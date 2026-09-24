@@ -7,4 +7,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 triaje.db
+triaje.db-wal
+triaje.db-shm
+triaje.db-journal
 docs

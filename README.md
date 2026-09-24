@@ -22,9 +22,11 @@ triaje-rag/
 ├── .env.example              # Template de variables de entorno
 ├── data/                     # PDFs de las NNAC
 ├── chroma_db/                # Base vectorial persistente
+├── scripts/reindexar.py      # Reindexado manual (--dry-run / --forzar)
 ├── ai_service/               # Motor RAG (servicio de IA)
 │   ├── errors.py             # Excepciones custom
 │   ├── embeddings.py         # Embeddings multilingües
+│   ├── indice.py             # Manifiesto del índice + plan de reindexado
 │   ├── models.py             # DatosVitales dataclass
 │   ├── rag_pipeline.py       # Index + Query Engine
 │   ├── red_flags.py          # Reglas deterministas de seguridad por grupo etario
@@ -104,6 +106,8 @@ GROQ_API_KEY=tu_api_key_aqui
 OLLAMA_BASE_URL=http://localhost:1234/v1
 DATA_DIR=./data
 CHROMA_PATH=./chroma_db
+RAG_PRECALENTAR_AL_ARRANCAR=true
+RAG_RECONSTRUCCION_AUTOMATICA=false
 LOG_LEVEL=INFO
 DATABASE_URL=sqlite:///./triaje.db
 JWT_SECRET_KEY=cambia-este-secreto-en-produccion
@@ -116,6 +120,10 @@ Copia tus archivos PDF de las NNAC en la carpeta `data/`:
 ```bash
 cp /ruta/a/nnac_urgencias.pdf data/
 ```
+
+No hace falta borrar `chroma_db/` ni reindexar a mano: al cargar, el sistema
+compara las huellas SHA-256 de `data/` con el manifiesto del índice e indexa
+solo lo que cambió (ver [Frescura del Índice](#frescura-del-índice)).
 
 ### 6. Ejecutar el sistema completo
 
@@ -326,6 +334,39 @@ Los PRAGMA se aplican sólo cuando `DATABASE_URL` apunta a SQLite (con
 PostgreSQL no se tocan).
 
 ## Motor RAG (`ai_service/`)
+
+### Frescura del Índice
+
+El índice no se reconstruye en cada arranque, pero tampoco queda congelado: al
+cargarlo se compara lo que hay en `data/` con un **manifiesto** guardado dentro
+de la colección de Chroma (huella SHA-256, tamaño y nº de chunks por PDF) y se
+aplica solo la diferencia.
+
+| Situación | Acción |
+|---|---|
+| Sin cambios | Carga el índice existente: **cero embeddings** |
+| PDF nuevo | Se indexa solo ese PDF |
+| PDF modificado | Se borran sus chunks viejos y se reindexa |
+| PDF eliminado | Se borran sus chunks huérfanos |
+| Modelo de embeddings o segmentación distintos | **Aborta** (los vectores guardados ya no son comparables con los de la consulta), salvo `RAG_RECONSTRUCCION_AUTOMATICA=true` |
+
+- Antes de tocar la colección se marca el manifiesto como `completo=false` y
+  solo se marca `completo=true` al terminar: si el proceso muere a mitad de una
+  indexación, el siguiente arranque lo detecta y reconstruye, en lugar de servir
+  un corpus mutilado (el antiguo chequeo `count() > 0` no podía detectarlo).
+- Un índice construido antes de que existiera el manifiesto se **adopta**
+  (registra la huella actual) sin re-embeber nada. Para una línea base limpia:
+  `python scripts/reindexar.py --forzar`.
+- El arranque precalienta el índice (`RAG_PRECALENTAR_AL_ARRANCAR=true`) para que
+  el primer triaje no espere a cargar los modelos; un fallo ahí no impide
+  arrancar la API.
+- `GET /api/admin/indice` (solo admin) muestra los documentos indexados, su
+  huella, cuántos chunks aportan y si hay desviación respecto de `data/`.
+
+```bash
+python scripts/reindexar.py --dry-run   # auditar el estado sin modificar nada
+python scripts/reindexar.py --forzar    # reconstruir el índice desde cero
+```
 
 ### Módulos Principales
 

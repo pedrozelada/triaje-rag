@@ -19,6 +19,7 @@ from backend.schemas.admin import (
     EstadisticasLLMOut,
     EstadisticasOut,
     EstadisticasTriajeOut,
+    EstadoIndiceOut,
     ModeloCount,
     ModeloRendimiento,
     MotivoFrecuente,
@@ -477,6 +478,24 @@ def obtener_estadisticas_llm(
         tiempo_maximo=tiempo_maximo,
         por_modelo=por_modelo,
     )
+
+
+@router.get("/indice", response_model=EstadoIndiceOut)
+def obtener_estado_indice(usuario: Usuario = Depends(get_current_user)):
+    """Estado del índice RAG y su vigencia respecto del corpus NNAC (solo admin).
+
+    Permite comprobar que lo indexado coincide con los PDFs actuales de `data/`
+    (qué archivos, con qué huella, cuántos chunks) y ver los cambios pendientes
+    si alguien añadió, editó o borró un documento.
+
+    No carga el modelo de embeddings: es una consulta de solo lectura barata.
+    """
+    _require_admin(usuario)
+
+    # Import local: evita arrastrar llama-index al importar el router completo.
+    from backend.rag.service import rag_service
+
+    return rag_service.estado_indice()
 
 
 @router.get("/usuarios", response_model=list[UsuarioOut])

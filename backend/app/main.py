@@ -1,6 +1,7 @@
 """Punto de entrada de la API FastAPI del sistema de triaje."""
 
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,10 +21,39 @@ if settings.secret_key == "cambia-este-secreto-en-produccion":
         "Define JWT_SECRET_KEY en el archivo .env antes de pasar a producción."
     )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Precalienta el índice RAG al arrancar (una vez, no en cada triaje).
+
+    El índice se carga de forma perezosa en el primer triaje; precalentarlo aquí
+    evita que el primer paciente tras un reinicio espere la carga de los modelos
+    (y de paso deja ver en el arranque si el corpus quedó desactualizado).
+
+    Un fallo NO impide arrancar la API: si el modelo no puede cargarse (p. ej.
+    sin red), el login, los pacientes y los informes deben seguir funcionando.
+    """
+    if settings.rag_precalentar_al_arrancar:
+        try:
+            from backend.rag.service import rag_service
+
+            rag_service.precalentar()
+            logger.info("Índice RAG precargado correctamente.")
+        except Exception as e:
+            logger.error(
+                "⚠️ No se pudo precargar el índice RAG (%s: %s). El triaje "
+                "intentará cargarlo en su primera consulta.",
+                type(e).__name__,
+                e,
+            )
+    yield
+
+
 app = FastAPI(
     title="Triaje Médico RAG API",
     description="Backend del sistema de triaje con RAG, CRUD de pacientes y auditoría.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS para el frontend React

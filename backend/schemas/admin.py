@@ -104,3 +104,51 @@ class EstadisticasLLMOut(BaseModel):
     tiempo_minimo: float | None = None
     tiempo_maximo: float | None = None
     por_modelo: list[ModeloRendimiento] = []
+
+
+class ArchivoIndice(BaseModel):
+    """Documento indexado: huella del contenido y chunks que aporta."""
+    nombre: str
+    sha256: str
+    tamano: int
+    chunks: int
+
+
+class PlanIndice(BaseModel):
+    """Diferencia entre los documentos de `data/` y lo realmente indexado."""
+    nuevos: list[str] = []
+    modificados: list[str] = []
+    eliminados: list[str] = []
+    sin_cambios: list[str] = []
+    motivo_reconstruccion: str | None = None
+    requiere_reconstruccion: bool = False
+    requiere_abortar: bool = False
+    a_indexar: list[str] = []
+    a_eliminar: list[str] = []
+
+
+class EstadoIndiceOut(BaseModel):
+    """Estado del índice vectorial y su vigencia respecto del corpus NNAC.
+
+    `actualizado` es la respuesta a "¿el índice refleja los PDFs actuales?":
+    exige que exista índice, que no haya cambios pendientes y que su forma
+    (modelo de embeddings y segmentación) coincida con la configuración actual.
+    """
+    coleccion: str
+    data_dir: str
+    chroma_path: str
+    existe_indice: bool
+    chunks: int
+    archivos: list[ArchivoIndice] = []
+    completo: bool = False
+    adoptado: bool = False
+    # Sin manifiesto pero con chunks: al arrancar se adopta el índice existente
+    # (registro de la huella actual, sin re-embeber).
+    adoptara: bool = False
+    indexado_en: str | None = None
+    embedding_model: str | None = None
+    chunk_size: int | None = None
+    chunk_overlap: int | None = None
+    plan: PlanIndice | None = None
+    actualizado: bool = False
+    error: str | None = None

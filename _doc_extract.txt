@@ -1,0 +1,2117 @@
+Universidad Autónoma Juan Misael Saracho
+FACULTAD DE CIENCIAS Y TECNOLOGIA
+CARRERA DE INGENIERIA INFORMATICA
+Mejoramiento de la clasificación oportuna de urgencias en centros de salud mediante un sistema de triaje basado en RAG con capacidad de operación offline.
+IDENTIFICACION DEL PROYECTO
+Título del Proyecto
+Mejoramiento de la clasificación oportuna de urgencias en centros de salud mediante un sistema de triaje basado en RAG con capacidad de operación offline.
+Nombre del Postulante
+Pedro Rafael Zelada Soruco
+Celular
+72983869
+Carrera
+Ingeniería Informática
+Facultad
+Ciencias y Tecnología
+Institución/Centro Cooperante
+Duración del Proyecto
+6 meses
+Área/línea de investigación priorizada
+Inteligencia Artificial Aplicada
+Tutor del Proyecto
+Richard Henry Sivila Rios
+Tarija – Bolivia
+2026
+I. GENERALIDADES
+I.1 Introducción
+El presente proyecto consiste en el desarrollo de un Sistema de Triaje Médico basado en Retrieval-Augmented Generation (RAG), diseñado para asistir en la clasificación oportuna de urgencias según las Normas Nacionales de Atención Clínica (NNAC) del Ministerio de Salud y Deportes de Bolivia. El sistema opera en dos modalidades complementarias: modo offline mediante inferencia local con modelos de lenguaje ligeros, pensado para postas sanitarias con conectividad limitada; y modo en línea mediante APIs de proveedores cloud (como Groq u OpenRouter), orientado a lugares con conexión a internet.
+Esta arquitectura híbrida permite que enfermeras y personal de salud ingresen síntomas y datos vitales del paciente para obtener una clasificación de urgencia basada en la escala Manchester y recomendaciones de acción inmediata, garantizando trazabilidad, auditoría clínica y adaptabilidad al contexto de cada centro de salud.
+I.2 Descripción del proyecto
+I.2.1 Antecedentes
+Bolivia cuenta con un Sistema Nacional de Salud basado en el modelo Salud Familiar Comunitaria Intercultural (SAFCI), que busca acercar la atención primaria a las comunidades más alejadas. Sin embargo, el sistema de salud enfrenta desafíos estructurales en dos frentes distintos:
+En algunas comunidades, las postas sanitarias operan frecuentemente con una sola enfermera o promotor de salud, sin presencia permanente de médicos y, en ocasiones, sin conexión estable a internet. Las decisiones críticas deben tomarse de forma inmediata sin poder esperar una teleconsulta.
+En zonas urbanas y hospitales de segundo o tercer nivel, el problema no es la falta de conectividad, sino la saturación de los servicios de emergencia. El personal de salud enfrenta a veces un alto volumen de pacientes, lo que provoca que el triaje se realice de manera apresurada, generando errores de clasificación, pérdida de trazabilidad de los pacientes y riesgos legales por falta de auditoría.
+Las Normas Nacionales de Atención Clínica (NNAC) del Ministerio de Salud y Deportes proporcionan protocolos estandarizados de triaje y atención primaria, pero su aplicación efectiva depende del conocimiento y experiencia del personal disponible en el momento. Este proyecto surge para cerrar ese vacío tecnológico: crear una herramienta adaptable que ponga los protocolos oficiales del Ministerio al alcance de cualquier centro de salud, ya sea funcionando de manera autónoma en postas rurales o como sistema de apoyo en hospitales urbanos con alta demanda.
+I.2.2 Justificación
+I.2.2.1 Justificación tecnológica
+El proyecto aporta una solución práctica de IA offline mediante RAG local, demostrando que es posible desplegar sistemas inteligentes en hardware modesto sin necesidad de fine-tuning complejo ni GPUs. Facilita la adopción de IA en entornos medicos.
+I.2.2.2 Justificación social
+Apoya directamente el modelo SAFCI y las NNAC del Ministerio de Salud, mejorando la atención en comunidades rurales e indígenas mediante el modo offline. Simultáneamente, brinda a los hospitales urbanos una herramienta de auditoría y trazabilidad que mitiga el riesgo de mala praxis y mejora la calidad de la atención en servicios de emergencia saturados. Contribuye a reducir la mortalidad evitable y promueve mayor equidad en el acceso a atención sanitaria en Bolivia, independientemente de la ubicación geográfica del centro de salud.
+I.2.2.3 Justificación económica
+Reduce costos operativos al optimizar los traslados de pacientes en zonas alejadas y mejorar el uso eficiente de recursos humanos y logísticos en hospitales urbanos (reduciendo tiempos de espera y saturación de emergencias). Al ofrecer una arquitectura híbrida, el sistema permite a los centros de salud elegir entre una solución open-source y offline (sin gastos de conectividad o licencias) o una solución cloud de alto rendimiento según sus necesidades y presupuesto.
+I.2.2.4 Justificación científica
+Contribuye al conocimiento en Ingeniería Informática al aplicar y evaluar técnicas modernas de RAG en un dominio crítico como la salud, comparando el rendimiento de diferentes estrategias de recuperación y prompting en español y en contexto boliviano.
+I.3 Planteamiento del problema
+I.3.1 Descripción del problema
+En Bolivia, el personal de salud enfrenta desafíos distintos según el contexto geográfico. En algunas comunidades, el personal de primer nivel de atención enfrenta situaciones de emergencia a veces sin apoyo médico inmediato ni acceso a internet, careciendo de una herramienta para clasificar rápidamente la urgencia de los casos. En las zonas urbanas, los servicios de emergencia de hospitales enfrentan saturación por alto volumen de pacientes, lo que provoca triajes apresurados, errores de clasificación y falta de trazabilidad de las decisiones clínicas. En ambos contextos, la falta de una herramienta de apoyo genera demoras, traslados ineficientes o riesgos para los pacientes.
+I.3.2 Problema central
+El personal de salud en centros de atención de Bolivia tanto en postas rurales de primer nivel como en servicios de urgencias de hospitales urbanos no siempre clasifica el nivel de urgencia de los pacientes de manera oportuna y estandarizada según las Normas Nacionales de Atención Clínica (NNAC), ya sea por falta de conectividad, de personal médico permanente o de herramientas de apoyo estandarizadas.
+I.4 Objetivos
+I.4.1 Objetivo General
+Mejorar la clasificación del nivel de urgencia de los pacientes según las Normas Nacionales de Atención Clínica (NNAC), por parte del personal de salud en centros de atención de Bolivia, tanto en postas rurales como en servicios de urgencias de hospitales urbanos.
+I.4.2 Objetivos Específicos
+Desarrollar un sistema de triaje offline basado en RAG, integrando la base de conocimiento vectorial construida a partir de las NNAC, el pipeline RAG local con modelo de lenguaje ligero (Phi-3 mini o Qwen 3.5 4B) y la interfaz de usuario web para uso completamente offline.
+Implementar estrategias de socialización y capacitación en el entorno tecnológico desarrollado, dirigidas al personal de salud de los centros de atención involucrados.
+Evaluar el rendimiento del sistema mediante métricas de recuperación (recall, precision) y rúbricas de calidad clínica, con criterio de aceptación de al menos el 80% de casos en nivel Bueno o Muy bueno, y usabilidad de al menos 70 puntos en la escala SUS.
+Documentar los requisitos de hardware, el proceso completo de instalación y los resultados de evaluación, para facilitar la replicabilidad del sistema en entornos rurales con recursos limitados.
+I.5 Sistema de Marco Lógico
+I.5.1 Análisis de involucrados
+Grupo
+Intereses
+Problemas
+Recursos / Mandatos
+Personal de salud (postas rurales y hospitales urbanos)
+Contar con un asistente de triaje que facilite la clasificación de pacientes. 
+Limitaciones de conectividad en áreas rurales; ausencia o disponibilidad limitada de médicos especialistas.
+Experiencia clínica y conocimiento del proceso de triaje
+Médico colaborador / validador clínico
+Garantizar que las respuestas y recomendaciones generadas por el asistente sean coherentes con las normas de triaje.
+Riesgo de respuestas incorrectas o poco pertinentes generadas por el sistema.
+Validación de casos clínicos.
+Ministerio de Salud y Deportes / SEDES
+ Mejorar la calidad y oportunidad de la atención en el primer nivel.
+Limitaciones de recursos humanos y tecnológicos en determinados establecimientos de salud.
+Normativa sanitaria, protocolos y documentos oficiales.
+Pacientes y comunidades rurales/urbanas
+Recibir una atención oportuna, adecuada y correcta.
+Demoras en la atención; dificultades de acceso a servicios de salud.
+ Participación indirecta en la evaluación del impacto del sistema y aporte de necesidades del contexto local.
+Universidad Autónoma Juan Misael Saracho
+Generar conocimiento aplicado y desarrollar soluciones tecnológicas con impacto social en el ámbito de la salud.
+Necesidad de desarrollar y validar soluciones que sean técnicamente viables y tengan utilidad práctica.
+Supervisión académica, recursos humanos y tecnológicos, conocimiento científico y metodológico, difusión de resultados y respaldo institucional.
+I.5.2 Árbol de problemas
+I.5.3 Árbol de objetivos
+I.5.4 Matriz de Marco Lógico (MML)
+La Matriz de Marco Lógico resume la lógica del proyecto en cuatro niveles: fin, propósito, componentes y actividades, junto con sus indicadores, medios de verificación y supuestos.
+Nivel Fin:
+Resumen Narrativo
+Indicadores
+Medios de verificación
+Supuestos
+Contribuir a la mejora de la atención de urgencias en centros de salud de Bolivia (rurales y urbanos), mediante el uso de herramientas de Inteligencia Artificial accesibles, auditables y adaptables a distintos contextos de conectividad.
+Al finalizar el proyecto, se habrá logrado una reducción en el tiempo promedio de clasificación de urgencias y una mejora en la trazabilidad de las decisiones clínicas mediante el uso del sistema.
+Encuesta de satisfacción aplicada a personal de salud.
+Las autoridades nacionales y departamentales (Ministerio de Salud y SEDES) mantienen la prioridad en fortalecer el modelo SAFCI y la atención primaria en zonas rurales.
+Nivel Propósito:
+Resumen Narrativo
+Indicadores
+Medios de verificación
+Supuestos
+Clasificación mejorada del nivel de urgencia de los pacientes según las NNAC, por parte del personal de salud en centros de salud de Bolivia.
+Al finalizar el proyecto, el sistema logra una precisión de clasificación de triaje superior al 80% en casos simulados y reales, y funciona correctamente en computadoras modestas (CPU i5 8va gen, 16 GB RAM) sin conexión a internet.
+Reporte técnico de evaluación con métricas (accuracy, recall, precision).
+El personal de salud está dispuesto a utilizar la herramienta y recibe una breve capacitación básica.
+Nivel Componentes:
+Resumen Narrativo
+Indicadores
+Medios de verificación
+Supuestos
+C1. Sistema de triaje basado en RAG desarrollado e integrado (motor RAG, backend FastAPI con JWT/RBAC, frontend React y base de datos relacional/vectorial).
+A los 5 meses de iniciado el proyecto, se ha desarrollado el 100% de los requerimientos funcionales del sistema, incluyendo CRUD de pacientes, generación de PDFs y selección de proveedores LLM.
+Repositorio de código fuente documentado; base de datos Chroma y SQLite operativas; documentación de API (Swagger).
+Los documentos oficiales del Ministerio de Salud se encuentran disponibles y actualizados públicamente.
+C2. Evaluación del sistema realizada mediante pruebas técnicas, comparativas y de campo.
+Al finalizar el proyecto, el sistema alcanza una tasa de alucinaciones inferior al 15%, y el médico colaborador califica al menos el 80% de los casos clínicos en nivel "Bueno" o "Muy bueno".
+Matriz de pruebas de casos clínicos; benchmark comparativo de modelos LLM.
+Se cuenta con acceso a un médico colaborador para la validación clínica de los casos de prueba.
+C3. Estrategias de socialización y capacitación en el entorno tecnológico implementadas.
+Al finalizar el proyecto, al menos el 100% del personal de salud de la posta intervenida asiste y completa satisfactoriamente el taller de capacitación, se han publicado 3 podcasts y se ha realizado 1 entrevista en Canal 9.
+Registro de asistencia y fotografías del taller de capacitación; constancia o enlace de la entrevista realizada en Canal 9.
+El personal de salud y los medios locales muestran interés y disponibilidad para las actividades de socialización.
+Nivel Actividades:
+Componente
+Actividades
+C1. Sistema informático
+C1.A1. Recopilación, procesamiento y segmentación de las NNAC y protocolos de triaje del Ministerio de Salud para la construcción de la base de conocimiento vectorial.C1.A2. Configuración de Ollama, implementación del pipeline RAG con LlamaIndex y Chroma DB, diseño de prompts clínicos e integración de componentes.C1.A3. Desarrollo de la interfaz web full-stack (React + Tailwind) y backend (FastAPI), implementación de autenticación JWT, generación de reportes PDF y pruebas de rendimiento en hardware modesto y en la nube; optimización del pipeline RAG en CPU (cuantización Q4_K_M, ajuste de chunk size).C1.A4. Redacción del manual de usuario y documentación del código fuente.
+C2. Evaluación del sistema
+C2.A1. Diseño de 20 casos clínicos de prueba basados en escenarios reales de postas rurales, más 10 casos diseñados específicamente para detectar alucinaciones (preguntas capciosas, síntomas contradictorios, condiciones inexistentes).C2.A2. Evaluación técnica: medición de métricas de recuperación (Recall@3, Precision, MRR), tasa de alucinaciones, tiempo de respuesta y consumo de RAM en hardware modesto.C2.A3. Evaluación comparativa (benchmark): ejecución de los mismos 30 casos en un modelo de referencia avanzado (GPT-4o mini o similar vía API) como línea base de calidad, comparando tasas de acierto y alucinaciones.C2.A4. Evaluación de exactitud clínica por médico colaborador usando rúbrica de 4 niveles (Muy bueno, Bueno, Regular, Malo) sobre los 20 casos clínicos.C2.A5. Aplicación de encuesta SUS a los usuarios.C2.A6. Análisis comparativo de resultados (técnico vs. benchmark vs. campo) y redacción de conclusiones.
+C3. Estrategias de socialización
+C3.A1. Elaboración de materiales de divulgación (presentación de resultados, guía rápida plastificada para la posta).C3.A2. Realización de taller presencial de cierre y capacitación de 1 día para el personal de salud de la posta intervenida.C3.A3. Producción y publicación de al menos 3 podcasts en redes sociales presentando el proceso de desarrollo y los resultados de la evaluación.C3.A4. Realización de 1 entrevista de divulgación en Canal 9 mostrando los hallazgos del proyecto.
+I.6 Marco Teórico
+El marco teórico reúne los fundamentos necesarios para comprender el problema desde la relación entre las dos variables del proyecto. La variable independiente comprende las teorías vinculadas al objeto de estudio: el triaje médico, las Normas Nacionales de Atención Clínica, la escala Manchester, el modelo SAFCI y la salud digital en contextos rurales. La variable dependiente comprende las teorías del área de informática y sistemas que sustentan la solución: Retrieval-Augmented Generation, embeddings y bases de datos vectoriales, modelos de lenguaje ligeros y cuantización, computación perimetral (edge AI), ingeniería de software web y usabilidad.
+I.6.1 Variable independiente: teorías del objeto de estudio
+I.6.1.1 Triaje médico
+El triaje es el proceso mediante el cual el personal de salud clasifica a los pacientes según la urgencia y la gravedad de su condición, priorizando la atención cuando los recursos son limitados. Su objetivo es identificar a los pacientes que requieren atención inmediata y diferir la de quienes pueden esperar sin riesgo. Un triaje correcto y oportuno es determinante para reducir la mortalidad evitable, particularmente en el primer nivel de atención.
+Aplicación en el proyecto: el sistema asiste al personal de salud en la clasificación de urgencias, estructurando la salida como nivel de urgencia, justificación normativa, acciones recomendadas y referencia, según el flujo de triaje definido en las NNAC.
+I.6.1.2 Normas Nacionales de Atención Clínica (NNAC)
+Las Normas Nacionales de Atención Clínica (NNAC), emitidas por el Ministerio de Salud y Deportes de Bolivia, constituyen el marco normativo que establece los protocolos oficiales de atención para el Sistema Nacional de Salud, incluyendo criterios de estabilización inicial, clasificación de urgencias y derivación entre niveles de atención. Su aplicación efectiva depende del conocimiento del personal disponible en cada centro de salud.
+Aplicación en el proyecto: las NNAC (especialmente el volumen de Urgencias y Emergencias, y las de Pediatría y Medicina Interna) conforman la base documental del sistema. Son procesadas, segmentadas e indexadas en la base de conocimiento vectorial, de modo que las respuestas del sistema se anclan exclusivamente en la normativa oficial y pueden citar la fuente utilizada, garantizando trazabilidad clínica.
+I.6.1.3 Escala de triaje Manchester
+La escala Manchester es un sistema de clasificación de pacientes en cinco niveles, identificados por colores: rojo (emergencia, atención inmediata), naranja (urgencia mayor, atención en aproximadamente 10 minutos), amarillo (urgencia menor, aproximadamente 60 minutos), verde (no urgente, atención diferible) y azul (autosanamiento, orientación). Permite estandarizar la priorización en servicios de emergencia y es compatible con los criterios establecidos en las NNAC.
+Aplicación en el proyecto: el sistema emite su clasificación utilizando esta escala cromática, presentando al usuario un banner de color que indica el nivel de urgencia asignado al paciente, junto con los tiempos de atención asociados.
+I.6.1.4 Modelo SAFCI y salud rural en Bolivia
+El modelo Salud Familiar Comunitaria Intercultural (SAFCI) es la estrategia del Sistema Nacional de Salud boliviano para descentralizar la atención primaria y acercar los servicios a las comunidades, con énfasis en las zonas rurales e interculturales. No obstante, las postas rurales frecuentemente carecen de médicos permanentes, conectividad estable y recursos tecnológicos, lo que limita la aplicación de los protocolos en el momento crítico.
+Aplicación en el proyecto: el modo offline del sistema fue diseñado específicamente para este escenario, permitiendo que una enfermera o promotor de salud clasifique urgencias de forma autónoma, con los protocolos del Ministerio disponibles localmente, incluso sin internet y sin médico permanente.
+I.6.1.5 Salud digital y ética de la IA en salud
+La salud digital abarca el uso de tecnologías de información y comunicación para mejorar la atención. En el caso de la Inteligencia Artificial aplicada a la salud, la Organización Mundial de la Salud (2021) establece lineamientos de ética y gobernanza que exigen transparencia, trazabilidad, supervisión humana y protección de datos sensibles. En ese marco, un sistema de apoyo a la decisión debe operar como asistente —nunca como sustituto del criterio médico— y debe dejar registro auditable de sus recomendaciones.
+Aplicación en el proyecto: el sistema se define explícitamente como herramienta de apoyo al triaje, sin diagnóstico definitivo ni prescripción; incorpora auditoría completa de cada consulta (usuario, prompt, modelo, tokens, tiempo de respuesta) y disclaimers médicos en sus respuestas.
+I.6.2 Variable dependiente: teorías del área de informática y sistemas
+I.6.2.1 Retrieval-Augmented Generation (RAG)
+Retrieval-Augmented Generation (RAG) es una arquitectura híbrida que combina la recuperación de información (Information Retrieval) con la generación de texto de los modelos de lenguaje grandes (LLM), propuesta originalmente por Lewis et al. (2020). A diferencia de los LLM puros, que dependen exclusivamente de su conocimiento paramétrico, RAG enriquece el contexto de generación recuperando fragmentos documentales relevantes de una base de conocimiento externa antes de producir la respuesta. El pipeline consta de tres fases: (1) indexación de documentos (carga, segmentación y vectorización), (2) recuperación semántica (búsqueda por similitud de embeddings) y (3) generación condicionada (el LLM produce la respuesta utilizando el contexto recuperado).
+Aplicación en el proyecto: el sistema implementa un pipeline RAG con LlamaIndex sobre las NNAC, lo que reduce alucinaciones al anclar las respuestas al documento oficial, permite citar la fuente normativa (indispensable para auditoría clínica) y facilita la actualización de la base de conocimiento sin reentrenar modelos.
+I.6.2.2 Embeddings y bases de datos vectoriales
+Los embeddings son representaciones vectoriales densas de fragmentos de texto en un espacio de alta dimensionalidad (típicamente 384 a 1024 dimensiones), en el cual la distancia coseno entre vectores refleja la similitud semántica entre los textos. Una base de datos vectorial almacena estos vectores junto con sus metadatos y permite realizar búsquedas por similitud de forma eficiente. Para entornos de bajos recursos se utilizan modelos de embeddings ligeros (como nomic-embed-text, all-MiniLM-L6-v2 o bge-small), operables completamente en CPU.
+Aplicación en el proyecto: los fragmentos de las NNAC son vectorizados con un modelo de embeddings multilingüe y almacenados en Chroma DB mediante un cliente persistente en disco (PersistentClient), conservando metadatos (documento, página, sección) que permiten filtrar y citar las fuentes recuperadas.
+I.6.2.3 Modelos de lenguaje ligeros y cuantización GGUF
+La inferencia offline en hardware modesto exige modelos comprimidos mediante cuantización post-entrenamiento. El formato GGUF (Georgi Gerganov Universal Format) permite ejecutar modelos como Phi-3 Mini (3.8B parámetros) y Llama 3.2 (3B parámetros) con precisión reducida Q4_K_M (4 bits con mezcla de cuantización K-quant), reduciendo el consumo de memoria RAM a aproximadamente 2-3 GB por modelo y manteniendo coherencia en español para tareas estructuradas. Ollama se utiliza como motor de inferencia local por su facilidad de despliegue, su API REST compatible con OpenAI y la gestión automática de modelos GGUF.
+Aplicación en el proyecto: el modo offline del sistema utiliza Ollama como servidor de inferencia local, exponiendo una interfaz compatible con OpenAI (OpenAILike) que el pipeline RAG consume de manera transparente, con temperatura fija en 0.1 para maximizar la adherencia al contexto normativo recuperado.
+I.6.2.4 Computación perimetral (edge AI)
+El paradigma de edge AI o computación perimetral traslada el procesamiento de datos al dispositivo local donde se generan, en lugar de depender de servidores remotos en la nube. Sus ventajas en el ámbito sanitario rural son la disponibilidad permanente del servicio sin conexión, la reducción de latencia y la confidencialidad de los datos sensibles, que no se transmiten por la red.
+Aplicación en el proyecto: el sistema ejecuta localmente los modelos de embeddings y de lenguaje, la base de datos vectorial (Chroma DB) y la base de datos relacional (SQLite), operando al 100% sin internet tras la instalación inicial, lo que garantiza disponibilidad 24/7 en postas rurales.
+I.6.2.5 Ingeniería de prompts (prompt engineering)
+La ingeniería de prompts es el conjunto de técnicas para diseñar las instrucciones que guían el comportamiento de un modelo de lenguaje. En aplicaciones clínicas es crítica: los prompts de sistema deben incluir rúbricas claras, disclaimers médicos, formato estructurado de respuesta (nivel de triaje, acciones recomendadas, cita de fuente) y lenguaje sencillo para personal no médico.
+Aplicación en el proyecto: los prompts clínicos inyectan en el contexto los datos vitales del paciente (edad, sexo, temperatura, presión arterial, frecuencia cardíaca, saturación de oxígeno) junto con los fragmentos recuperados de las NNAC, y exigen al modelo una salida estructurada y anclada a la normativa.
+I.6.2.6 Desarrollo web full-stack: FastAPI, React y bases de datos
+El backend se desarrolló con FastAPI, framework moderno de Python para construir APIs REST de alto rendimiento, con validación de datos mediante Pydantic y generación automática de documentación interactiva (Swagger UI). La autenticación se implementa con JSON Web Tokens (JWT), un estándar de tokens firmados que permite verificar la identidad del usuario de forma stateless, con contraseñas cifradas mediante bcrypt y Control de Acceso Basado en Roles (RBAC), que restringe funciones según el rol del usuario (admin, médico, enfermero de triaje). La persistencia relacional se gestiona con SQLAlchemy ORM sobre SQLite, adecuada para despliegues locales ligeros.
+Aplicación en el proyecto: el backend FastAPI expone los endpoints de autenticación, pacientes, triaje, informes y administración; implementa JWT con bcrypt y RBAC; y registra en auditoría cada consulta (usuario, prompt, modelo, tiempo de respuesta, tokens consumidos).
+El frontend es una Single Page Application (SPA) desarrollada con React, Vite y TypeScript, utilizando Tailwind CSS para una interfaz clínica responsiva, React Router v6 para la navegación protegida por rol, Axios como cliente HTTP con inyección automática del token JWT e interceptores de errores 401, React Hook Form para formularios con validaciones estrictas y Recharts para los gráficos del panel administrativo.
+Aplicación en el proyecto: el frontend ofrece el flujo clínico completo (registro de paciente, ingreso de signos vitales y síntomas, selección del proveedor LLM, visualización del resultado con banner de color) y el panel de administración con estadísticas y gestión de usuarios, funcionando tanto en línea como conectado al backend local en modo offline.
+I.6.2.7 Usabilidad: System Usability Scale (SUS)
+La System Usability Scale (SUS) es un instrumento estandarizado de 10 ítemes que mide la usabilidad percibida de un sistema, con puntuaciones de 0 a 100, donde un puntaje igual o superior a 70 se considera aceptable. Es ampliamente utilizado para evaluar herramientas destinadas a usuarios no expertos en tecnología.
+Aplicación en el proyecto: se aplicará la encuesta SUS al personal de salud participante, con criterio de aceptación de al menos 70 puntos, para garantizar que la herramienta sea utilizable por enfermeras y promotores de salud con formación tecnológica limitada.
+I.7 Estado del Arte
+El estado del arte describe cómo se resuelve actualmente el problema del triaje de urgencias, tanto desde el punto de vista tecnológico (soluciones existentes) como desde el punto de vista conceptual (teórico).
+I.7.1 Situación del punto de vista tecnológico
+Actualmente, la clasificación de urgencias en Bolivia se resuelve de manera manual en la mayoría de los centros de salud: el personal aplica sus conocimientos y, cuando existe conectividad, puede apoyarse en programas como Telesalud para la referencia entre niveles. A nivel internacional, los sistemas de triaje asistido por IA han demostrado utilidad en entornos hospitalarios, pero la mayoría requiere conexión constante a internet y hardware avanzado. Las soluciones comerciales basadas en LLM en la nube (como GPT-4 o Claude aplicados a atención clínica) ofrecen alto rendimiento, pero son inviables en postas rurales sin conectividad, implican costos por uso de API y generan dudas sobre la privacidad de los datos clínicos transmitidos.
+La siguiente tabla compara las alternativas existentes o complementarias con la solución propuesta:
+Solución
+Enfoque
+Requiere internet
+Costo de operación
+Trazabilidad / auditoría
+Anclaje en NNAC
+Viabilidad rural
+Telesalud Bolivia
+Teleconsulta y referencia entre niveles
+Sí, permanente
+Medio
+Parcial (registros manuales)
+No directo
+Baja
+Triaje manual con protocolos impresos
+Procedimiento manual
+No
+Bajo
+No
+Sí, si el personal conoce las NNAC
+Media
+Sistemas comerciales de triaje con IA (cloud)
+LLM en la nube
+Sí, permanente
+Alto (API + conectividad)
+Variable, depende del proveedor
+No adaptable al contexto boliviano
+Nula
+Herramientas de IA conversacional genérica
+Chatbots sin base documental propia
+Sí
+Medio-Alto
+No
+No (alto riesgo de alucinación)
+Baja
+Sistema propuesto: triaje RAG híbrido offline + cloud
+RAG sobre NNAC con proveedores pluggable
+Opcional (offline completo disponible)
+Bajo (open-source; cloud opcional)
+Automática y completa
+Sí, por diseño
+Alta
+Como se observa, ninguna de las soluciones existentes satisface simultáneamente la operación offline, el anclaje en la normativa nacional, la trazabilidad automática y el bajo costo. La propuesta del proyecto cubre precisamente esa brecha, empleando exclusivamente software open-source y hardware modesto.
+I.7.2 Situación actual desde el punto de vista conceptual (teórico)
+Desde el punto de vista conceptual, el paradigma dominante para reducir alucinaciones en aplicaciones de LLM es el Retrieval-Augmented Generation (RAG), propuesto por Lewis et al. (2020), que ha demostrado ser eficaz en dominios de conocimiento intensivo. En el ámbito médico, los sistemas RAG permiten anclar las respuestas en fuentes confiables y citar la evidencia utilizada, ventajas críticas para la auditoría clínica. Sin embargo, la literatura muestra que la mayoría de implementaciones RAG dependen de servicios en la nube (embeddings y LLM remotos), y las versiones completamente locales orientadas a entornos rurales de bajos recursos son todavía escasas.
+En el contexto latinoamericano se han desarrollado proyectos de telemedicina y salud digital, pero no se han encontrado sistemas de triaje completamente offline adaptados a la normativa boliviana, lo que representa una brecha significativa en la literatura regional. Los estudios comparativos recientes sobre modelos ligeros (Phi-3 Mini, Llama 3.2) cuantizados en formato GGUF demuestran su viabilidad en hardware sin GPU dedicada, abriendo la puerta a soluciones de IA local en el primer nivel de atención. Este proyecto se inscribe en esa línea emergente, aportando una arquitectura híbrida que combina lo mejor de ambos mundos: autonomía total en zonas rurales y rendimiento de modelos avanzados en hospitales urbanos.
+I.8 Resultados esperados
+I.8.1 Productos del proyecto
+Un prototipo funcional de Sistema de Triaje Médico basado en RAG, con capacidad de operación completamente offline.
+Una base de conocimiento vectorial indexada con las Normas Nacionales de Atención Clínica (NNAC) y protocolos de triaje del Ministerio de Salud.
+Una aplicación web local de interfaz intuitiva, que permite ingresar los síntomas del paciente y generar reportes estructurados de triaje (nivel de urgencia, acciones recomendadas y cita de la fuente).
+Informe técnico con resultados de evaluación (métricas de recuperación y calidad de respuestas), benchmarks de rendimiento en hardware modesto (RAM y tokens por segundo) y guía de instalación y replicabilidad.
+I.8.2 Impacto esperado
+Se espera que el sistema mejore la capacidad de respuesta rápida en postas sanitarias rurales (reduciendo demoras en la clasificación de urgencias y optimizando la referencia de pacientes) y en hospitales urbanos (reduciendo tiempos de espera en emergencias y mitigando el riesgo de mala praxis mediante auditoría automática). Tecnológicamente, demostrará la viabilidad de implementar RAG híbrido (offline + cloud) en entornos diversos. Socialmente, contribuirá a una atención más equitativa en comunidades alejadas y a una gestión más eficiente en centros urbanos, apoyando el modelo SAFCI y las NNAC del Ministerio de Salud.
+I.9 Beneficiarios
+I.9.1 Beneficiarios directos
+Personal de salud de primer nivel: enfermeras, promotores de salud y técnicos que trabajan en postas sanitarias y centros de salud rurales de Bolivia.
+Pacientes: quienes necesiten asistencia médica y evaluaciones precisas para derivaciones a centros de mayor nivel.
+I.9.2 Beneficiarios indirectos
+Comunidad de desarrolladores y academia: a través de un podcast compartido en redes sociales y una entrevista en Canal 9, se socializará el proceso y los resultados del proyecto, motivando el desarrollo de más soluciones de IA offline para el contexto boliviano.
+II. COMPONENTES
+El presente capítulo describe el componente desarrollado en el marco del proyecto: el Sistema de Triaje Médico basado en Retrieval-Augmented Generation (RAG) para las Normas Nacionales de Atención Clínica (NNAC) de Bolivia. Se presentan la metodología de trabajo adoptada, el modelado del sistema en lenguaje unificado de modelado (UML), la especificación de los casos de uso, el diseño de la base de datos, el comportamiento dinámico de los procesos principales y las interfaces de usuario.
+II.1 Componente I: Sistema de Triaje Médico con RAG
+El componente es una aplicación web cliente-servidor que asiste al personal de salud en la clasificación del nivel de urgencia de un paciente según la escala de triaje Manchester y las NNAC del Ministerio de Salud y Deportes de Bolivia. El usuario registra los signos vitales medidos y describe el motivo de consulta; el sistema recupera las normas aplicables, consulta a un modelo de lenguaje y devuelve una clasificación con su justificación, las acciones recomendadas, la indicación de referencia y la cita de la fuente normativa utilizada.
+La arquitectura se organiza en cuatro capas con responsabilidades diferenciadas. La capa de presentación es una aplicación de página desarrollada con React y TypeScript. La capa de servicios expone una API REST construida con FastAPI y controla el acceso mediante tokens JWT y roles de usuario. La capa de dominio concentra el motor de recuperación aumentada y las reglas deterministas de seguridad clínica. La capa de persistencia combina una base de datos relacional SQLite para la información clínica y administrativa con una base de datos vectorial ChromaDB para el conocimiento normativo.
+Una decisión de diseño central es la separación entre el modelo de lenguaje y las reglas deterministas de seguridad. El modelo aporta la interpretación clínica del caso y la cita normativa; las reglas aportan garantías verificables sobre umbrales de signos vitales y patrones de síntomas críticos. Las reglas nunca pueden reducir el nivel de urgencia propuesto por el modelo, solo elevarlo, y el sistema nunca asume un nivel por defecto cuando no puede clasificar.
+El componente se organiza en seis módulos funcionales: autenticación y usuarios, gestión de pacientes, triaje, informes, administración y estadísticas, y gestión del conocimiento normativo. La Figura 17 de este capítulo resume la arquitectura de despliegue y la sección II.1.2 detalla los diagramas empleados para documentarla.
+II.1.1 Metodología de desarrollo
+II.1.1.1 Tipo de proyecto y enfoque
+El proyecto corresponde a un desarrollo tecnológico aplicado con componente de evaluación. El enfoque es mixto: cualitativo en la etapa de relevamiento, donde se recogen las necesidades y el flujo de trabajo del personal de salud y se interpreta el contenido de las NNAC; y cuantitativo en la etapa de evaluación, donde se miden métricas objetivas de recuperación, de clasificación y de rendimiento del sistema.
+El ciclo de vida adoptado es iterativo e incremental. Cada iteración entrega una porción funcional del sistema utilizable y verificable, lo que permite validar decisiones clínicas tempranas, antes de invertir esfuerzo en módulos secundarios.
+II.1.1.2 Marco de trabajo: Scrum adaptado
+Se adopta Scrum como marco de trabajo, con las adaptaciones propias de un proyecto de grado de un solo desarrollador. Se conservan los artefactos y las ceremonias que aportan valor al seguimiento del avance, y se adaptan los roles: la función de propietario del producto la asume el postulante, y la validación clínica se delega en el médico colaborador del proyecto.
+Product Owner: el postulante.
+Scrum Master: el postulante.
+Equipo de desarrollo: el postulante, con la participación del médico colaborador en la validación clínica.
+Artefactos empleados:
+Pila del producto: requisitos funcionales y no funcionales priorizados, derivados de los objetivos específicos.
+Pila del sprint: conjunto de requisitos comprometidos para cada iteración.
+Incremento: versión funcional del sistema al cierre de cada iteración, acompañada de sus pruebas.
+Ceremonias aplicadas:
+Planificación del sprint: al inicio de cada iteración, para acordar el alcance y los criterios de aceptación.
+Revisión del sprint: al cierre, con demostración del incremento y validación de resultados.
+Retrospectiva: al cierre, para registrar mejoras en el proceso de trabajo.
+II.1.1.3 Planificación de iteraciones
+El proyecto se organizó en seis iteraciones de dos a cuatro semanas, con una duración total estimada de seis meses. La Tabla siguiente resume el objetivo de cada iteración y el incremento obtenido.
+Iteración
+Duración
+Objetivo del sprint
+Incremento obtenido
+Sprint 0
+3 semanas
+Relevamiento, revisión de las NNAC y diseño de la arquitectura
+Documento de requisitos, modelo de datos y prototipo de navegación
+Sprint 1
+3 semanas
+Construcción de la base de conocimiento y del motor de recuperación
+Indexado de las NNAC en la base vectorial y consulta aumentada con datos vitales
+Sprint 2
+3 semanas
+API REST, autenticación por roles y reglas deterministas de seguridad
+API de pacientes, triaje, informes y administración con auditoría de consultas
+Sprint 3
+4 semanas
+Interfaz clínica de triaje
+Pantallas de inicio de sesión, pacientes, nuevo triaje, resultado e historial
+Sprint 4
+4 semanas
+Módulo de administración, informes y estadísticas
+Panel de administración, informes en texto y PDF y estadísticas de uso y rendimiento
+Sprint 5
+3 semanas
+Validación clínica, ajustes y documentación final
+Correcciones derivadas de la validación, pruebas automatizadas y memoria técnica
+Tabla 1. Planificación de iteraciones del proyecto
+II.1.1.4 Métodos, técnicas e instrumentos
+El relevamiento de información clínica y la validación de los resultados se apoyan en los siguientes métodos y técnicas.
+Observación directa: para relevar el orden de las acciones, los instrumentos disponibles y las condiciones de conectividad del establecimiento.
+Revisión documental: lectura y desagregación temática de las Normas Nacionales de Atención Clínica del Ministerio de Salud y Deportes.
+Modelado con UML: representación del sistema mediante casos de uso, clases, entidad-relación, secuencia y actividades.
+Prototipado incremental: construcción por iteraciones con demostración al final de cada una.
+Pruebas automatizadas: verificación de las funciones de validación clínica, reglas de seguridad, autenticación y generación de informes.
+Pruebas de aceptación: validación de los resultados de clasificación con casos clínicos revisados por el médico colaborador.
+II.1.1.5 Herramientas utilizadas
+Categoría
+Herramienta
+Uso en el proyecto
+Lenguaje
+Python 3.14
+Lenguaje principal del motor de IA y de la API.
+Lenguaje
+TypeScript
+Lenguaje de la aplicación de página única.
+API
+FastAPI y Uvicorn
+Exposición de la API REST y servidor de aplicación.
+Persistencia
+SQLAlchemy y SQLite
+Modelo de datos clínico y administrativo.
+Base vectorial
+ChromaDB
+Almacenamiento y búsqueda de los vectores de las NNAC.
+Orquestación RAG
+LlamaIndex
+Recuperación de contexto y composición del prompt.
+Embeddings
+sentence-transformers
+Modelo multilingüe paraphrase-multilingual-MiniLM-L12-v2.
+Modelos de lenguaje
+Groq y OpenAI (nube)
+Inferencia en línea según disponibilidad de conexión.
+Modelos de lenguaje
+Ollama o LM Studio (local)
+Inferencia sin conexión a internet.
+Interfaz
+React, Vite y Tailwind CSS
+Construcción y estilizado de la interfaz de usuario.
+Gráficos
+Recharts
+Visualización de los indicadores del módulo de estadísticas.
+Informes
+ReportLab
+Generación del informe clínico en PDF.
+Pruebas
+pytest
+Suite de pruebas automatizadas del sistema.
+Control de versiones
+Git y GitHub
+Historial de cambios y respaldo del código.
+Modelado
+PlantUML
+Elaboración de los diagramas UML de este capítulo.
+Tabla 2. Herramientas y tecnologías utilizadas
+II.1.2 UML como lenguaje de modelado
+El modelado se realizó con el Lenguaje Unificado de Modelado (UML), en su versión 2.5. Se eligió por ser un estándar ampliamente aceptado en la documentación de sistemas de software, por permitir representar el sistema desde perspectivas complementarias y por ofrecer diagramas comprensibles tanto para el equipo técnico como para el personal clínico.
+Los diagramas se organizan según las vistas del sistema. La vista funcional se documenta con los diagramas de casos de uso; la vista lógica, con el diagrama de clases; la vista de datos, con el diagrama entidad-relación; la vista dinámica o de comportamiento, con los diagramas de secuencia y de actividades; y la vista física, con el diagrama de despliegue. La Tabla siguiente relaciona cada diagrama con su propósito y el apartado donde se presenta.
+Diagrama
+Propósito
+Apartado
+Casos de uso
+Delimitar la funcionalidad del sistema desde la perspectiva de los actores.
+II.1.3 y II.1.4
+Clases
+Describir la estructura lógica: entidades del dominio, servicios y sus relaciones.
+II.1.5
+Entidad-Relación
+Documentar el esquema de datos, sus claves y sus restricciones de integridad.
+II.1.6
+Secuencia
+Detallar el intercambio de mensajes en los procesos críticos del sistema.
+II.1.7
+Actividades
+Representar el flujo de trabajo y las decisiones del usuario y del sistema.
+II.1.8
+Despliegue
+Mostrar la distribución física de los componentes y las dependencias externas.
+II.1.9
+Tabla 3. Diagramas UML empleados y su correspondencia con las vistas del sistema
+II.1.3 Diagramas de casos de uso
+Los casos de uso se construyeron a partir de las operaciones que el sistema efectivamente expone y de los procesos internos que determinan su comportamiento clínico. Se identificaron 28 casos de uso, 24 de ellos con actor humano y 4 como servicios internos del sistema.
+II.1.3.1 Actores del sistema
+Los actores primarios corresponden a los tres roles definidos en el sistema de control de acceso. Los actores de apoyo son componentes externos que participan en la ejecución de un caso de uso, pero que no inician la interacción.
+Actor
+Tipo
+Descripción
+Enfermero de triaje
+Primario
+Personal de salud encargado de la primera valoración del paciente. Registra signos vitales y síntomas, ejecuta el triaje y consulta los resultados y el historial.
+Médico
+Primario
+Profesional responsable de la decisión clínica. Ejecuta triajes, revisa resultados, genera informes y valida los casos que quedaron sin clasificar.
+Administrador
+Primario
+Responsable de la operación del sistema. Gestiona usuarios, mantiene las fichas de pacientes, consulta las estadísticas y administra la base de conocimiento normativo.
+Servicio de modelo de lenguaje en la nube
+Apoyo
+Proveedor de inferencia remoto (Groq u OpenAI). Se utiliza cuando el establecimiento dispone de conexión a internet.
+Servidor local de inferencia
+Apoyo
+Servidor compatible con la interfaz de OpenAI (Ollama o LM Studio) ejecutado en el propio establecimiento. Permite operar sin conexión a internet.
+Base de datos vectorial
+Apoyo
+Almacena los fragmentos de las NNAC y sus vectores, y responde a las consultas de similitud semántica.
+Documentos de las NNAC
+Apoyo
+Corpus normativo en formato PDF que constituye la fuente de conocimiento del sistema.
+Tabla 4. Actores del sistema de triaje
+II.1.3.2 Diagrama de casos de uso de triaje
+Este diagrama muestra todos los casos de uso involucrados en la evaluación por triaje, las especificación de cada uno se detallan en las siguientes secciones.
+Figura 1. Diagrama de casos de uso general de una evaluación de triaje
+II.1.3.3 Diagramas de casos de uso por módulo
+Se elaboró un diagrama por cada módulo funcional, con el fin de mantener la legibilidad de cada conjunto de casos de uso y de facilitar su validación con el personal clínico.
+El módulo de autenticación y usuarios concentra el acceso al sistema. El registro inicial de la cuenta administradora se contempla como caso de uso de instalación, disponible únicamente mientras el sistema no cuenta con ningún administrador activo.
+Figura 2. Casos de uso del módulo de autenticación y usuarios
+El módulo de pacientes administra la ficha de identificación. La edad no se almacena: se calcula en cada consulta a partir de la fecha de nacimiento, para que nunca quede desactualizada.
+Figura 3. Casos de uso del módulo de gestión de pacientes
+El módulo de triaje concentra la funcionalidad principal del sistema. Los casos de uso internos de recuperación normativa, evaluación de reglas de seguridad, determinación del nivel final y registro de auditoría se ejecutan siempre como parte de la evaluación de un triaje.
+Figura 4. Casos de uso del módulo de triaje
+El módulo de informes convierte el registro de auditoría en un documento entregable, en tres formatos con propósitos distintos: datos estructurados, texto plano y documento portátil.
+Figura 5. Casos de uso del módulo de informes
+El módulo de administración y estadísticas está restringido al rol administrador. Incluye las protecciones que impiden que el sistema quede sin ningún administrador activo.
+Figura 6. Casos de uso del módulo de administración y estadísticas
+El módulo de gestión del conocimiento normativo documenta el proceso de indexado de las NNAC. Es el único punto por el que ingresa conocimiento nuevo al sistema, lo que lo convierte en una operación auditable y controlada.
+Figura 7. Casos de uso del módulo de gestión del conocimiento normativo
+II.1.4 Especificación de casos de uso
+Se documentan 28 casos de uso agrupados por módulo. Los 24 primeros tienen actor humano y se especifican con el formato completo: identificación, objetivo, precondiciones, flujo normal, flujos alternativos, excepciones, postcondiciones y reglas de negocio. Los cuatro últimos son servicios internos del sistema y se especifican en formato compacto, porque no dependen de la interacción de un usuario.
+Actor primario: quien inicia el caso de uso y obtiene un resultado de valor.
+Actores de apoyo: sistemas o componentes externos que participan.
+Flujo normal: secuencia de pasos que conduce al objetivo sin desvíos.
+Flujo alternativo: variante válida que también alcanza el objetivo.
+Excepción: situación que impide completar el caso de uso.
+Regla de negocio: restricción que el sistema debe cumplir siempre.
+Prefijo
+Significado
+RN
+Regla de negocio
+CU
+Caso de uso
+Tabla 5. Convenciones de nomenclatura usadas en las especificaciones
+II.1.4.1 Módulo de autenticación y usuarios
+Agrupa los casos de uso que dan acceso al sistema. El control de acceso se implementa con tokens JWT firmados con HS256 y con contraseñas almacenadas mediante hash bcrypt; el rol del usuario determina las funcionalidades a las que puede acceder.
+CU-01 Iniciar sesión
+Campo
+Descripción
+Código
+CU-01
+Nombre
+Iniciar sesión
+Actor primario
+Personal de salud (médico o enfermero) y administrador
+Actores de apoyo
+Servicio de seguridad (JWT y bcrypt), base de datos
+Objetivo
+Obtener un token de acceso válido para operar en el sistema.
+Descripción
+El usuario ingresa su correo electrónico y su contraseña. El sistema busca la cuenta, verifica la contraseña contra el hash almacenado y, si coincide, emite un token JWT con vigencia de ocho horas.
+Precondiciones
+El usuario está registrado en el sistema y su cuenta está activa.
+Flujo normal
+1. El usuario abre la pantalla de inicio de sesión.
+2. Ingresa su correo electrónico y su contraseña.
+3. El sistema valida el formato de los datos ingresados.
+4. El sistema busca la cuenta por correo electrónico.
+5. El sistema verifica la contraseña contra el hash bcrypt.
+6. El sistema genera el token JWT con el correo como sujeto.
+7. El sistema devuelve el token y el tipo de token.
+8. El cliente almacena el token y consulta el perfil del usuario.
+9. El sistema redirige al inicio con la sesión activa.
+Flujos alternativos
+A1. El usuario olvidó su contraseña: el sistema responde con un error genérico y el usuario reintenta el ingreso.
+A2. El usuario cierra sesión: el cliente descarta el token almacenado y regresa a la pantalla de inicio de sesión.
+Excepciones
+E1. Cuenta inexistente o inactiva: se responde HTTP 401 «Credenciales inválidas», sin revelar si la cuenta existe.
+E2. Contraseña incorrecta: se responde HTTP 401 con el mismo mensaje.
+E3. Correo con formato inválido: se responde HTTP 422 indicando el campo.
+Postcondiciones
+El usuario queda autenticado y las operaciones posteriores envían el encabezado Authorization: Bearer <token>.
+Reglas de negocio
+RN1. El mensaje de error debe ser idéntico para cuenta inexistente y contraseña incorrecta.
+RN2. El token expira a las ocho horas de su emisión.
+RN3. Toda respuesta HTTP 401 fuera de las rutas de autenticación provoca el cierre de sesión automático en el cliente.
+Tabla 6. Especificación del caso de uso CU-01
+CU-02 Consultar perfil propio
+Campo
+Descripción
+Código
+CU-02
+Nombre
+Consultar perfil propio
+Actor primario
+Personal de salud y administrador
+Actores de apoyo
+Servicio de autenticación, base de datos
+Objetivo
+Recuperar los datos de la cuenta autenticada para personalizar la interfaz.
+Descripción
+Con el token vigente, el cliente solicita el perfil y recibe nombre, correo, rol, centro de salud y estado de la cuenta. El rol determina qué opciones del menú se habilitan.
+Precondiciones
+El usuario inició sesión y cuenta con un token válido.
+Flujo normal
+1. El cliente envía el token en el encabezado de la solicitud.
+2. El sistema decodifica el token y obtiene el correo.
+3. El sistema busca la cuenta y comprueba que esté activa.
+4. El sistema devuelve el perfil del usuario.
+Flujos alternativos
+A1. El token expiró mientras la aplicación estaba abierta: el cliente descarta la sesión y redirige al inicio de sesión.
+Excepciones
+E1. Token ausente o malformado: se responde HTTP 401 «No autenticado».
+E2. Cuenta eliminada o desactivada: se responde HTTP 401 «Usuario no encontrado o inactivo».
+Postcondiciones
+El cliente conoce el rol del usuario y adapta el menú y las rutas protegidas.
+Reglas de negocio
+RN1. Solo el módulo de administración y las estadísticas requieren el rol admin; los demás módulos están disponibles para los tres roles.
+RN2. Una cuenta desactivada conserva su historial de auditoría, pero no puede volver a ingresar.
+Tabla 7. Especificación del caso de uso CU-02
+CU-03 Registrar usuario inicial
+Campo
+Descripción
+Código
+CU-03
+Nombre
+Registrar usuario inicial
+Actor primario
+Administrador (bootstrap del sistema)
+Actores de apoyo
+Servicio de seguridad, base de datos
+Objetivo
+Crear la cuenta administradora cuando el sistema se despliega por primera vez.
+Descripción
+Permite crear un usuario con rol admin únicamente mientras no exista ningún administrador activo. Una vez que existe, el alta de usuarios queda restringida al módulo de administración.
+Precondiciones
+No existe ninguna cuenta con rol admin activa en la base de datos.
+Flujo normal
+1. El responsable de la instalación accede a la pantalla de registro.
+2. Ingresa CI, nombre completo, correo, contraseña, rol y centro de salud.
+3. El sistema verifica que el rol pertenezca al conjunto permitido.
+4. El sistema comprueba que no exista un administrador activo.
+5. El sistema verifica que el correo y la CI no estén registrados.
+6. El sistema hashea la contraseña y crea la cuenta.
+7. El sistema devuelve la cuenta creada sin la contraseña.
+Flujos alternativos
+A1. El sistema ya tiene un administrador: el alta con rol admin se rechaza y se invita a usar el panel de administración.
+Excepciones
+E1. Rol fuera del conjunto permitido: HTTP 400 «Rol inválido».
+E2. Correo ya registrado: HTTP 400 «El email ya está registrado».
+E3. CI ya registrada: HTTP 400 «La cédula ya está registrada».
+E4. Contraseña de menos de seis caracteres: HTTP 422.
+Postcondiciones
+La cuenta queda creada y activa, y el sistema habilita el módulo de administración.
+Reglas de negocio
+RN1. El correo electrónico y la CI son únicos en el sistema.
+RN2. La contraseña nunca se almacena en texto plano.
+RN3. El rol admin solo se concede por esta vía durante la instalación inicial; después, solo un administrador puede crear cuentas.
+Tabla 8. Especificación del caso de uso CU-03
+II.1.4.2 Módulo de gestión de pacientes
+Los pacientes son la entidad central del sistema: toda consulta de triaje se asocia a un paciente registrado. La ficha almacena los datos de identificación y el sistema calcula la edad de forma dinámica a partir de la fecha de nacimiento, para que no quede desactualizada.
+CU-04 Registrar paciente
+Campo
+Descripción
+Código
+CU-04
+Nombre
+Registrar paciente
+Actor primario
+Personal de salud
+Actores de apoyo
+Base de datos
+Objetivo
+Incorporar la ficha de un paciente nuevo al sistema.
+Descripción
+El usuario completa los datos de identificación del paciente en un formulario por pasos. El sistema valida el formato de cada campo, verifica que la CI no esté registrada y almacena la ficha.
+Precondiciones
+El usuario inició sesión. El paciente no existe en el sistema.
+Flujo normal
+1. El usuario abre «Nuevo paciente».
+2. Ingresa la cédula de identidad (solo dígitos).
+3. Ingresa nombre, apellido, fecha de nacimiento y sexo.
+4. Ingresa teléfono y dirección (campos opcionales).
+5. El sistema valida longitudes y obligatoriedad de los campos.
+6. El sistema verifica que la CI no esté registrada.
+7. El sistema persiste la ficha del paciente.
+8. El sistema devuelve la ficha con HTTP 201 y la edad calculada.
+Flujos alternativos
+A1. El usuario abandona el formulario: los datos no se envían y no se crea ningún registro.
+Excepciones
+E1. CI repetida: HTTP 400 «La cédula ya está registrada».
+E2. Campo obligatorio vacío o fuera de longitud: HTTP 422 con el campo señalado.
+E3. CI con caracteres no numéricos: la validación del cliente impide el envío.
+Postcondiciones
+El paciente queda registrado y disponible para iniciar consultas de triaje.
+Reglas de negocio
+RN1. La CI es obligatoria y única.
+RN2. La fecha de nacimiento es obligatoria y determina la edad del paciente en cada consulta.
+RN3. Ante un error de validación, el formulario conserva los datos ingresados y muestra la guía de corrección junto al campo.
+Tabla 9. Especificación del caso de uso CU-04
+CU-05 Buscar y listar pacientes
+Campo
+Descripción
+Código
+CU-05
+Nombre
+Buscar y listar pacientes
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Base de datos
+Objetivo
+Localizar rápidamente la ficha de un paciente para iniciar un triaje.
+Descripción
+Presenta el listado de pacientes ordenado alfabéticamente y permite filtrar por CI, nombre o apellido con coincidencia parcial.
+Precondiciones
+El usuario inició sesión y existen pacientes registrados.
+Flujo normal
+1. El usuario abre la sección «Pacientes».
+2. El sistema devuelve el listado ordenado por nombre y apellido.
+3. El usuario escribe un término de búsqueda.
+4. El sistema filtra por CI, nombre o apellido.
+5. El usuario selecciona el paciente encontrado.
+Flujos alternativos
+A1. La búsqueda no devuelve resultados: el sistema muestra un mensaje y ofrece registrar al paciente.
+Excepciones
+E1. Sesión expirada: HTTP 401 y redirección al inicio de sesión.
+Postcondiciones
+El sistema muestra la ficha del paciente seleccionado.
+Reglas de negocio
+RN1. La búsqueda no distingue mayúsculas ni minúsculas.
+RN2. El listado se pagina con un máximo de cien registros por solicitud.
+Tabla 10. Especificación del caso de uso CU-05
+CU-06 Consultar detalle del paciente
+Campo
+Descripción
+Código
+CU-06
+Nombre
+Consultar detalle del paciente
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Base de datos
+Objetivo
+Revisar la ficha completa del paciente y su historial de triajes.
+Descripción
+Muestra los datos de identificación, la edad calculada y el listado de consultas previas con su color de triaje y su fecha.
+Precondiciones
+El paciente existe y el usuario inició sesión.
+Flujo normal
+1. El usuario selecciona un paciente del listado o de la búsqueda.
+2. El sistema devuelve los datos de la ficha.
+3. El sistema calcula la edad a partir de la fecha de nacimiento.
+4. El sistema lista las consultas previas con su nivel de urgencia.
+5. El usuario puede abrir el informe del paciente o iniciar un triaje.
+Flujos alternativos
+A1. El paciente no tiene consultas: el sistema informa que no hay antecedentes y ofrece iniciar el primero.
+Excepciones
+E1. Paciente inexistente: HTTP 404 «Paciente no encontrado».
+Postcondiciones
+El usuario conoce el historial del paciente y puede continuar el flujo clínico.
+Reglas de negocio
+RN1. La edad se calcula en el momento de la consulta y no se almacena.
+RN2. El historial se muestra del más reciente al más antiguo.
+Tabla 11. Especificación del caso de uso CU-06
+CU-07 Actualizar datos del paciente
+Campo
+Descripción
+Código
+CU-07
+Nombre
+Actualizar datos del paciente
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Corregir o completar los datos de identificación de un paciente.
+Descripción
+Permite modificar cualquiera de los campos de la ficha. El sistema verifica primero que el paciente exista y luego aplica solo los campos enviados, sin sobrescribir el resto.
+Precondiciones
+El usuario tiene rol admin y el paciente existe.
+Flujo normal
+1. El administrador abre la ficha del paciente y elige «Editar».
+2. El formulario se precarga con los datos actuales.
+3. El administrador modifica los campos necesarios.
+4. El sistema verifica que el paciente exista.
+5. El sistema aplica únicamente los campos enviados.
+6. El sistema actualiza la marca de fecha de modificación.
+7. El sistema devuelve la ficha actualizada.
+Flujos alternativos
+A1. El administrador cancela la edición: no se aplica ningún cambio.
+Excepciones
+E1. Paciente inexistente: HTTP 404 «Paciente no encontrado».
+E2. Fecha de nacimiento con formato inválido: HTTP 422.
+Postcondiciones
+La ficha queda actualizada y las consultas históricas conservan sus propios datos clínicos.
+Reglas de negocio
+RN1. Los cambios parciales no alteran los campos omitidos.
+RN2. Mejora pendiente: la actualización aún no verifica que la nueva CI no pertenezca a otro paciente; esa comprobación recae en la restricción única de la base de datos (ver II.1.10).
+Tabla 12. Especificación del caso de uso CU-07
+CU-08 Eliminar paciente
+Campo
+Descripción
+Código
+CU-08
+Nombre
+Eliminar paciente
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Retirar del sistema la ficha de un paciente y sus consultas asociadas.
+Descripción
+Operación destructiva que exige confirmación previa en la interfaz. Al eliminar la ficha, la base de datos elimina en cascada todas las consultas de triaje del paciente.
+Precondiciones
+El usuario tiene rol admin y el paciente existe.
+Flujo normal
+1. El administrador pulsa «Eliminar» en la ficha del paciente.
+2. El sistema muestra un diálogo de confirmación.
+3. El administrador confirma la operación.
+4. El sistema elimina las consultas asociadas por cascada.
+5. El sistema elimina la ficha del paciente.
+6. El sistema responde HTTP 204 y cierra la ficha.
+Flujos alternativos
+A1. El administrador cancela el diálogo: no se elimina nada.
+Excepciones
+E1. Paciente inexistente: HTTP 404 «Paciente no encontrado».
+Postcondiciones
+El paciente y sus consultas dejan de existir en el sistema.
+Reglas de negocio
+RN1. La interfaz exige confirmación explícita antes de eliminar.
+RN2. La eliminación es irreversible; por eso se recomienda generar el informe del paciente antes de eliminarlo.
+Tabla 13. Especificación del caso de uso CU-08
+II.1.4.3 Módulo de triaje
+Es el módulo central del sistema. El usuario elige el proveedor de modelo de lenguaje, registra los signos vitales medidos y describe el motivo de consulta; el sistema recupera las normas aplicables, consulta al modelo y combina ese resultado con reglas deterministas de seguridad.
+CU-09 Consultar modelos LLM disponibles
+Campo
+Descripción
+Código
+CU-09
+Nombre
+Consultar modelos LLM disponibles
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Servicios de modelos de lenguaje configurados
+Objetivo
+Conocer qué proveedores de modelo de lenguaje pueden usarse en la consulta.
+Descripción
+El sistema recorre el registro de proveedores, descarta los que no están configurados (por ejemplo, sin clave de API) y devuelve los nombres de los disponibles para poblar el selector de la interfaz.
+Precondiciones
+Al menos un proveedor está configurado: Groq, OpenAI u Ollama local.
+Flujo normal
+1. El usuario abre el formulario de nuevo triaje.
+2. El cliente solicita el listado de modelos disponibles.
+3. El sistema recorre el registro de proveedores.
+4. El sistema devuelve los nombres de los proveedores disponibles.
+5. El usuario selecciona el proveedor para la consulta.
+Flujos alternativos
+A1. Un proveedor falla al inicializarse: se registra una advertencia y se continúa con los demás, sin interrumpir la operación.
+Excepciones
+E1. Ningún proveedor disponible: HTTP 503 «No hay modelos LLM disponibles», con la indicación de configurar las credenciales.
+Postcondiciones
+El formulario muestra los proveedores utilizables y uno de ellos queda seleccionado por defecto.
+Reglas de negocio
+RN1. El orden del registro de proveedores define la prioridad cuando el usuario no elige ninguno (Groq, OpenAI, Ollama).
+RN2. Groq y OpenAI requieren clave de API; el proveedor local requiere un servidor compatible en ejecución.
+Tabla 14. Especificación del caso de uso CU-09
+CU-10 Iniciar triaje y registrar signos vitales
+Campo
+Descripción
+Código
+CU-10
+Nombre
+Iniciar triaje y registrar signos vitales
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Ninguno
+Objetivo
+Preparar la consulta con los datos clínicos del paciente.
+Descripción
+El usuario selecciona al paciente, registra los signos vitales que logró medir y describe el motivo de consulta y los síntomas. Los signos vitales no medidos se dejan vacíos y el sistema los informa explícitamente como «No registrado».
+Precondiciones
+El paciente está registrado en el sistema.
+Flujo normal
+1. El usuario abre «Nuevo triaje».
+2. Busca y selecciona al paciente.
+3. El sistema muestra la edad y el sexo del paciente.
+4. El usuario registra temperatura, presión arterial, frecuencia cardíaca, frecuencia respiratoria y saturación de oxígeno.
+5. El usuario describe el motivo de consulta y los síntomas.
+6. El usuario elige el proveedor de modelo de lenguaje.
+7. El usuario pulsa «Evaluar triaje».
+Flujos alternativos
+A1. El paciente no está registrado: el usuario lo registra y regresa al formulario de triaje.
+A2. El usuario no dispone de algún instrumento de medición: deja el campo vacío y el sistema lo trata como no medido.
+Excepciones
+E1. Descripción de síntomas demasiado corta: el sistema exige al menos diez caracteres para poder clasificar.
+E2. Valor imposible (por ejemplo, saturación de 150 %): HTTP 422 con el campo señalado y sin borrar el resto del formulario.
+Postcondiciones
+Los datos clínicos están listos para ejecutar la evaluación.
+Reglas de negocio
+RN1. Un signo vital vacío significa «no medido»; nunca se sustituye por un valor normal.
+RN2. La edad y el sexo provienen de la ficha del paciente y no se ingresan manualmente en el triaje.
+RN3. Los campos obligatorios se marcan con asterisco y los ambiguos llevan ayuda contextual.
+Tabla 15. Especificación del caso de uso CU-10
+CU-11 Ejecutar evaluación de triaje
+Campo
+Descripción
+Código
+CU-11
+Nombre
+Ejecutar evaluación de triaje
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Servicio LLM (Groq, OpenAI u Ollama), base vectorial, reglas de seguridad, base de datos
+Objetivo
+Obtener el nivel de urgencia del caso según las NNAC.
+Descripción
+El sistema evalúa las reglas deterministas, recupera de la base vectorial los cinco fragmentos de las NNAC más similares al caso, construye el prompt con el contexto normativo y los datos del paciente, consulta al modelo elegido, interpreta el nivel devuelto y determina el nivel final como el más urgente entre el del modelo y el de las reglas.
+Precondiciones
+El paciente existe, los signos vitales presentes están en rango fisiológico, la descripción de síntomas alcanza la longitud mínima y hay al menos un proveedor de modelo disponible.
+Flujo normal
+1. El cliente envía el paciente, los signos vitales, los síntomas y el modelo elegido.
+2. El sistema verifica que el paciente exista.
+3. El sistema construye los datos vitales y revalida su coherencia.
+4. El sistema evalúa las reglas deterministas de red flags.
+5. El sistema recupera los fragmentos normativos más similares.
+6. El sistema construye el prompt e invoca al modelo.
+7. El sistema mide el tiempo de respuesta del modelo.
+8. El sistema interpreta el nivel de urgencia devuelto.
+9. El sistema calcula el nivel final, el más urgente entre el nivel del modelo y el de las reglas.
+10. El sistema persiste la consulta con toda su auditoría.
+11. El sistema devuelve el resultado con HTTP 201.
+Flujos alternativos
+A1. La presión sistólica no supera a la diastólica: la revalidación clínica rechaza los datos.
+A2. El modelo no devuelve un nivel reconocible pero hay reglas activadas: el nivel de las reglas prevalece.
+A3. El modelo no devuelve nivel y no hay reglas activadas: la consulta queda sin clasificar para revisión manual.
+A4. El triaje se ejecuta sin sesión iniciada: la consulta se registra con auditoría anónima.
+Excepciones
+E1. Paciente inexistente: HTTP 404.
+E2. Signos vitales fuera de rango: HTTP 422 sin llegar al modelo.
+E3. Síntomas de menos de diez caracteres: HTTP 422.
+E4. El proveedor de modelo no responde: se informa el error de comunicación y la consulta no se persiste.
+Postcondiciones
+La consulta queda almacenada con el nivel de urgencia, la respuesta completa del modelo, el prompt utilizado, el modelo, el tiempo de respuesta y las reglas activadas.
+Reglas de negocio
+RN1. Las reglas deterministas nunca disminuyen el nivel propuesto por el modelo: solo pueden elevarlo.
+RN2. Un valor no medido se informa como «No registrado» y se declara como limitación en la justificación.
+RN3. El sistema nunca asume un nivel por defecto: si no puede clasificar, deja la consulta sin clasificar.
+RN4. Los rangos fisiológicos se validan dos veces: en el esquema de entrada y en la revalidación clínica previa al modelo.
+Tabla 16. Especificación del caso de uso CU-11
+CU-12 Consultar resultado de la evaluación
+Campo
+Descripción
+Código
+CU-12
+Nombre
+Consultar resultado de la evaluación
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Base de datos
+Objetivo
+Revisar el resultado completo del triaje y las acciones recomendadas.
+Descripción
+Presenta el resultado con el color de la escala Manchester, la justificación, las acciones recomendadas, la indicación de referencia y las fuentes normativas. Si hubo reglas de seguridad activadas, se muestran de forma destacada.
+Precondiciones
+La consulta existe en el sistema.
+Flujo normal
+1. El cliente solicita la consulta por su identificador.
+2. El sistema devuelve el registro completo.
+3. El cliente pinta el color correspondiente al nivel de urgencia.
+4. El sistema muestra las reglas activadas, la respuesta del modelo y las métricas de la consulta.
+Flujos alternativos
+A1. La consulta quedó sin clasificar: se muestra una alerta de revisión manual en lugar de un color.
+A2. Existen reglas activadas: se muestran como advertencia adicional aunque coincidan con el nivel del modelo.
+Excepciones
+E1. Consulta inexistente: HTTP 404 «Consulta no encontrada».
+Postcondiciones
+El usuario conoce el nivel, su justificación y las acciones a seguir.
+Reglas de negocio
+RN1. Toda pantalla de resultado incluye el recordatorio de que la herramienta no reemplaza la evaluación médica presencial.
+RN2. Las reglas de seguridad activadas se muestran siempre, porque explican una elevación del nivel respecto del propuesto por el modelo.
+Tabla 17. Especificación del caso de uso CU-12
+CU-13 Consultar historial de consultas
+Campo
+Descripción
+Código
+CU-13
+Nombre
+Consultar historial de consultas
+Actor primario
+Personal de salud (médico o enfermero)
+Actores de apoyo
+Base de datos
+Objetivo
+Revisar las consultas de triaje realizadas, filtrando por paciente, nivel de urgencia o rango de fechas.
+Descripción
+Devuelve el listado de consultas ordenado de la más reciente a la más antigua, con filtros combinables. La interfaz permite además filtrar por color desde la pantalla de historial.
+Precondiciones
+El usuario inició sesión.
+Flujo normal
+1. El usuario abre la sección «Historial».
+2. El sistema devuelve las consultas registradas.
+3. El usuario aplica un filtro por color, paciente o fecha.
+4. El sistema devuelve las consultas que cumplen el filtro.
+5. El usuario abre el detalle de una consulta.
+Flujos alternativos
+A1. No hay consultas que cumplan el filtro: el sistema informa que no se encontraron resultados.
+Excepciones
+E1. Formato de fecha inválido en el filtro: HTTP 422.
+E2. Sesión expirada: HTTP 401.
+Postcondiciones
+El usuario revisa el detalle de la consulta seleccionada.
+Reglas de negocio
+RN1. El nivel «sin clasificar» es un valor posible del filtro, porque identifica los casos que requieren revisión manual.
+RN2. Los filtros de fecha son inclusivos en ambos extremos.
+Tabla 18. Especificación del caso de uso CU-13
+II.1.4.4 Módulo de informes
+Los informes convierten el registro de auditoría en un documento entregable. Se ofrecen tres formatos con distinto propósito: datos estructurados para la interfaz, texto plano para revisión rápida y PDF para adjuntar a la historia clínica.
+CU-14 Consultar historial del paciente
+Campo
+Descripción
+Código
+CU-14
+Nombre
+Consultar historial del paciente
+Actor primario
+Médico y enfermero de triaje
+Actores de apoyo
+Base de datos
+Objetivo
+Obtener el historial estructurado de triajes de un paciente.
+Descripción
+Devuelve el conjunto de consultas del paciente ordenado de la más reciente a la más antigua, con signos vitales, nivel de urgencia, respuesta del modelo y métricas.
+Precondiciones
+El paciente existe y el usuario inició sesión.
+Flujo normal
+1. El usuario abre la ficha del paciente.
+2. El sistema recupera sus consultas.
+3. El sistema las ordena de la más reciente a la más antigua.
+4. El sistema devuelve el historial completo.
+Flujos alternativos
+A1. El paciente no tiene consultas: se devuelve una lista vacía y la interfaz informa que no hay antecedentes.
+Excepciones
+E1. Paciente inexistente: HTTP 404 «Paciente no encontrado».
+Postcondiciones
+El usuario visualiza la evolución clínica del paciente.
+Reglas de negocio
+RN1. El historial incluye las consultas realizadas sin sesión iniciada, que quedan con auditoría anónima.
+Tabla 19. Especificación del caso de uso CU-14
+CU-15 Generar informe en texto plano
+Campo
+Descripción
+Código
+CU-15
+Nombre
+Generar informe en texto plano
+Actor primario
+Médico
+Actores de apoyo
+Base de datos
+Objetivo
+Obtener un informe legible del historial del paciente para copiar o imprimir.
+Descripción
+Compone un documento de texto con los datos del paciente, la fecha de generación, el usuario que lo genera y, por cada consulta, el nivel de urgencia, el modelo, el tiempo, los tokens y el prompt utilizado.
+Precondiciones
+El paciente existe y el usuario inició sesión.
+Flujo normal
+1. El usuario solicita el informe en texto.
+2. El sistema recupera la ficha y las consultas del paciente.
+3. El sistema compone el documento en orden cronológico.
+4. El sistema devuelve el informe junto con el usuario que lo generó.
+Flujos alternativos
+A1. El paciente no tiene consultas: el informe se genera con la indicación de que no hay registros.
+Excepciones
+E1. Paciente inexistente: HTTP 404.
+Postcondiciones
+El usuario dispone del informe para copiarlo o archivarlo.
+Reglas de negocio
+RN1. El informe identifica a quien lo generó, como parte de la trazabilidad.
+RN2. El prompt utilizado se incluye en el informe porque forma parte de la evidencia de auditoría clínica.
+Tabla 20. Especificación del caso de uso CU-15
+CU-16 Generar y descargar informe PDF
+Campo
+Descripción
+Código
+CU-16
+Nombre
+Generar y descargar informe PDF
+Actor primario
+Médico y enfermero de triaje
+Actores de apoyo
+Generador de documentos (ReportLab), base de datos
+Objetivo
+Obtener un informe formal en PDF para adjuntar a la historia clínica.
+Descripción
+Genera un documento A4 con la identificación del paciente, el historial de consultas y, por cada una, una barra de encabezado con el color de la escala Manchester, los signos vitales registrados, el resultado del modelo y el prompt utilizado.
+Precondiciones
+El paciente existe, el usuario inició sesión y el servidor tiene instalada la librería de generación de PDF.
+Flujo normal
+1. El usuario pulsa «Descargar informe PDF».
+2. El sistema recupera la ficha y las consultas del paciente.
+3. El sistema compone el documento con estilos y tablas.
+4. El sistema pinta la barra de color según el nivel de cada consulta.
+5. El sistema agrega el pie de página con la identificación del sistema y la numeración.
+6. El sistema devuelve el archivo como descarga directa.
+Flujos alternativos
+A1. La librería de PDF no está instalada: el endpoint responde HTTP 500 con un mensaje explícito en lugar de fallar de forma silenciosa.
+Excepciones
+E1. Paciente inexistente: HTTP 404.
+Postcondiciones
+El usuario obtiene el archivo PDF con el nombre del paciente y la fecha de generación.
+Reglas de negocio
+RN1. El PDF se genera sin compresión, de modo que su texto pueda buscarse y copiarse.
+RN2. Cada consulta del informe muestra su nivel con el mismo código de color que la interfaz y que la respuesta del modelo.
+Tabla 21. Especificación del caso de uso CU-16
+II.1.4.5 Módulo de administración y estadísticas
+Este módulo está restringido al rol admin. Además de la gestión de usuarios, ofrece tres vistas analíticas construidas a partir del registro de auditoría: la situación general del sistema, el comportamiento del triaje en un período y el rendimiento de los modelos de lenguaje.
+CU-17 Consultar estadísticas generales
+Campo
+Descripción
+Código
+CU-17
+Nombre
+Consultar estadísticas generales
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Conocer la situación general del sistema en una sola pantalla.
+Descripción
+Devuelve totales de consultas, pacientes y usuarios, la distribución por nivel de urgencia, el promedio de tiempo de respuesta, el modelo más usado, la demografía por sexo y rango de edad, las consultas de los últimos treinta días, el uso por modelo con tokens, la actividad por usuario y las palabras clave más frecuentes de los motivos.
+Precondiciones
+El usuario tiene rol admin.
+Flujo normal
+1. El administrador abre el panel de administración.
+2. El sistema verifica el rol del usuario.
+3. El sistema calcula los agregados.
+4. El sistema devuelve las series y los indicadores.
+5. La interfaz dibuja las tarjetas y los gráficos.
+Flujos alternativos
+A1. El sistema no tiene consultas registradas: los agregados devuelven cero y los gráficos se muestran vacíos.
+A2. Ninguna consulta tiene tokens instrumentados: el total de tokens es cero, sin valores inventados.
+Excepciones
+E1. Usuario sin rol admin: HTTP 403 «Se requiere rol de administrador».
+Postcondiciones
+El administrador conoce los indicadores operativos del sistema.
+Reglas de negocio
+RN1. Las consultas sin nivel se agrupan como «sin clasificar».
+RN2. La actividad por usuario considera las diez cuentas más activas y excluye las consultas anónimas.
+RN3. Las palabras clave se obtienen filtrando palabras vacías y términos genéricos; es una aproximación orientativa, no un conteo clínico de diagnósticos.
+Tabla 22. Especificación del caso de uso CU-17
+CU-18 Consultar estadísticas de triaje por período
+Campo
+Descripción
+Código
+CU-18
+Nombre
+Consultar estadísticas de triaje por período
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Analizar el comportamiento del triaje en un período determinado.
+Descripción
+Repite los agregados de triaje acotados a un rango de fechas. Admite los últimos treinta días, los últimos noventa o un rango personalizado, y completa con ceros los días sin consultas.
+Precondiciones
+El usuario tiene rol admin.
+Flujo normal
+1. El administrador abre «Estadísticas de triaje».
+2. Elige el período (treinta días, noventa días o rango personalizado).
+3. El sistema resuelve el rango de fechas.
+4. El sistema filtra las consultas del período.
+5. El sistema calcula los agregados y la demografía de los pacientes atendidos.
+6. El sistema devuelve la serie diaria completa del período.
+Flujos alternativos
+A1. No se indica período: el sistema asume los últimos treinta días.
+A2. El período no tiene consultas: se devuelven ceros y listas vacías.
+Excepciones
+E1. La fecha inicial es posterior a la final: HTTP 400.
+E2. Se indica una cantidad de días menor que uno: HTTP 400.
+Postcondiciones
+El administrador compara la demanda y la composición de los casos entre períodos.
+Reglas de negocio
+RN1. Si se envía un rango explícito, tiene prioridad sobre la cantidad de días.
+RN2. El rango es inclusivo en ambos extremos.
+RN3. La demografía considera solo a los pacientes que consultaron dentro del período.
+Tabla 23. Especificación del caso de uso CU-18
+CU-19 Consultar rendimiento de los modelos LLM
+Campo
+Descripción
+Código
+CU-19
+Nombre
+Consultar rendimiento de los modelos LLM
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Comparar el uso y la velocidad de los proveedores de modelos de lenguaje.
+Descripción
+Devuelve, por cada modelo utilizado, la cantidad de consultas, los tokens consumidos y los tiempos de respuesta promedio, mínimo y máximo. Además informa los tiempos globales del sistema.
+Precondiciones
+El usuario tiene rol admin y existen consultas con modelo registrado.
+Flujo normal
+1. El administrador abre «Estadísticas de LLM».
+2. El sistema agrupa las consultas por modelo.
+3. El sistema calcula consultas, tokens y tiempos por modelo.
+4. El sistema devuelve el resumen global y el detalle por modelo.
+5. La interfaz dibuja la comparación.
+Flujos alternativos
+A1. No hay consultas con modelo registrado: se devuelven ceros y el sistema lo indica en pantalla.
+Excepciones
+E1. Usuario sin rol admin: HTTP 403.
+Postcondiciones
+El administrador decide qué proveedor conviene según velocidad y disponibilidad en su contexto de conectividad.
+Reglas de negocio
+RN1. Los tiempos se miden solo alrededor de la invocación al modelo, excluyendo la persistencia.
+RN2. Cuando el proveedor no informa el consumo de tokens, el valor se registra como vacío y no se estima.
+Tabla 24. Especificación del caso de uso CU-19
+CU-20 Listar usuarios
+Campo
+Descripción
+Código
+CU-20
+Nombre
+Listar usuarios
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Ver todas las cuentas del sistema y su estado.
+Descripción
+Devuelve el listado de cuentas con su CI, nombre, correo, rol, centro de salud y estado activo. La interfaz permite buscar y filtrar.
+Precondiciones
+El usuario tiene rol admin.
+Flujo normal
+1. El administrador abre «Administración de usuarios».
+2. El sistema verifica el rol.
+3. El sistema devuelve el listado paginado.
+4. La interfaz lo presenta en una tabla con búsqueda.
+Flujos alternativos
+A1. No hay usuarios registrados aparte del administrador: se devuelve la lista con esa única cuenta.
+Excepciones
+E1. Usuario sin rol admin: HTTP 403.
+Postcondiciones
+El administrador puede iniciar las operaciones de alta, edición o baja.
+Reglas de negocio
+RN1. El listado nunca incluye hashes de contraseña ni datos sensibles.
+Tabla 25. Especificación del caso de uso CU-20
+CU-21 Crear usuario
+Campo
+Descripción
+Código
+CU-21
+Nombre
+Crear usuario
+Actor primario
+Administrador
+Actores de apoyo
+Servicio de seguridad, base de datos
+Objetivo
+Incorporar una cuenta nueva con su rol correspondiente.
+Descripción
+El administrador registra los datos de la cuenta y asigna uno de los tres roles. El sistema valida el rol, la unicidad de correo y CI, y almacena la contraseña como hash bcrypt.
+Precondiciones
+El usuario tiene rol admin.
+Flujo normal
+1. El administrador pulsa «Nuevo usuario».
+2. Ingresa CI, nombre completo, correo, contraseña, rol y centro de salud.
+3. El sistema valida el rol contra el conjunto permitido.
+4. El sistema verifica que el correo y la CI no estén registrados.
+5. El sistema hashea la contraseña y crea la cuenta.
+6. El sistema devuelve la cuenta creada con HTTP 201.
+Flujos alternativos
+A1. El administrador cancela el formulario: no se crea la cuenta.
+Excepciones
+E1. Rol inválido: HTTP 400.
+E2. Correo duplicado: HTTP 400 «El email ya está registrado».
+E3. CI duplicada: HTTP 400 «La cédula ya está registrada».
+E4. Contraseña de menos de seis caracteres: HTTP 422.
+Postcondiciones
+La cuenta queda activa y puede iniciar sesión.
+Reglas de negocio
+RN1. Los roles permitidos son admin, medico y enfermero_triage.
+RN2. Solo un administrador puede crear cuentas con rol admin.
+RN3. La contraseña se almacena siempre como hash.
+Tabla 26. Especificación del caso de uso CU-21
+CU-22 Actualizar usuario
+Campo
+Descripción
+Código
+CU-22
+Nombre
+Actualizar usuario
+Actor primario
+Administrador
+Actores de apoyo
+Servicio de seguridad, base de datos
+Objetivo
+Modificar datos, rol, estado o contraseña de una cuenta existente.
+Descripción
+Permite actualizar cualquier combinación de campos. Si se envía contraseña, se reemplaza su hash; si se cambia el correo, se verifica que no pertenezca a otra cuenta.
+Precondiciones
+El usuario tiene rol admin y la cuenta objetivo existe.
+Flujo normal
+1. El administrador abre la cuenta y elige «Editar».
+2. Modifica los campos necesarios.
+3. El sistema valida el rol si se modificó.
+4. El sistema verifica que el correo no pertenezca a otra cuenta.
+5. El sistema aplica los cambios enviados.
+6. Si se envió contraseña, el sistema almacena su nuevo hash.
+7. El sistema devuelve la cuenta actualizada.
+Flujos alternativos
+A1. El administrador desactiva una cuenta: la cuenta conserva su historial, pero no puede iniciar sesión mientras esté inactiva.
+Excepciones
+E1. Cuenta inexistente: HTTP 404.
+E2. Correo perteneciente a otra cuenta: HTTP 400.
+E3. Rol fuera del conjunto permitido: HTTP 400.
+E4. Contraseña nueva de menos de seis caracteres: HTTP 422.
+Postcondiciones
+Los datos de la cuenta quedan actualizados de inmediato.
+Reglas de negocio
+RN1. Los campos omitidos no se modifican.
+RN2. Mejora pendiente: al desactivar o degradar el rol, el sistema aún no impide que el administrador deje al sistema sin ningún administrador activo (ver II.1.10).
+Tabla 27. Especificación del caso de uso CU-22
+CU-23 Eliminar usuario
+Campo
+Descripción
+Código
+CU-23
+Nombre
+Eliminar usuario
+Actor primario
+Administrador
+Actores de apoyo
+Base de datos
+Objetivo
+Retirar una cuenta del sistema conservando la trazabilidad de sus triajes.
+Descripción
+Operación destructiva protegida: el sistema impide eliminarse a sí mismo y eliminar al último administrador activo. Las consultas del usuario eliminado se conservan con auditoría anónima.
+Precondiciones
+El usuario tiene rol admin y la cuenta objetivo existe.
+Flujo normal
+1. El administrador pulsa «Eliminar» en la cuenta.
+2. El sistema muestra un diálogo de confirmación.
+3. El administrador confirma.
+4. El sistema verifica que no sea su propia cuenta.
+5. El sistema verifica que no sea el último administrador activo.
+6. El sistema desvincula las consultas del usuario.
+7. El sistema elimina la cuenta y responde HTTP 204.
+Flujos alternativos
+A1. El administrador cancela el diálogo: no se elimina nada.
+Excepciones
+E1. Intento de eliminar la propia cuenta: HTTP 400.
+E2. Intento de eliminar al último administrador activo: HTTP 400.
+E3. Cuenta inexistente: HTTP 404.
+Postcondiciones
+La cuenta deja de existir, pero las consultas de triaje permanecen auditables con usuario nulo.
+Reglas de negocio
+RN1. La auditoría clínica prevalece sobre la baja del usuario.
+RN2. La interfaz exige confirmación explícita antes de eliminar.
+Tabla 28. Especificación del caso de uso CU-23
+II.1.4.6 Módulo de gestión del conocimiento normativo
+El sistema no entrena un modelo con las normas clínicas: las coloca en una base de conocimiento vectorial y recupera de ella los fragmentos pertinentes en cada consulta. Por eso la actualización de las normas es una operación explícita y auditable.
+CU-24 Indexar documentos de las NNAC
+Campo
+Descripción
+Código
+CU-24
+Nombre
+Indexar documentos de las NNAC
+Actor primario
+Administrador del sistema
+Actores de apoyo
+Documentos NNAC (PDF), generador de vectores, base vectorial
+Objetivo
+Construir o reutilizar la base vectorial que alimenta la recuperación.
+Descripción
+El sistema recorre los documentos PDF depositados en el directorio de datos, los fragmenta en porciones de 768 caracteres con 128 de solape, genera los vectores con un modelo de embeddings multilingüe y los almacena en la colección vectorial. Si la colección ya contiene fragmentos, el sistema reutiliza el índice existente.
+Precondiciones
+El directorio de datos existe y contiene al menos un documento.
+Flujo normal
+1. El responsable deposita los PDF de las NNAC en el directorio de datos.
+2. El sistema abre o crea la colección vectorial.
+3. El sistema consulta la cantidad de fragmentos almacenados.
+4. Si la colección está vacía, el sistema lee los documentos.
+5. El sistema enriquece los metadatos con el nombre del archivo.
+6. El sistema fragmenta el texto.
+7. El sistema calcula los vectores de cada fragmento.
+8. El sistema almacena fragmentos y vectores.
+9. El sistema deja el índice listo para las consultas.
+Flujos alternativos
+A1. La colección ya contiene fragmentos: se reutiliza el índice y no se reprocesan los PDF, por lo que el arranque es inmediato.
+A2. Se depositan normas nuevas: para incorporarlas debe vaciarse la colección antes de volver a indexar (ver II.1.10).
+Excepciones
+E1. Directorio de datos inexistente: se informa el error y no se construye el índice.
+E2. Directorio vacío: se informa que no hay documentos para indexar.
+E3. Documentos sin texto extraíble: se informa que no se generaron fragmentos.
+Postcondiciones
+El índice vectorial queda disponible y cada fragmento conserva el nombre del documento del que proviene, para poder citar la fuente.
+Reglas de negocio
+RN1. La indexación es idempotente: repetirla no duplica contenido.
+RN2. Cada fragmento conserva su documento de origen para que la respuesta pueda citar la fuente normativa.
+RN3. La carga del índice se protege con un candado para evitar condiciones de carrera entre consultas concurrentes.
+Tabla 29. Especificación del caso de uso CU-24
+II.1.4.7 Servicios internos del sistema
+Estos casos de uso no tienen actor humano: se ejecutan como parte de la evaluación de un triaje. Se documentan porque concentran las decisiones de seguridad clínica del sistema y son los que explican por qué el nivel final puede ser más urgente que el propuesto por el modelo.
+La separación entre el modelo de lenguaje y las reglas deterministas es una decisión de diseño central: el modelo aporta la interpretación del caso y la cita normativa, mientras que las reglas aportan garantías verificables ante signos vitales de riesgo.
+CU-25 Aplicar reglas deterministas de red flags
+Campo
+Descripción
+Código
+CU-25
+Nombre
+Aplicar reglas deterministas de red flags
+Tipo
+Caso de uso interno del sistema (sin actor humano)
+Disparador
+Inicio de la evaluación de un triaje, antes de invocar al modelo
+Descripción
+Evalúa umbrales clínicos verificables sobre los signos vitales medidos y reconoce patrones de síntomas de alta precisión. Cada coincidencia produce una alerta con el nivel mínimo de urgencia que exige y su descripción legible.
+Reglas sobre signos vitales
+Saturación de oxígeno: menor que 90 % exige rojo (hipoxemia severa) y menor que 94 % exige naranja (hipoxemia moderada).
+Presión arterial sistólica: menor que 80 mmHg exige rojo (shock) y menor que 90 mmHg exige naranja.
+Frecuencia cardíaca: menor que 40 o mayor que 160 lpm exige rojo; mayor o igual que 140 exige naranja (taquicardia) y menor que 45 exige naranja (bradicardia).
+Temperatura: mayor o igual que 41 °C o menor que 33 °C exige rojo; mayor o igual que 40 °C o menor que 35 °C exige naranja.
+Frecuencia respiratoria: menor que 8 o mayor que 40 rpm exige rojo; mayor o igual que 30 rpm o menor que 12 rpm exige naranja.
+Reglas sobre síntomas
+Se reconocen patrones de alta precisión como dolor torácico, dolor opresivo, convulsiones, alteración de conciencia, sangrado abundante, dificultad respiratoria, hematemesis, sangrado digestivo, dolor abdominal severo, cefalea severa de inicio brusco, rigidez de cuello y anuria; todos ellos exigen al menos nivel naranja.
+Resultado
+Lista de alertas activadas, cada una con su nivel y su descripción, que se informan al usuario y quedan registradas en la auditoría de la consulta.
+Reglas de negocio
+RN1. Las reglas solo se evalúan sobre valores efectivamente medidos: un valor vacío nunca dispara una alerta.
+RN2. Las reglas nunca disminuyen el nivel propuesto por el modelo.
+RN3. El reconocimiento de síntomas ignora mayúsculas y tildes, y usa frases compuestas para evitar falsos positivos por menciones sueltas.
+RN4. Los umbrales son constantes con nombre propio, de modo que puedan ajustarse clínicamente en un solo lugar del código.
+Requisitos vinculados
+RF-25 · ai_service/red_flags.py
+Tabla 30. Especificación del caso de uso CU-25
+CU-26 Determinar el nivel de urgencia final
+Campo
+Descripción
+Código
+CU-26
+Nombre
+Determinar el nivel de urgencia final
+Tipo
+Caso de uso interno del sistema (sin actor humano)
+Disparador
+Conclusión de la evaluación, una vez obtenida la respuesta del modelo
+Descripción
+Interpreta el nivel devuelto por el modelo y lo compara con el nivel máximo exigido por las reglas de seguridad. El resultado es el nivel más urgente de los dos, según el orden de la escala Manchester: azul, verde, amarillo, naranja y rojo.
+Interpretación de la respuesta
+El sistema busca primero la línea estructurada «NIVEL DE URGENCIA» que exige el prompt. Si no la encuentra, aplica un respaldo sobre frases clínicas inequívocas como emergencia, urgencia mayor, urgencia menor, no urgente y autosanamiento. No explora palabras de color sueltas, para que una negación como «no es rojo» o una mención dentro de la justificación no clasifiquen el caso.
+Resultado
+Un nivel de la escala Manchester, o el valor vacío (sin clasificar) cuando ni el modelo ni las reglas permiten determinarlo.
+Reglas de negocio
+RN1. El nivel final nunca es menos urgente que el nivel de las reglas.
+RN2. Si el modelo no devuelve un nivel reconocible pero hay reglas activadas, prevalece el nivel de las reglas.
+RN3. Si no hay nivel del modelo ni reglas activadas, la consulta queda sin clasificar y se señala para revisión manual: el sistema no asume ningún nivel por defecto.
+Requisitos vinculados
+RF-26 · backend/rag/service.py · ai_service/utils.py
+Tabla 31. Especificación del caso de uso CU-26
+CU-27 Registrar auditoría de la consulta
+Campo
+Descripción
+Código
+CU-27
+Nombre
+Registrar auditoría de la consulta
+Tipo
+Caso de uso interno del sistema (sin actor humano)
+Disparador
+Persistencia de cada consulta de triaje
+Descripción
+Almacena la consulta con los datos clínicos, el nivel de urgencia, la respuesta completa del modelo, el prompt enviado, el modelo utilizado, el tiempo de respuesta, el consumo de tokens y las reglas activadas, junto con el usuario que la realizó.
+Resultado
+Un registro de consulta de triaje que puede auditarse y reimprimirse en informes.
+Reglas de negocio
+RN1. La consulta se asocia siempre a un paciente y, cuando hay sesión, a un usuario; si no la hay, el usuario queda nulo y la consulta se considera anónima.
+RN2. El tiempo de respuesta se mide alrededor de la invocación al modelo.
+RN3. Cuando el proveedor no informa el consumo de tokens, el valor se registra vacío y nunca se estima.
+RN4. Si el usuario es eliminado, la consulta se conserva con usuario nulo para no perder la trazabilidad clínica.
+Requisitos vinculados
+RF-27 · tabla consulta_triage
+Tabla 32. Especificación del caso de uso CU-27
+CU-28 Recuperar fragmentos normativos
+Campo
+Descripción
+Código
+CU-28
+Nombre
+Recuperar fragmentos normativos
+Tipo
+Caso de uso interno del sistema (sin actor humano)
+Disparador
+Construcción del contexto previo a la invocación del modelo
+Descripción
+Convierte la descripción clínica en un vector, busca en la colección vectorial los cinco fragmentos más similares y los inserta en el prompt como contexto normativo. La respuesta final cita el documento de origen de los fragmentos usados.
+Resultado
+Contexto normativo de las NNAC listo para el modelo, con la lista de documentos fuente que se guarda junto con la consulta.
+Reglas de negocio
+RN1. El prompt instruye al modelo a responder únicamente con la información del contexto recuperado y a indicar cuando la información no es suficiente.
+RN2. Los signos vitales no medidos se informan como «No registrado» dentro del prompt, con la instrucción de no asumir su valor.
+RN3. El número de fragmentos recuperados es una constante de configuración (cinco por consulta).
+Requisitos vinculados
+RF-28 · ai_service/rag_pipeline.py
+Tabla 33. Especificación del caso de uso CU-28
+II.1.5 Diagrama de clases
+El diagrama de clases describe la arquitectura del sistema estructura en cuatro paquetes: backend.api backend.api.models, backend.shemas, y ai_service.
+Figura 8. Diagrama de clases del sistema
+Clase
+Paquete
+Responsabilidad principal
+Paciente
+Persistencia
+Ficha de identificación del paciente y cálculo dinámico de la edad.
+Usuario
+Persistencia
+Cuenta de acceso, rol, estado y credenciales hasheadas.
+ConsultaTriage
+Persistencia
+Registro de la consulta clínica y de la auditoría del modelo.
+RAGService
+API
+Orquesta la evaluación: recupera contexto, invoca al modelo y persiste el resultado.
+ResultadoTriage
+API
+Transporta el resultado estructurado de una evaluación.
+DatosVitales
+Motor de IA
+Representa los signos vitales y produce el bloque clínico del prompt.
+ReglasRedFlags
+Motor de IA
+Evalúa umbrales clínicos y patrones de síntomas, y exige un nivel mínimo de urgencia.
+Alerta
+Motor de IA
+Representa una regla de seguridad activada y su descripción.
+PipelineRAG
+Motor de IA
+Construye o reutiliza el índice vectorial y configura el motor de consultas.
+LLMProvider
+Motor de IA
+Contrato abstracto de los proveedores de modelos de lenguaje.
+GroqProvider, OpenAIProvider, OllamaProvider
+Motor de IA
+Implementaciones concretas de acceso a los modelos en la nube y local.
+Tabla 34. Clases principales del sistema y sus responsabilidades
+II.1.6 Diagrama Entidad-Relación
+El esquema de datos se compone de tres entidades: paciente, usuario y consulta de triaje. La tabla de consultas es la que concentra el valor clínico y de auditoría del sistema, y sus claves foráneas definen dos relaciones con comportamientos de borrado deliberadamente distintos.
+Figura 9. Diagrama Entidad-Relación de la base de datos
+Las decisiones de diseño más relevantes del esquema se describen a continuación.
+La relación entre paciente y consulta es de uno a muchos con borrado en cascada: al eliminar la ficha de un paciente se eliminan sus consultas, porque una consulta no tiene sentido clínico sin el paciente al que pertenece.
+La relación entre usuario y consulta es opcional y con borrado que deja el valor nulo: la auditoría clínica prevalece sobre la baja administrativa de una cuenta, de modo que las consultas históricas se conservan aunque el usuario deje de existir.
+La edad no se almacena: se calcula a partir de la fecha de nacimiento cada vez que se necesita, con lo que se evita el problema clásico de la edad desactualizada.
+Todos los signos vitales admiten valores vacíos, y ese vacío tiene un significado preciso: el dato no fue medido. El sistema nunca lo sustituye por un valor normal.
+El nivel de urgencia admite el valor vacío, que representa el estado «sin clasificar» y señala una consulta que requiere revisión médica manual.
+La columna de reglas activadas almacena la lista de alertas de seguridad que se activaron en cada consulta, lo que permite auditar por qué el nivel final pudo ser más urgente que el propuesto por el modelo.
+El diccionario de datos completo, con el tipo, la nulabilidad, las restricciones y la descripción de cada columna, se presenta en el Anexo A.
+II.1.7 Diagramas de secuencia
+Se documenta un diagrama de secuencia por cada caso de uso: los veintiocho diagramas de este apartado muestran el intercambio de mensajes entre el usuario, la interfaz, la API, los servicios internos y las bases de datos, en el mismo orden en que se especifican los casos de uso en II.1.4.
+Los diagramas distinguen con bloques alternativos los flujos alternativos y las excepciones declaradas en cada especificación, e indican los códigos de estado que el sistema devuelve en cada caso. Se incluyen tanto los casos de uso con actor humano como los cuatro servicios internos del sistema (CU-25 a CU-28), que no dependen de la interacción de un usuario.
+Los diagramas de los apartados II.1.7.1 a II.1.7.24 corresponden a los casos de uso con actor humano y los de los apartados II.1.7.25 a II.1.7.28, a los servicios internos.
+II.1.7.1 CU-01 Iniciar sesión
+El diagrama muestra cómo la contraseña se convierte en un token firmado: el cliente envía las credenciales, el servicio de seguridad compara la contraseña con el hash almacenado y el sistema devuelve un JWT de ocho horas que el cliente guarda y adjunta a las llamadas siguientes. Se representan los dos caminos de error de la especificación —cuenta inexistente y contraseña incorrecta—, que devuelven el mismo mensaje para no revelar si la cuenta existe en el sistema.
+Figura 10. Diagrama de secuencia del caso de uso CU-01: Iniciar sesión
+Módulo: Autenticación y usuarios.
+II.1.7.2 CU-02 Consultar perfil propio
+Con el token vigente, el cliente solicita su propio perfil para conocer el rol con el que debe construir el menú. El diagrama detalla la decodificación del token, la comprobación de que la cuenta siga activa y los dos casos en los que la sesión se considera inválida, incluida la cuenta desactivada por un administrador.
+Figura 11. Diagrama de secuencia del caso de uso CU-02: Consultar perfil propio
+Módulo: Autenticación y usuarios.
+II.1.7.3 CU-03 Registrar usuario inicial
+Es la única vía por la que se concede el rol de administrador: el diagrama muestra la verificación previa de que no exista ningún administrador activo y la respuesta 403 con la que el sistema protege esa condición una vez instalado. Se incluyen la validación del rol contra el conjunto permitido, la comprobación de unicidad de correo y cédula y el hash de la contraseña antes de persistir la cuenta.
+Figura 12. Diagrama de secuencia del caso de uso CU-03: Registrar usuario inicial
+Módulo: Autenticación y usuarios.
+II.1.7.4 CU-04 Registrar paciente
+El diagrama sigue el alta de una ficha desde el envío del formulario por pasos hasta la respuesta con la ficha creada y la edad calculada. Se muestran la validación del esquema de entrada, la verificación de que la cédula no esté registrada y la conservación de los datos ingresados cuando la validación falla.
+Figura 13. Diagrama de secuencia del caso de uso CU-04: Registrar paciente
+Módulo: Gestión de pacientes.
+II.1.7.5 CU-05 Buscar y listar pacientes
+Muestra la consulta del listado y la búsqueda por coincidencia parcial sobre cédula, nombre o apellido, con el orden alfabético y el límite de cien registros por solicitud. Se incluye el caso sin resultados, en el que la interfaz ofrece registrar al paciente.
+Figura 14. Diagrama de secuencia del caso de uso CU-05: Buscar y listar pacientes
+Módulo: Gestión de pacientes.
+II.1.7.6 CU-06 Consultar detalle del paciente
+El diagrama combina las dos consultas que alimentan la ficha: los datos de identificación del paciente y su historial de triajes. Se representa el cálculo dinámico de la edad, el orden descendente de las consultas y el caso del paciente sin antecedentes.
+Figura 15. Diagrama de secuencia del caso de uso CU-06: Consultar detalle del paciente
+Módulo: Gestión de pacientes.
+II.1.7.7 CU-07 Actualizar datos del paciente
+La actualización aplica únicamente los campos enviados, de modo que los datos omitidos no se sobrescriban. El diagrama muestra la verificación de existencia del paciente, la marca de fecha de modificación y el comportamiento ante una cédula que ya pertenece a otro paciente, que hoy recae en la restricción única de la base de datos.
+Figura 16. Diagrama de secuencia del caso de uso CU-07: Actualizar datos del paciente
+Módulo: Gestión de pacientes.
+II.1.7.8 CU-08 Eliminar paciente
+Operación destructiva: el diagrama incluye la confirmación explícita en la interfaz y el borrado en cascada de todas las consultas de triaje del paciente. Se representa también la cancelación del diálogo, que no modifica ningún registro.
+Figura 17. Diagrama de secuencia del caso de uso CU-08: Eliminar paciente
+Módulo: Gestión de pacientes.
+II.1.7.9 CU-09 Consultar modelos LLM disponibles
+El sistema recorre el registro de proveedores, descarta los que no están configurados y devuelve los nombres de los disponibles para poblar el selector del formulario de triaje. El diagrama incluye la advertencia por un proveedor que falla al inicializarse y la respuesta 503 cuando no queda ninguno utilizable.
+Figura 18. Diagrama de secuencia del caso de uso CU-09: Consultar modelos LLM disponibles
+Módulo: Triaje.
+II.1.7.10 CU-10 Iniciar triaje y registrar signos vitales
+Es el diagrama de la preparación de la consulta: selección del paciente, registro de los signos vitales efectivamente medidos, descripción del motivo y de los síntomas y elección del modelo. Ilustra la regla central de esta etapa —un signo vital vacío significa «no medido» y nunca se sustituye por un valor normal— y el envío de los datos a la evaluación, cuyo detalle se documenta en II.1.7.11.
+Figura 19. Diagrama de secuencia del caso de uso CU-10: Iniciar triaje y registrar signos vitales
+Módulo: Triaje.
+II.1.7.11 CU-11 Ejecutar evaluación de triaje
+Es la secuencia más importante del sistema y reúne la validación de los datos, la evaluación de las reglas deterministas, la recuperación del contexto normativo, la invocación al modelo, el cálculo del nivel final y la persistencia con auditoría. El diagrama detalla los cuatro flujos alternativos de la especificación —vitales incoherentes, nivel del modelo ausente, consulta anónima y fallo del proveedor— y explicita que la consulta no se persiste cuando el modelo no responde.
+Figura 20. Diagrama de secuencia del caso de uso CU-11: Ejecutar evaluación de triaje
+Módulo: Triaje.
+II.1.7.12 CU-12 Consultar resultado de la evaluación
+Muestra la recuperación de una consulta y la forma en que la interfaz la presenta: color de la escala Manchester, justificación, acciones, indicación de referencia y fuentes. Se incluyen la consulta sin clasificar, que se muestra como alerta de revisión manual en lugar de un color, y la visualización destacada de las reglas de seguridad activadas.
+Figura 21. Diagrama de secuencia del caso de uso CU-12: Consultar resultado de la evaluación
+Módulo: Triaje.
+II.1.7.13 CU-13 Consultar historial de consultas
+El diagrama detalla los filtros combinables del historial —color, paciente y rango de fechas—, el orden descendente por fecha y el comportamiento ante un formato de fecha inválido. Se incluye el caso sin coincidencias y la apertura del detalle de una consulta.
+Figura 22. Diagrama de secuencia del caso de uso CU-13: Consultar historial de consultas
+Módulo: Triaje.
+II.1.7.14 CU-14 Consultar historial del paciente
+Es la consulta del historial estructurado de un paciente, que alimenta las pantallas de detalle y los informes. El diagrama muestra el orden descendente de las consultas, el caso del paciente sin antecedentes y la inclusión de las consultas anónimas, que quedaron con auditoría sin usuario.
+Figura 23. Diagrama de secuencia del caso de uso CU-14: Consultar historial del paciente
+Módulo: Informes.
+II.1.7.15 CU-15 Generar informe en texto plano
+El informe de texto se compone en el servidor: el diagrama muestra el encabezado con la fecha, el usuario que lo solicita y los datos del paciente, y la iteración que agrega por cada consulta el nivel, el modelo, las métricas, la respuesta completa y el prompt utilizado, que forma parte de la evidencia de auditoría.
+Figura 24. Diagrama de secuencia del caso de uso CU-15: Generar informe en texto plano
+Módulo: Informes.
+II.1.7.16 CU-16 Generar y descargar informe PDF
+El diagrama recorre la generación del PDF: recuperación de las consultas en orden cronológico, composición del documento A4, barra de encabezado con el color Manchester de cada consulta y descarga directa del archivo. Se representa explícitamente la respuesta 500 cuando la librería de generación no está instalada, de modo que la falla sea visible en lugar de silenciosa.
+Figura 25. Diagrama de secuencia del caso de uso CU-16: Generar y descargar informe PDF
+Módulo: Informes.
+II.1.7.17 CU-17 Consultar estadísticas generales
+El panel general concentra los agregados del sistema: totales, distribución por nivel de urgencia, tiempos promedio, modelo más usado, demografía, demanda de los últimos treinta días, uso por modelo y actividad por usuario. El diagrama muestra la verificación del rol y los casos en los que no hay datos, donde el sistema devuelve ceros en lugar de valores estimados.
+Figura 26. Diagrama de secuencia del caso de uso CU-17: Consultar estadísticas generales
+Módulo: Administración y estadísticas.
+II.1.7.18 CU-18 Consultar estadísticas de triaje por período
+Muestra la resolución del rango de fechas —treinta días, noventa días o un rango explícito, que tiene prioridad—, el filtrado inclusivo de las consultas del período y el cálculo de la demografía de los pacientes atendidos. Se incluye la respuesta 400 ante un rango inválido y el completado con ceros de los días sin consultas.
+Figura 27. Diagrama de secuencia del caso de uso CU-18: Consultar estadísticas de triaje por período
+Módulo: Administración y estadísticas.
+II.1.7.19 CU-19 Consultar rendimiento de los modelos LLM
+El diagrama detalla la agrupación de las consultas por modelo y el cálculo de tiempos promedio, mínimo y máximo, junto con el resumen global del sistema. Se representa la regla de que el tiempo se mide solo alrededor de la invocación al modelo y de que el consumo de tokens no informado por el proveedor queda vacío y no se estima.
+Figura 28. Diagrama de secuencia del caso de uso CU-19: Consultar rendimiento de los modelos LLM
+Módulo: Administración y estadísticas.
+II.1.7.20 CU-20 Listar usuarios
+Es la consulta que abre el módulo de usuarios: el diagrama muestra la verificación del rol de administrador, la recuperación de las cuentas sin sus hashes de contraseña y la elección posterior entre crear, editar o eliminar una cuenta.
+Figura 29. Diagrama de secuencia del caso de uso CU-20: Listar usuarios
+Módulo: Administración y estadísticas.
+II.1.7.21 CU-21 Crear usuario
+El alta de una cuenta combina la validación del rol, la verificación de unicidad de correo y cédula y el hash de la contraseña antes de persistirla. El diagrama muestra la respuesta 201 y la corrección del formulario cuando el dato no cumple las reglas.
+Figura 30. Diagrama de secuencia del caso de uso CU-21: Crear usuario
+Módulo: Administración y estadísticas.
+II.1.7.22 CU-22 Actualizar usuario
+La actualización de una cuenta aplica solo los campos enviados, reemplaza el hash de la contraseña cuando se envía una nueva y verifica que un correo nuevo no pertenezca a otra cuenta. El diagrama incluye la desactivación de la cuenta, que conserva el historial pero impide el ingreso, y deja constancia de la mejora pendiente sobre el último administrador activo.
+Figura 31. Diagrama de secuencia del caso de uso CU-22: Actualizar usuario
+Módulo: Administración y estadísticas.
+II.1.7.23 CU-23 Eliminar usuario
+Es la operación destructiva más protegida del sistema: el diagrama muestra las dos verificaciones previas —que no sea la propia cuenta y que no sea el último administrador activo— y la desvinculación de las consultas del usuario, que se conservan con auditoría anónima para no perder la trazabilidad clínica.
+Figura 32. Diagrama de secuencia del caso de uso CU-23: Eliminar usuario
+Módulo: Administración y estadísticas.
+II.1.7.24 CU-24 Indexar documentos de las NNAC
+El diagrama recorre la indexación de las normas clínicas: apertura de la colección vectorial, comprobación de la cantidad de fragmentos almacenados, lectura de los documentos, fragmentación con solape, cálculo de los vectores con el modelo multilingüe y almacenamiento. Se representa la idempotencia de la operación, los errores de lectura y el candado que protege la carga del índice ante consultas concurrentes.
+Figura 33. Diagrama de secuencia del caso de uso CU-24: Indexar documentos de las NNAC
+Módulo: Gestión del conocimiento normativo.
+II.1.7.25 CU-25 Aplicar reglas deterministas de red flags
+Servicio interno sin actor humano: el diagrama muestra la evaluación de los umbrales clínicos sobre los signos vitales medidos, el reconocimiento de patrones de síntomas de alta precisión y la construcción de la lista de alertas. Explicita que un valor no medido nunca dispara una regla y que el nivel exigido por las reglas solo puede elevar el nivel propuesto por el modelo.
+Figura 34. Diagrama de secuencia del caso de uso CU-25: Aplicar reglas deterministas de red flags
+Módulo: Servicios internos del sistema.
+II.1.7.26 CU-26 Determinar el nivel de urgencia final
+El diagrama detalla la interpretación de la respuesta del modelo —primero la línea estructurada de nivel y, como respaldo, frases clínicas inequívocas— y el cálculo del nivel final como el más urgente entre el del modelo y el de las reglas. Se incluye el caso en que ninguno de los dos permite clasificar, que deja la consulta sin nivel para revisión médica manual.
+Figura 35. Diagrama de secuencia del caso de uso CU-26: Determinar el nivel de urgencia final
+Módulo: Servicios internos del sistema.
+II.1.7.27 CU-27 Registrar auditoría de la consulta
+Muestra la composición del registro de auditoría de cada consulta: el paciente, el usuario o el valor vacío que identifica una consulta anónima, los signos vitales tal como se midieron, el nivel, las reglas activadas, la respuesta del modelo, el prompt enviado y las métricas de la invocación.
+Figura 36. Diagrama de secuencia del caso de uso CU-27: Registrar auditoría de la consulta
+Módulo: Servicios internos del sistema.
+II.1.7.28 CU-28 Recuperar fragmentos normativos
+Es la recuperación del contexto normativo que utiliza el prompt: el diagrama muestra la composición de la consulta clínica, la búsqueda por similitud de los cinco fragmentos más cercanos y su inserción en el prompt, junto con la declaración de los signos vitales ausentes como «No registrado» y el guardado de las fuentes citadas.
+Figura 37. Diagrama de secuencia del caso de uso CU-28: Recuperar fragmentos normativos
+Módulo: Servicios internos del sistema.
+II.1.8 Diagramas de actividades
+El apartado completa el modelado dinámico con un diagrama de actividades por cada caso de uso. Mientras el diagrama de secuencia ordena los mensajes entre los componentes, el de actividades describe el trabajo y las decisiones, separando con carriles lo que hace el usuario de lo que hace el sistema y de lo que hacen los servicios internos.
+Cada diagrama conserva la correspondencia con la especificación del caso de uso: los caminos de error y las bifurcaciones provienen de los flujos alternativos y de las excepciones declaradas en II.1.4.
+II.1.8.1 CU-01 Iniciar sesión
+El diagrama recorre el ingreso con carriles que separan lo que hace el usuario de lo que hace el sistema, e incluye la corrección del formulario cuando los datos no tienen el formato esperado. El resultado de la decisión final distingue el reintento del ingreso de la operación con la sesión ya activa.
+Figura 38. Diagrama de actividades del caso de uso CU-01: Iniciar sesión
+Módulo: Autenticación y usuarios.
+II.1.8.2 CU-02 Consultar perfil propio
+Con dos carriles, el diagrama muestra la consulta del perfil y sus dos caminos de salida por sesión inválida, ambos con retorno a la pantalla de inicio de sesión. Termina con la habilitación del menú y de las rutas permitidas según el rol del usuario.
+Figura 39. Diagrama de actividades del caso de uso CU-02: Consultar perfil propio
+Módulo: Autenticación y usuarios.
+II.1.8.3 CU-03 Registrar usuario inicial
+El diagrama representa el alta inicial como una secuencia de verificaciones: rol válido, inexistencia de administradores activos, unicidad de correo y cédula y, finalmente, el hash de la contraseña y la creación de la cuenta. Incluye el corte del flujo cuando el sistema ya tiene un administrador.
+Figura 40. Diagrama de actividades del caso de uso CU-03: Registrar usuario inicial
+Módulo: Autenticación y usuarios.
+II.1.8.4 CU-04 Registrar paciente
+El diagrama muestra el registro de un paciente por pasos, con la validación del formulario y la verificación de la cédula antes de persistir la ficha. En los caminos de error el usuario conserva lo ingresado y corrige únicamente el dato señalado.
+Figura 41. Diagrama de actividades del caso de uso CU-04: Registrar paciente
+Módulo: Gestión de pacientes.
+II.1.8.5 CU-05 Buscar y listar pacientes
+El diagrama describe la consulta del listado y el filtrado por coincidencia parcial, con la salida alternativa cuando la búsqueda no devuelve resultados y el usuario decide registrar al paciente.
+Figura 42. Diagrama de actividades del caso de uso CU-05: Buscar y listar pacientes
+Módulo: Gestión de pacientes.
+II.1.8.6 CU-06 Consultar detalle del paciente
+La consulta del detalle se representa con la recuperación de la ficha, el cálculo de la edad y la lectura del historial de consultas. El diagrama cierra con las tres acciones posibles desde esa pantalla: iniciar un triaje, generar un informe o volver al listado.
+Figura 43. Diagrama de actividades del caso de uso CU-06: Consultar detalle del paciente
+Módulo: Gestión de pacientes.
+II.1.8.7 CU-07 Actualizar datos del paciente
+El diagrama muestra la edición de la ficha con la verificación previa de existencia del paciente y la escritura de los únicos campos enviados. Se representa el conflicto de cédula duplicada, que hoy detecta la restricción única de la base de datos.
+Figura 44. Diagrama de actividades del caso de uso CU-07: Actualizar datos del paciente
+Módulo: Gestión de pacientes.
+II.1.8.8 CU-08 Eliminar paciente
+La eliminación se representa como una decisión previa de confirmación y, cuando se confirma, el borrado en cascada de las consultas del paciente. La cancelación no altera ningún registro.
+Figura 45. Diagrama de actividades del caso de uso CU-08: Eliminar paciente
+Módulo: Gestión de pacientes.
+II.1.8.9 CU-09 Consultar modelos LLM disponibles
+El diagrama muestra el recorrido del registro de proveedores para poblar el selector de modelos y la detención del flujo cuando ninguno está configurado, con la indicación de qué credenciales o servidor falta.
+Figura 46. Diagrama de actividades del caso de uso CU-09: Consultar modelos LLM disponibles
+Módulo: Triaje.
+II.1.8.10 CU-10 Iniciar triaje y registrar signos vitales
+Con el detalle del trabajo del usuario, el diagrama recorre la selección del paciente, el registro de los signos vitales medidos, la descripción clínica y la validación previa al envío. Se destaca que los vitales no medidos se dejan vacíos y que un dato inválido se corrige sin perder el resto del formulario.
+Figura 47. Diagrama de actividades del caso de uso CU-10: Iniciar triaje y registrar signos vitales
+Módulo: Triaje.
+II.1.8.11 CU-11 Ejecutar evaluación de triaje
+El diagrama de actividades de la evaluación reparte el trabajo entre el personal de salud, el sistema, el motor de recuperación y el modelo de lenguaje. Se representan las decisiones que pueden interrumpir el flujo —paciente inexistente y vitales incoherentes— y la secuencia que conduce al nivel final y a su persistencia con auditoría.
+Figura 48. Diagrama de actividades del caso de uso CU-11: Ejecutar evaluación de triaje
+Módulo: Triaje.
+II.1.8.12 CU-12 Consultar resultado de la evaluación
+La presentación del resultado se modela con dos decisiones: si la consulta quedó sin clasificar y si hay reglas de seguridad activadas. El diagrama cierra con la presentación de la referencia y el recordatorio de que la herramienta no reemplaza la evaluación médica presencial.
+Figura 49. Diagrama de actividades del caso de uso CU-12: Consultar resultado de la evaluación
+Módulo: Triaje.
+II.1.8.13 CU-13 Consultar historial de consultas
+El diagrama muestra la consulta del historial, la aplicación de los filtros, la validación del formato de las fechas y el mensaje sin coincidencias, que invita a ampliar el rango de búsqueda.
+Figura 50. Diagrama de actividades del caso de uso CU-13: Consultar historial de consultas
+Módulo: Triaje.
+II.1.8.14 CU-14 Consultar historial del paciente
+Con dos carriles, el diagrama representa la recuperación del historial del paciente, su orden descendente por fecha y el caso del paciente sin antecedentes registrados.
+Figura 51. Diagrama de actividades del caso de uso CU-14: Consultar historial del paciente
+Módulo: Informes.
+II.1.8.15 CU-15 Generar informe en texto plano
+El diagrama detalla la composición del informe en texto plano: encabezado con el usuario que lo solicita, recuperación cronológica de las consultas y la iteración que agrega, por cada una, el nivel, el modelo, las métricas, la respuesta y el prompt utilizado.
+Figura 52. Diagrama de actividades del caso de uso CU-15: Generar informe en texto plano
+Módulo: Informes.
+II.1.8.16 CU-16 Generar y descargar informe PDF
+La generación del PDF se modela con el carril del generador de documentos: verificación del paciente, comprobación de que la librería esté disponible, construcción del documento con una barra de color por consulta y entrega del archivo para descarga.
+Figura 53. Diagrama de actividades del caso de uso CU-16: Generar y descargar informe PDF
+Módulo: Informes.
+II.1.8.17 CU-17 Consultar estadísticas generales
+El diagrama muestra la verificación del rol y la construcción de los agregados del panel general. Se incluye la salida alternativa cuando el sistema todavía no tiene consultas registradas, en la que se devuelven ceros y series vacías.
+Figura 54. Diagrama de actividades del caso de uso CU-17: Consultar estadísticas generales
+Módulo: Administración y estadísticas.
+II.1.8.18 CU-18 Consultar estadísticas de triaje por período
+El diagrama representa la elección del período, la resolución y validación del rango de fechas y el cálculo de los agregados y la demografía del período elegido.
+Figura 55. Diagrama de actividades del caso de uso CU-18: Consultar estadísticas de triaje por período
+Módulo: Administración y estadísticas.
+II.1.8.19 CU-19 Consultar rendimiento de los modelos LLM
+El diagrama detalla la lectura de las métricas por consulta, la agrupación por modelo y el cálculo de los tiempos promedio, mínimo y máximo, con el caso sin datos disponibles.
+Figura 56. Diagrama de actividades del caso de uso CU-19: Consultar rendimiento de los modelos LLM
+Módulo: Administración y estadísticas.
+II.1.8.20 CU-20 Listar usuarios
+El diagrama recorre la consulta del listado de cuentas y las tres operaciones que se abren desde esa pantalla: crear, editar o eliminar un usuario.
+Figura 57. Diagrama de actividades del caso de uso CU-20: Listar usuarios
+Módulo: Administración y estadísticas.
+II.1.8.21 CU-21 Crear usuario
+El alta de una cuenta se modela con la validación del formulario, la verificación del rol y la comprobación de unicidad de correo y cédula antes del hash de la contraseña y la creación de la cuenta.
+Figura 58. Diagrama de actividades del caso de uso CU-21: Crear usuario
+Módulo: Administración y estadísticas.
+II.1.8.22 CU-22 Actualizar usuario
+El diagrama representa la edición de una cuenta: validación del rol, verificación de existencia, control de correo duplicado, aplicación de los campos enviados y reemplazo del hash cuando se envía una contraseña nueva.
+Figura 59. Diagrama de actividades del caso de uso CU-22: Actualizar usuario
+Módulo: Administración y estadísticas.
+II.1.8.23 CU-23 Eliminar usuario
+Es el diagrama con más puntos de corte del sistema: confirmación del administrador, comprobación de que no sea su propia cuenta, de que la cuenta exista y de que no sea el último administrador activo. Solo si todas las verificaciones pasan se desvinculan las consultas y se elimina la cuenta.
+Figura 60. Diagrama de actividades del caso de uso CU-23: Eliminar usuario
+Módulo: Administración y estadísticas.
+II.1.8.24 CU-24 Indexar documentos de las NNAC
+El diagrama muestra la indexación como una decisión inicial —reutilizar el índice existente o construirlo— y, en el segundo caso, la lectura de los documentos, la fragmentación, el cálculo de vectores y el almacenamiento en la colección vectorial.
+Figura 61. Diagrama de actividades del caso de uso CU-24: Indexar documentos de las NNAC
+Módulo: Gestión del conocimiento normativo.
+II.1.8.25 CU-25 Aplicar reglas deterministas de red flags
+El diagrama detalla el recorrido de los umbrales clínicos y el patrón de evaluación de cada uno: los valores no medidos se omiten y los que alcanzan el umbral generan una alerta. Cierra con el reconocimiento de los patrones de síntomas y con la propuesta del nivel mínimo exigido.
+Figura 62. Diagrama de actividades del caso de uso CU-25: Aplicar reglas deterministas de red flags
+Módulo: Servicios internos del sistema.
+II.1.8.26 CU-26 Determinar el nivel de urgencia final
+El diagrama modela la interpretación de la respuesta del modelo y la resolución del nivel final, con una única salida para el caso en que ni el modelo ni las reglas permiten clasificar: la consulta queda sin nivel y señalada para revisión manual.
+Figura 63. Diagrama de actividades del caso de uso CU-26: Determinar el nivel de urgencia final
+Módulo: Servicios internos del sistema.
+II.1.8.27 CU-27 Registrar auditoría de la consulta
+El diagrama muestra la composición del registro de auditoría y la decisión sobre la identidad de la consulta: usuario autenticado cuando hay sesión y valor vacío cuando la consulta es anónima.
+Figura 64. Diagrama de actividades del caso de uso CU-27: Registrar auditoría de la consulta
+Módulo: Servicios internos del sistema.
+II.1.8.28 CU-28 Recuperar fragmentos normativos
+El diagrama representa la recuperación del contexto normativo y su efecto sobre el prompt: búsqueda por similitud, tratamiento del caso sin contexto recuperado, declaración de los vitales ausentes y guardado de las fuentes citadas junto con la consulta.
+Figura 65. Diagrama de actividades del caso de uso CU-28: Recuperar fragmentos normativos
+Módulo: Servicios internos del sistema.
+El diagrama de arquitectura de despliegue complementa a los anteriores: muestra cómo se distribuyen los componentes en el equipo del centro de salud y qué dependencias externas existen cuando el establecimiento dispone de conexión a internet.
+Figura 66. Diagrama de arquitectura y despliegue del sistema
+II.1.9 Interfaces de usuario
+La interfaz se diseñó para personal de salud, no necesariamente habituado a sistemas informáticos. Las decisiones de diseño responden a ese perfil: campos obligatorios marcados con asterisco, ayudas contextuales en los campos ambiguos, mensajes de error junto al campo que debe corregirse y conservación de los datos ingresados ante un error de validación.
+El sistema se organiza en quince pantallas, distribuidas entre el flujo clínico, accesible a los tres roles, y el panel de administración, restringido al rol administrador.
+Pantalla
+Ruta
+Rol
+Propósito
+Inicio de sesión y registro
+/login
+Público
+Acceso al sistema y registro de la cuenta administradora inicial.
+Inicio
+/
+Clínico
+Centro de acciones: nuevo triaje, pacientes e historial.
+Nuevo triaje
+/triage/nuevo
+Clínico
+Selección del paciente, registro de signos vitales, síntomas y proveedor de modelo.
+Resultado del triaje
+/triage/resultado/:id
+Clínico
+Nivel de urgencia con su color, justificación, acciones y fuentes.
+Pacientes
+/pacientes
+Clínico
+Listado y búsqueda de pacientes por cédula, nombre o apellido.
+Nuevo paciente
+/pacientes/nuevo
+Clínico
+Registro de la ficha del paciente en pasos.
+Detalle del paciente
+/pacientes/:id
+Clínico
+Ficha, historial de consultas y acceso a los informes.
+Editar paciente
+/pacientes/:id/editar
+Clínico
+Modificación de los datos de la ficha.
+Historial
+/historial
+Clínico
+Todas las consultas registradas, con filtro por nivel de urgencia.
+Panel de administración
+/admin
+Admin
+Resumen general: totales, indicadores y consultas de los últimos treinta días.
+Estadísticas de triaje
+/admin/estadisticas
+Admin
+Demografía, demanda diaria y motivos frecuentes por período.
+Estadísticas de modelos
+/admin/estadisticas/llm
+Admin
+Consultas, tokens y tiempos de respuesta por proveedor.
+Administración de usuarios
+/admin/usuarios
+Admin
+Alta, edición y baja de cuentas con confirmación previa.
+Reportes
+/admin/reportes
+Admin
+Generación de informes de pacientes desde el panel.
+Documentación de la API
+/docs
+Público
+Documentación interactiva generada automáticamente por FastAPI.
+Tabla 35. Pantallas del sistema y su propósito
+Flujo clínico:
+Figura 18. Pantalla de inicio de sesión
+Figura 19. Pantalla de inicio con las acciones principales
+Figura 20. Pantalla de nuevo triaje: paciente seleccionado, signos vitales, descripción clínica y selector de modelo de lenguaje
+Figura 21. Pantalla de resultado del triaje
+Figura 22. Pantalla de listado y búsqueda de pacientes
+Figura 23. Pantalla de detalle del paciente con su historial
+Figura 24. Pantalla de historial de consultas
+Panel de administración:
+Figura 25. Panel de administración: resumen general
+Figura 26. Estadísticas de triaje por período
+Figura 27. Estadísticas de rendimiento de los modelos de lenguaje
+Figura 28. Administración de usuarios
+ANEXOS
+Anexo A: Diccionario de datos
+Se detallan las tres tablas del esquema relacional con el tipo de dato, la admisión de valores vacíos, las restricciones y la descripción de cada columna.
+Tabla paciente: ficha de identificación del paciente.
+Columna
+Tipo
+Nulo
+Restricción
+Descripción
+id
+Entero
+No
+Clave primaria
+Identificador interno del paciente.
+ci
+Texto
+No
+Único, indexado
+Cédula de identidad del paciente.
+nombre
+Texto
+No
+—
+Nombre del paciente.
+apellido
+Texto
+No
+—
+Apellido del paciente.
+fecha_nacimiento
+Fecha
+No
+—
+Fecha de nacimiento; base del cálculo de la edad.
+sexo
+Enumerado
+No
+M, F, Otro
+Sexo registrado del paciente.
+telefono
+Texto
+Sí
+—
+Teléfono de contacto.
+direccion
+Texto
+Sí
+—
+Dirección del paciente.
+fecha_registro
+Fecha y hora
+No
+Valor por omisión
+Momento de creación de la ficha.
+fecha_actualizacion
+Fecha y hora
+Sí
+Actualización automática
+Momento de la última modificación.
+Tabla 37. Diccionario de datos de la tabla paciente
+Tabla usuario: cuentas de acceso al sistema.
+Columna
+Tipo
+Nulo
+Restricción
+Descripción
+id
+Entero
+No
+Clave primaria
+Identificador interno de la cuenta.
+ci
+Texto
+No
+Único, indexado
+Cédula de identidad del usuario.
+nombre_completo
+Texto
+No
+—
+Nombre completo del usuario.
+email
+Texto
+No
+Único, indexado
+Correo electrónico usado para iniciar sesión.
+password_hash
+Texto
+No
+—
+Hash bcrypt de la contraseña; nunca se almacena en texto plano.
+rol
+Enumerado
+No
+admin, medico, enfermero_triage
+Rol que determina los permisos.
+centro_salud
+Texto
+Sí
+—
+Establecimiento de salud al que pertenece el usuario.
+activo
+Booleano
+No
+Valor por omisión verdadero
+Habilita o bloquea el inicio de sesión.
+Tabla 38. Diccionario de datos de la tabla usuario
+Tabla consulta_triage: registro clínico y auditoría de cada evaluación.
+Columna
+Tipo
+Nulo
+Restricción
+Descripción
+id
+Entero
+No
+Clave primaria
+Identificador de la consulta.
+paciente_id
+Entero
+No
+Clave foránea, borrado en cascada
+Paciente al que pertenece la consulta.
+usuario_id
+Entero
+Sí
+Clave foránea, borrado con valor nulo
+Usuario que realizó la consulta; vacío si fue anónima.
+fecha_hora
+Fecha y hora
+No
+Valor por omisión
+Momento de la consulta.
+temperatura
+Decimal
+Sí
+—
+Temperatura corporal en grados Celsius.
+presion_sistolica
+Entero
+Sí
+—
+Presión arterial sistólica en milímetros de mercurio.
+presion_diastolica
+Entero
+Sí
+—
+Presión arterial diastólica.
+frecuencia_cardiaca
+Entero
+Sí
+—
+Frecuencia cardíaca en latidos por minuto.
+frecuencia_respiratoria
+Entero
+Sí
+—
+Frecuencia respiratoria en respiraciones por minuto.
+spo2
+Entero
+Sí
+—
+Saturación de oxígeno en porcentaje.
+motivo_consulta
+Texto
+Sí
+—
+Motivo manifestado por el paciente.
+sintomas
+Texto
+Sí
+—
+Descripción de síntomas y presentación del caso.
+nivel_urgencia
+Enumerado
+Sí
+rojo, naranja, amarillo, verde, azul
+Nivel final; vacío indica sin clasificar.
+respuesta_llm
+Texto
+Sí
+—
+Respuesta completa del modelo de lenguaje.
+prompt_utilizado
+Texto
+Sí
+—
+Prompt enviado al modelo, con los datos clínicos.
+modelo_utilizado
+Texto
+Sí
+—
+Proveedor de modelo utilizado en la evaluación.
+tiempo_respuesta
+Decimal
+Sí
+—
+Tiempo de respuesta del modelo en segundos.
+tokens_consumidos
+Entero
+Sí
+—
+Tokens informados por el proveedor; vacío si no los reporta.
+reglas_activadas
+JSON
+No
+Valor por omisión lista vacía
+Alertas de seguridad activadas durante la evaluación.
+Tabla 39. Diccionario de datos de la tabla consulta_triage
+Anexo B: Catálogo de endpoints de la API
+La API REST expone las operaciones del sistema. La columna de sesión indica si la operación requiere un token válido; la de rol, si además exige un rol determinado. La documentación interactiva de estos endpoints se genera automáticamente y está disponible en la ruta /docs del servidor.
+Método
+Ruta
+Sesión
+Rol
+Descripción
+GET
+/api/health
+No
+—
+Verificación de disponibilidad del servicio.
+POST
+/api/auth/registro
+No
+Bootstrap
+Registro de la cuenta administradora inicial.
+POST
+/api/auth/login
+No
+—
+Inicio de sesión; devuelve el token JWT.
+GET
+/api/auth/me
+Sí
+Cualquiera
+Perfil del usuario autenticado.
+GET
+/api/pacientes
+Sí
+Cualquiera
+Listado y búsqueda de pacientes.
+POST
+/api/pacientes
+Sí
+Cualquiera
+Registro de un paciente.
+GET
+/api/pacientes/{id}
+Sí
+Cualquiera
+Ficha de un paciente.
+PUT
+/api/pacientes/{id}
+Sí
+Cualquiera
+Actualización de la ficha del paciente.
+DELETE
+/api/pacientes/{id}
+Sí
+Cualquiera
+Eliminación del paciente y de sus consultas.
+GET
+/api/triage/modelos
+No
+—
+Proveedores de modelos de lenguaje disponibles.
+POST
+/api/triage
+Opcional
+Cualquiera
+Ejecuta la evaluación de triaje y la persiste con auditoría.
+GET
+/api/triage
+Sí
+Cualquiera
+Listado de consultas con filtros por paciente, nivel y fechas.
+GET
+/api/triage/{id}
+Sí
+Cualquiera
+Detalle de una consulta de triaje.
+GET
+/api/informes/paciente/{id}
+Sí
+Cualquiera
+Historial del paciente en formato estructurado.
+GET
+/api/informes/paciente/{id}/texto
+Sí
+Cualquiera
+Informe del paciente en texto plano.
+GET
+/api/informes/paciente/{id}/pdf
+Sí
+Cualquiera
+Informe del paciente en PDF, como descarga directa.
+GET
+/api/admin/estadisticas
+Sí
+Admin
+Indicadores generales del sistema.
+GET
+/api/admin/estadisticas/triaje
+Sí
+Admin
+Estadísticas de triaje por período.
+GET
+/api/admin/estadisticas/llm
+Sí
+Admin
+Rendimiento de los modelos de lenguaje.
+GET
+/api/admin/usuarios
+Sí
+Admin
+Listado de usuarios.
+POST
+/api/admin/usuarios
+Sí
+Admin
+Alta de usuario.
+PUT
+/api/admin/usuarios/{id}
+Sí
+Admin
+Actualización de usuario.
+DELETE
+/api/admin/usuarios/{id}
+Sí
+Admin
+Baja de usuario, conservando su auditoría.
+Tabla 40. Catálogo de endpoints de la API del sistema
+Bibliografía
+Chroma. (2024). Chroma: The AI-native open-source embedding database [Software]. https://www.trychroma.com
+Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., Yih, W.-T., Rocktäschel, T., Riedel, S., & Kiela, D. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. Advances in Neural Information Processing Systems, 33, 9459–9474. https://doi.org/10.48550/arXiv.2005.11401
+Liu, J. (2023). LlamaIndex: A data framework for LLM applications [Software]. https://docs.llamaindex.ai
+Meta AI. (2024). The Llama 3.2 herd of models. https://ai.meta.com/blog/llama-3-2-connect-2024-vision-edge/
+Microsoft. (2024). Phi-3 technical report: A highly capable language model locally on your phone. arXiv. https://arxiv.org/abs/2404.14219
+Ministerio de Salud y Deportes de Bolivia. (2012). Normas Nacionales de Atención Clínica (NNAC) – Volumen I: Urgencias y emergencias. Ministerio de Salud y Deportes. https://www.minsalud.gob.bo
+Ollama. (2024). Ollama – Get up and running with large language models locally [Software]. https://ollama.com
+Organización Mundial de la Salud. (2021). Ethics and governance of artificial intelligence for health: WHO guidance. OMS. https://www.who.int/publications/i/item/9789240029200

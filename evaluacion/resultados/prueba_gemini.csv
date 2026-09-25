@@ -1,0 +1,4 @@
+caso_id,grupo,categoria,repeticion,nivel_esperado,nivel_permitido,nivel_llm,nivel_reglas,nivel_final,coincide,desvio,tiempo_respuesta,tokens_consumidos,n_recuperaciones,top1_archivo,top1_pagina,top1_score,error
+C-01,,neonatal,1,naranja,naranja,naranja,naranja,naranja,True,0,8.499,1256,0,,,,
+C-02,,respiratoria_pediatrica,1,naranja,naranja|rojo,naranja,naranja,naranja,True,0,23.149,1244,0,,,,
+C-03,,respiratoria_pediatrica,1,verde,verde|azul,azul,,azul,False,-1,5.681,1207,0,,,,

@@ -1,0 +1,9 @@
+caso_id,grupo,categoria,repeticion,nivel_esperado,nivel_permitido,nivel_llm,nivel_reglas,nivel_final,coincide,desvio,tiempo_respuesta,tokens_consumidos,n_recuperaciones,top1_archivo,top1_pagina,top1_score,error
+C-11,,respiratoria,1,verde,verde|azul,verde,,verde,True,0,4.602,5548,5,NNAC-medicina-interna.pdf,112,0.4160928733829787,
+C-12,,obstetricia,1,naranja,naranja|rojo,amarillo,,amarillo,False,-1,21.184,5084,5,NNAC-2012-parte2.pdf,1155,0.455333987622004,
+C-13,,toxicologia,1,rojo,rojo|naranja,rojo,,rojo,True,0,37.949,4939,5,NNAC-2012-parte1.pdf,131,0.2841537693160249,
+C-14,,endocrinologia,1,amarillo,amarillo|naranja,amarillo,,amarillo,True,0,37.428,5198,5,NNAC-2012-parte1.pdf,428,0.4401917030896131,
+C-15,,cardiovascular,1,rojo,rojo|naranja,naranja,rojo,rojo,True,0,43.675,5734,5,NNAC-2012-parte2.pdf,867,0.3732582131121455,
+A-06,,contradictoria,1,naranja,naranja|rojo,rojo,naranja,rojo,False,1,19.321,2548,5,NNAC-2012-parte2.pdf,1055,0.39951679179496435,
+A-07,,inexistente,1,,,verde,,verde,,,40.934,5287,5,NNAC-2012-parte1.pdf,278,0.45061856924713756,
+A-08,,inexistente,1,,,amarillo,,amarillo,,,53.219,7155,5,NNAC-medicina-interna.pdf,122,0.4890637582560736,

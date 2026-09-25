@@ -476,11 +476,119 @@ naranja ≥ 40 °C o < 35 °C) usan el mismo umbral en todos los grupos.
 > Los signos vitales no medidos llegan como `None` (= «No registrado») al
 > prompt del LLM y **nunca** se sustituyen por 0 ni por valores normales.
 
+## Evaluación del sistema (Componente 2)
+
+La evaluación de la tesis vive en `evaluacion/` y se regenera por completo con
+`scripts/evaluar.py`, sin tocar el código del motor. La evidencia cruda de cada
+corrida (respuesta completa, fragmentos recuperados con puntaje y página,
+tiempos y tokens) se guarda en disco, de modo que cualquier cifra del informe se
+puede auditar caso por caso.
+
+```
+evaluacion/
+├── casos/             # 20 casos clínicos + 10 casos anti-alucinación (fuente de verdad)
+├── resultados/        # evidencia cruda de cada corrida (.json) y su resumen (.csv)
+├── informes/          # informe técnico (C2.A2/A3) e informe clínico (C2.A4/A5)
+└── instrumentos/      # rúbrica clínica y encuesta SUS para el médico colaborador
+```
+
+### Comandos
+
+```bash
+# 1. Revisa los casos (esquema, niveles válidos, fuentes y detectores) sin llamar a ningún modelo
+python scripts/evaluar.py validar
+
+# 2. Ejecuta los casos contra el sistema completo (RAG + reglas) o contra la línea base sin contexto
+python scripts/evaluar.py correr --variante rag --modelo groq --ids C-01,C-02 --pausa 5
+python scripts/evaluar.py correr --variante sin-contexto --modelo gemini --limite 5
+
+# 3. Recalcula las métricas y escribe el informe (los lotes del mismo experimento se fusionan)
+python scripts/evaluar.py informe rag_groq_1 rag_groq_2a --titulo "Corrida final"
+
+# 4. Prepara los instrumentos para el médico y calcula C2.A4/A5 cuando los devuelva
+python scripts/evaluar.py instrumentos --run rag_groq_1 rag_groq_2a
+python scripts/evaluar.py rubrica --run rag_groq_1 rag_groq_2a
+```
+
+Las corridas de 30 casos duran decenas de segundos por caso, así que conviene
+partirlas en lotes con `--ids` o `--limite`: cada caso se guarda apenas termina
+(`parcial: true` mientras la corrida siga incompleta) y `informe` une los lotes
+del mismo variante y modelo en una sola columna comparable.
+
+### Informe Word
+
+El apartado del Componente 2 para el documento de tesis se arma con
+`scripts/informe_word.py`, que lee la evidencia de `evaluacion/resultados/`,
+reutiliza el formato del Capítulo II (`docs/tesis/generar_documento.py`) y
+produce `docs/tesis/Informe_Evaluacion_Componente2_Zelada.docx` con portada,
+numeración propia desde 1, índices, tres gráficos y anexos.
+
+```bash
+# Genera el .docx reutilizando los gráficos ya descargados
+python scripts/informe_word.py
+
+# Vuelve a pedir los tres gráficos a kroki y regenera todo
+python scripts/informe_word.py --forzar-graficos
+
+# Arma el documento sin tocar los gráficos (útil sin conexión)
+python scripts/informe_word.py --sin-graficos
+```
+
+Los gráficos se renderizan con kroki a partir de especificaciones Vega y se
+guardan en `docs/tesis/figuras/eval_*.png`; si kroki no responde, el documento se
+genera igual y avisa de la figura faltante. Si el `.docx` está abierto en Word, el
+script guarda una copia con marca de tiempo en lugar de fallar.
+
+### Qué mide
+
+- **Nivel de urgencia**: exactitud, rango clínicamente aceptable, sub-triage
+  (el error grave) y supra-triage, comparando contra el nivel esperado del caso.
+- **Recuperación**: Recall@3, Recall@5, Precision@5 y MRR sobre los fragmentos
+  efectivamente usados, a nivel de página y de documento.
+- **Alucinaciones**: 10 casos diseñados para provocarlas (preguntas capciosas,
+  datos contradictorios, entidades inexistentes y citas falsas) con detección
+  automática de dosis inventadas, entidades no declaradas y citas fuera del corpus.
+- **Costo y estabilidad**: latencia (media, mediana, p95) y tokens reales
+  reportados por el proveedor cuando `rag_medir_tokens=true`; repeticiones con
+  `--repeticiones N` para medir estabilidad del nivel.
+- **Contraste con la línea base**: la variante `sin-contexto` usa el MISMO prompt
+  y las MISMAS reglas, pero sin fragmentos recuperados, para aislar el aporte del RAG.
+
+### Criterios de aceptación (Componente 2)
+
+| Indicador | Criterio |
+|---|---|
+| Casos clínicos en Bueno o Muy bueno (C2.A4) | ≥ 80 % |
+| Tasa de alucinaciones (casos anti-alucinación) | < 15 % |
+| Usabilidad percibida (C2.A5, encuesta SUS) | ≥ 70 puntos |
+
+### Limitaciones conocidas de la evidencia actual
+
+- **Cuotas de los proveedores en la nube**: las líneas base con Groq y Gemini
+  quedaron parciales (límite de 200 000 tokens/día en Groq y de 20
+  solicitudes/día en Gemini). La comparación se hace sobre el subconjunto de
+  casos ejecutados en común, que el informe declara explícitamente; una corrida
+  completa del benchmark requiere esperar el reinicio de cuota, otra clave o un
+  modelo local vía Ollama.
+- **Memoria RAM**: no medida. Se reporta como trabajo futuro (instrumentar con
+  `psutil` o el contador de procesos de Windows), no como resultado.
+- **Validación clínica (C2.A4/A5)**: pendiente del médico colaborador. Los
+  instrumentos ya están generados; `rubrica` calcula el porcentaje de casos
+  aceptables, el puntaje SUS y la concordancia con el veredicto automático.
+- **Niveles esperados**: los casos fueron construidos leyendo la norma NNAC y
+  están a la espera de validación médica; el informe conserva el rango
+  clínicamente aceptable para no tratar las zonas grises de Manchester como error.
+
 ## Testing
 
 ```bash
 pytest tests/ -v
 ```
+
+Los tests cubren, además del sistema, la instrumentación de la evaluación
+(`tests/test_metricas_rag.py`): evidencia de recuperación con puntaje y página,
+conteo de tokens reportado por el proveedor (nunca estimado) y las regresiones
+de negación y umbrales pediátricos que motivan el Componente 2.
 
 ## Logging
 
@@ -524,6 +632,10 @@ Verifica que:
 - [ ] Migraciones con Alembic
 - [ ] Tests de integración del frontend
 - [ ] Code-splitting del bundle frontend (chunk actual > 500 kB)
+- [ ] Medición de memoria RAM del proceso RAG (psutil / contador de Windows)
+- [ ] Corrida completa de las líneas base cuando se reinicien las cuotas de Groq y Gemini
+- [ ] Cláusula de «información insuficiente» en el prompt de producción, medida
+      sobre los 10 casos anti-alucinación
 
 ## Licencia
 

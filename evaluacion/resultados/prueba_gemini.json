@@ -1,0 +1,308 @@
+{
+  "run_id": "prueba_gemini",
+  "variante": "sin-contexto",
+  "iniciado_en": "2026-09-25T04:06:08+00:00",
+  "terminado_en": "2026-09-25T04:06:45+00:00",
+  "parcial": false,
+  "duracion_s": 37.3,
+  "config": {
+    "modelo_solicitado": "gemini",
+    "modelo_usado": "Gemini (Nube - Google)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": false,
+    "ids": null,
+    "limite": 3
+  },
+  "entorno": {
+    "fecha": "2026-09-25T04:06:06+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-01",
+      "titulo": "Onfalitis en recién nacido de 21 días",
+      "grupo": "clinico",
+      "categoria": "neonatal",
+      "edad": 0,
+      "edad_meses": 0,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 62,
+        "presion_diastolica": 38,
+        "frecuencia_cardiaca": 150,
+        "frecuencia_respiratoria": 55,
+        "saturacion": 97.0
+      },
+      "descripcion": "Recién nacido de 21 días, traído por la madre porque el muñón umbilical está enrojecido y con secreción purulenta desde hace dos días (onfalitis). Está algo decaído, mama con menos fuerza que antes y llora débil.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1086",
+          "palabras_clave": [
+            "onfalitis",
+            "muñón umbilical"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "onfalitis|mu[ñn][oó]n",
+          "referencia|referir|nivel ii"
+        ],
+        "no_debe_incluir": [
+          "no requiere referencia"
+        ],
+        "notas": "La regla de PAS pediátrica debe activarse (62 mmHg < 70 en neonato). Sin la corrección pediátrica, los umbrales de adulto darían rojo (62 < 80), sobrevalorando la urgencia."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "PA sistólica 62 mmHg (< 70): hipotensión moderada en neonato"
+          ],
+          "tiempo_respuesta": 8.499,
+          "tokens_consumidos": 1256,
+          "tokens_prompt": 748,
+          "tokens_completacion": 508,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Gemini (Nube - Google)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 0 meses (Neonato (< 1 mes))\n- Sexo: Masculino\n- Temperatura: 38.2 °C\n- Presión Arterial: 62/38 mmHg\n- Frecuencia Cardíaca: 150 bpm\n- Frecuencia Respiratoria: 55 rpm\n- SpO2: 97.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nRecién nacido de 21 días, traído por la madre porque el muñón umbilical está enrojecido y con secreción purulenta desde hace dos días (onfalitis). Está algo decaído, mama con menos fuerza que antes y llora débil.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja\n\nREFERENCIA: Sí. Requiere referencia inmediata a Hospital de Nivel II o III, justificando brevemente según las NNAC por tratarse de un neonato con sospecha de sepsis de origen umbilical (onfalitis con signos de afectación sistémica como hipoactividad y succión débil).\n\nJUSTIFICACIÓN: El paciente es un neonato de 21 días que presenta fiebre (38.2 °C), decaimiento (hipoactividad) y rechazo parcial a la alimentación (mama con menos fuerza), sumado a signos locales de onfalitis (secreción purulenta y eritema periumbilical). En neonatos, la presencia de fiebre y alteración del estado general son signos de peligro de alta sospecha de sepsis neonatal. Aunque la frecuencia cardíaca (150 bpm), respiratoria (55 rpm) y saturación (97%) están en rangos aceptables para su edad, la presión arterial está en el límite inferior y el cuadro clínico local y sistémico clasifica como Urgencia Mayor (Naranja) bajo el sistema Manchester, requiriendo atención médica en menos de 10 minutos y derivación. Al no contar con el contexto específico de las NNAC en el prompt, se asume esta conducta bajo el conocimiento médico general para el primer nivel de atención en Bolivia.\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- No aplica o requiere evaluación médica presencial para prescripción.\n\nACCIONES RECOMENDADAS:\n- Estabilizar al paciente, asegurar vía aérea y mantener abrigado para evitar la hipotermia durante el traslado (contacto piel a piel o método canguro).\n- Canalizar vía periférica para hidratación basal si el traslado es prolongado y el médico lo autoriza, evitando la vía umbilical si está infectada.\n- Preparar la documentación de referencia de forma inmediata y coordinar el transporte en ambulancia con oxígeno disponible hacia un hospital de mayor complejidad.\n\nFUENTE: Conocimiento médico general y pautas estándar de atención neonatal (AIEPI Neonatal / NNAC de Bolivia para el Primer Nivel de Atención), ante la ausencia de fragmentos de texto específicos recuperados en el contexto.\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-02",
+      "titulo": "Bronquiolitis en lactante de 7 meses",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 7,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 84,
+        "presion_diastolica": 52,
+        "frecuencia_cardiaca": 158,
+        "frecuencia_respiratoria": 62,
+        "saturacion": 92.0
+      },
+      "descripcion": "Lactante de 7 meses con tos y silbidos en el pecho desde hace tres días. Respira rápido, se le hunden las costillas al respirar y no puede dormir por la tos. Come menos de lo habitual.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "739",
+          "palabras_clave": [
+            "obstrucción bronquial",
+            "viral"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "bronquiolitis|obstrucci[oó]n bronquial",
+          "referencia|referir|ox[íi]geno"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Verdadero positivo de las reglas: FR >= 60 y SpO2 < 94 % elevan a naranja de forma correcta."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "SpO2 92.0% (< 94%): hipoxemia moderada",
+            "FR 62 rpm (>= 60): taquipnea en lactante"
+          ],
+          "tiempo_respuesta": 23.149,
+          "tokens_consumidos": 1244,
+          "tokens_prompt": 745,
+          "tokens_completacion": 499,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Gemini (Nube - Google)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 7 meses (Lactante (1-11 meses))\n- Sexo: Femenino\n- Temperatura: 38.2 °C\n- Presión Arterial: 84/52 mmHg\n- Frecuencia Cardíaca: 158 bpm\n- Frecuencia Respiratoria: 62 rpm\n- SpO2: 92.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nLactante de 7 meses con tos y silbidos en el pecho desde hace tres días. Respira rápido, se le hunden las costillas al respirar y no puede dormir por la tos. Come menos de lo habitual.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja\n\nREFERENCIA: Sí. Requiere referencia inmediata a Centro de Salud de Segundo Nivel (Nivel II) para manejo de dificultad respiratoria moderada-grave y oxigenoterapia.\n\nJUSTIFICACIÓN: Lactante de 7 meses (pediátrico) que presenta taquipnea severa (Frecuencia Respiratoria de 62 rpm, siendo el límite superior normal para su edad de 50 rpm), taquicardia (FC 158 bpm), desaturación de oxígeno (SpO2 92% en altura/llano, límite para hipoxia) y signos de dificultad respiratoria moderada a grave manifestados por tiraje intercostal (\"se le hunden las costillas\") y sibilancias (\"silbidos en el pecho\"). Al no contar con el contexto específico de las NNAC en el prompt, se aplican criterios clínicos universales de atención pediátrica (AIEPI) donde la taquipnea con tiraje subcostal en un lactante menor de 1 año clasifica como Neumonía Grave o Enfermedad Muy Grave, requiriendo estabilización y transferencia urgente.\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\nNo aplica o requiere evaluación médica presencial para prescripción.\n\nACCIONES RECOMENDADAS:\n- Administrar oxígeno suplementario húmedo para mantener saturación por encima de 92% (o 90% según la altitud de la posta en Bolivia).\n- Mantener la vía aérea permeable, realizar aspiración de secreciones si es necesario y posicionar al lactante en semi-fowler.\n- Evitar la vía oral si la frecuencia respiratoria es >60 rpm para prevenir broncoaspiración; canalizar vía periférica para hidratación basal si es necesario.\n- Preparar la transferencia inmediata con personal de salud capacitado, monitorizando signos vitales durante el trayecto.\n\nFUENTE: Conocimiento médico general y pautas de la OPS/OMS (AIEPI) aplicadas en el Primer Nivel de Atención de Bolivia, ante la ausencia de fragmentos específicos de las NNAC en el contexto proporcionado.\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-03",
+      "titulo": "Cuadro catarral leve en lactante de 3 meses (regresión pediátrica)",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 3,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 140,
+        "frecuencia_respiratoria": 44,
+        "saturacion": 98.0
+      },
+      "descripcion": "Lactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "taquipnea",
+          "taquicardia",
+          "hipoxemia",
+          "dificultad respiratoria grave"
+        ],
+        "notas": "Caso de control negativo: el sistema no debe inventar gravedad con signos normales para la edad. El chequeo de 'no_debe_incluir' es consciente de la negación ('no presenta taquipnea' no cuenta como hallazgo)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "azul",
+          "nivel_reglas": null,
+          "nivel_final": "azul",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 5.681,
+          "tokens_consumidos": 1207,
+          "tokens_prompt": 739,
+          "tokens_completacion": 468,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Gemini (Nube - Google)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 3 meses (Lactante (1-11 meses))\n- Sexo: Masculino\n- Temperatura: 36.8 °C\n- Presión Arterial: 85/55 mmHg\n- Frecuencia Cardíaca: 140 bpm\n- Frecuencia Respiratoria: 44 rpm\n- SpO2: 98.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nLactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: azul\n\nREFERENCIA: No. Manejo y observación en la posta rural.\n\nJUSTIFICACIÓN: Lactante de 3 meses que presenta un cuadro de vías respiratorias altas leve (congestión nasal y estornudos) de dos días de evolución, sin signos de alarma. Sus signos vitales se encuentran dentro de los rangos fisiológicos normales para su grupo etario (frecuencia cardíaca de 140 bpm, frecuencia respiratoria de 44 rpm, saturación de oxígeno de 98% y normotermia de 36.8 °C). No presenta dificultad respiratoria, tolera adecuadamente la lactancia (\"come bien\") y no tiene fiebre ni vómitos. Al no contar con un contexto específico de las NNAC recuperado en esta consulta, se aplica el conocimiento clínico general para el primer nivel de atención en Bolivia, clasificando el caso como no urgente (azul) dado que es un cuadro catarral común autolimitado.\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- No aplica o requiere evaluación médica presencial para prescripción (al no disponer del texto específico de las NNAC en el contexto, no se prescriben fármacos para evitar riesgos de dosificación en lactantes).\n\nACCIONES RECOMENDADAS:\n- Realizar aseo nasal con solución fisiológica (suero salino al 0.9%) o agua hervida tibia antes de lactar y dormir para aliviar la congestión.\n- Mantener la lactancia materna exclusiva a demanda para asegurar una adecuada hidratación y aporte de anticuerpos.\n- Capacitar detalladamente a la madre o cuidador en la identificación de signos de alarma (respiración rápida, hundimiento de costillas, quejido, rechazo a la lactancia, fiebre o letargo) para acudir inmediatamente a la posta.\n\nFUENTE: Conocimiento médico general para el Primer Nivel de Atención ante la ausencia de fragmentos específicos de las NNAC de Bolivia en el contexto proporcionado.\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    }
+  ]
+}

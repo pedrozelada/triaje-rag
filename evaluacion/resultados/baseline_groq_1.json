@@ -1,0 +1,1013 @@
+{
+  "run_id": "baseline_groq_1",
+  "variante": "sin-contexto",
+  "iniciado_en": "2026-09-25T03:38:28+00:00",
+  "terminado_en": "2026-09-25T03:40:52+00:00",
+  "duracion_s": 143.6,
+  "config": {
+    "modelo_solicitado": "groq",
+    "modelo_usado": "Groq (Nube - Rápido)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": false,
+    "ids": "C-01,C-02,C-03,C-04,C-05,C-06,C-07,C-08,C-09,C-10,A-01,A-02,A-03,A-04,A-05",
+    "limite": null
+  },
+  "entorno": {
+    "fecha": "2026-09-25T03:38:26+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-01",
+      "titulo": "Onfalitis en recién nacido de 21 días",
+      "grupo": "clinico",
+      "categoria": "neonatal",
+      "edad": 0,
+      "edad_meses": 0,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 62,
+        "presion_diastolica": 38,
+        "frecuencia_cardiaca": 150,
+        "frecuencia_respiratoria": 55,
+        "saturacion": 97.0
+      },
+      "descripcion": "Recién nacido de 21 días, traído por la madre porque el muñón umbilical está enrojecido y con secreción purulenta desde hace dos días (onfalitis). Está algo decaído, mama con menos fuerza que antes y llora débil.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1086",
+          "palabras_clave": [
+            "onfalitis",
+            "muñón umbilical"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "onfalitis|mu[ñn][oó]n",
+          "referencia|referir|nivel ii"
+        ],
+        "no_debe_incluir": [
+          "no requiere referencia"
+        ],
+        "notas": "La regla de PAS pediátrica debe activarse (62 mmHg < 70 en neonato). Sin la corrección pediátrica, los umbrales de adulto darían rojo (62 < 80), sobrevalorando la urgencia."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "rojo",
+          "nivel_reglas": "naranja",
+          "nivel_final": "rojo",
+          "reglas_activadas": [
+            "PA sistólica 62 mmHg (< 70): hipotensión moderada en neonato"
+          ],
+          "tiempo_respuesta": 3.008,
+          "tokens_consumidos": 1618,
+          "tokens_prompt": 784,
+          "tokens_completacion": 834,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 0 meses (Neonato (< 1 mes))\n- Sexo: Masculino\n- Temperatura: 38.2 °C\n- Presión Arterial: 62/38 mmHg\n- Frecuencia Cardíaca: 150 bpm\n- Frecuencia Respiratoria: 55 rpm\n- SpO2: 97.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nRecién nacido de 21 días, traído por la madre porque el muñón umbilical está enrojecido y con secreción purulenta desde hace dos días (onfalitis). Está algo decaído, mama con menos fuerza que antes y llora débil.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: rojo  \n\nREFERENCIA: Sí  \n- Requiere referencia inmediata a Hospital de Nivel III (neonatal) por sospecha de sepsis neonatal secundaria a onfalitis con fiebre, taquicardia, decaimiento y llanto débil; según las NNAC, cualquier neonato (<28 d) con infección local y signos sistémicos debe ser atendido de forma urgente en nivel de atención terciario.  \n\nJUSTIFICACIÓN: Paciente de 21 días (neonato) presenta onfalitis purulenta, temperatura 38.2 °C (febrícula en neonatos = posible infección), frecuencia cardíaca 150 bpm (taquicardia neonatal > 160 bpm es alarma, pero 150 bpm está en rango de alerta), frecuencia respiratoria 55 rpm (taquipnea), presión arterial 62/38 mmHg (presión sistólica adecuada, diastólica baja para su edad) y estado general decaído con llanto débil, lo que indica compromiso sistémico. Las NNAC indican que neonatos con infección local y signos de compromiso hemodinámico o respiratorio deben ser clasificados como rojo y remitidos sin demora.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Traslado inmediato al Hospital de Nivel III con capacidad de cuidados neonatales.  \n- Mientras se organiza el traslado, mantener al neonato en posición termoneutral, iniciar hidratación oral o intravenosa si está disponible y vigilar signos vitales.  \n\nFUENTE: No disponible (no se proporcionó fragmento de NNAC).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-02",
+      "titulo": "Bronquiolitis en lactante de 7 meses",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 7,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 84,
+        "presion_diastolica": 52,
+        "frecuencia_cardiaca": 158,
+        "frecuencia_respiratoria": 62,
+        "saturacion": 92.0
+      },
+      "descripcion": "Lactante de 7 meses con tos y silbidos en el pecho desde hace tres días. Respira rápido, se le hunden las costillas al respirar y no puede dormir por la tos. Come menos de lo habitual.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "739",
+          "palabras_clave": [
+            "obstrucción bronquial",
+            "viral"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "bronquiolitis|obstrucci[oó]n bronquial",
+          "referencia|referir|ox[íi]geno"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Verdadero positivo de las reglas: FR >= 60 y SpO2 < 94 % elevan a naranja de forma correcta."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "SpO2 92.0% (< 94%): hipoxemia moderada",
+            "FR 62 rpm (>= 60): taquipnea en lactante"
+          ],
+          "tiempo_respuesta": 2.084,
+          "tokens_consumidos": 1510,
+          "tokens_prompt": 776,
+          "tokens_completacion": 734,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 7 meses (Lactante (1-11 meses))\n- Sexo: Femenino\n- Temperatura: 38.2 °C\n- Presión Arterial: 84/52 mmHg\n- Frecuencia Cardíaca: 158 bpm\n- Frecuencia Respiratoria: 62 rpm\n- SpO2: 92.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nLactante de 7 meses con tos y silbidos en el pecho desde hace tres días. Respira rápido, se le hunden las costillas al respirar y no puede dormir por la tos. Come menos de lo habitual.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja  \n\nREFERENCIA: Sí.  \n- Requiere referencia inmediata a Centro de Salud Nivel II por signos de dificultad respiratoria aguda (hundimiento de costillas) y taquipnea en lactante.  \n\nJUSTIFICACIÓN: Lactante de 7 meses con fiebre (38.2 °C), taquipnea (62 rpm) y taquicardia (158 bpm) por encima de los rangos normales para su edad, SpO₂ = 92 % (leve hipoxemia) y presencia de indrawing torácico, que según las NNAC para pediatría indica una enfermedad respiratoria potencialmente grave que necesita evaluación y manejo en nivel de atención superior.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Iniciar oxígeno suplementario (si está disponible) para mantener SpO₂ ≥ 94 % y monitorizar saturación.  \n- Transportar urgentemente al Centro de Salud Nivel II, manteniendo vía aérea abierta y observando signos de deterioro.  \n\nFUENTE: Normas Nacionales de Atención Clínica (NNAC) – apartado de urgencias pediátricas (sin fragmento específico disponible).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-03",
+      "titulo": "Cuadro catarral leve en lactante de 3 meses (regresión pediátrica)",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 3,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 140,
+        "frecuencia_respiratoria": 44,
+        "saturacion": 98.0
+      },
+      "descripcion": "Lactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "taquipnea",
+          "taquicardia",
+          "hipoxemia",
+          "dificultad respiratoria grave"
+        ],
+        "notas": "Caso de control negativo: el sistema no debe inventar gravedad con signos normales para la edad. El chequeo de 'no_debe_incluir' es consciente de la negación ('no presenta taquipnea' no cuenta como hallazgo)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 1.823,
+          "tokens_consumidos": 1419,
+          "tokens_prompt": 771,
+          "tokens_completacion": 648,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 3 meses (Lactante (1-11 meses))\n- Sexo: Masculino\n- Temperatura: 36.8 °C\n- Presión Arterial: 85/55 mmHg\n- Frecuencia Cardíaca: 140 bpm\n- Frecuencia Respiratoria: 44 rpm\n- SpO2: 98.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nLactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \nREFERENCIA: No, Manejo y observación en la posta rural  \nJUSTIFICACIÓN: Lactante de 3 meses con signos vitales dentro de rangos normales (TC 36.8 °C, FC 140 bpm, FR 44 rpm, PA 85/55 mmHg, SpO₂ 98 %). Presenta congestión nasal y estornudos de 2 días, sin fiebre, sin dificultad respiratoria, sin alteración del estado de conciencia y mantiene buen apetito y sueño. Según las NNAC para el primer nivel de atención pediátrico, los síntomas de resfriado viral sin signos de alarma se clasifican como no urgentes (verde).  \nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):  \n- Solución salina fisiológica (0,9 % NaCl), 0,5 ml por fosa nasal, vía tópica, 2‑3 veces al día.  \nACCIONES RECOMENDADAS:  \n- Mantener hidratación adecuada y observar evolución de la congestión nasal.  \n- Revaluar en 48‑72 h o antes si aparecen fiebre, dificultad respiratoria, irritabilidad o disminución del consumo de leche.  \nFUENTE: No disponible (no se proporcionó fragmento de las NNAC).  \nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-04",
+      "titulo": "Crisis asmática leve en escolar",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 8,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.9,
+        "presion_sistolica": 100,
+        "presion_diastolica": 64,
+        "frecuencia_cardiaca": 110,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 95.0
+      },
+      "descripcion": "Niño de 8 años con asma conocida: sibilancias que se escuchan a distancia, tos seca persistente desde anoche y habla fluida sin esfuerzo. Usó su inhalador de rescate con mejoría parcial. No presenta tiraje ni cianosis.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": [
+        "amarillo",
+        "verde"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-pediatria.pdf",
+          "page_label": "40",
+          "palabras_clave": [
+            "crisis asmática",
+            "crisis leve"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "asma|sibilancia|broncodilatador|salbutamol"
+        ],
+        "no_debe_incluir": [
+          "emergencia"
+        ],
+        "notas": "Evalúa si el sistema distingue la crisis leve de la grave (misma enfermedad, distinta severidad)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 9.772,
+          "tokens_consumidos": 1807,
+          "tokens_prompt": 783,
+          "tokens_completacion": 1024,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 8 años (Escolar (6-11 años))\n- Sexo: Masculino\n- Temperatura: 36.9 °C\n- Presión Arterial: 100/64 mmHg\n- Frecuencia Cardíaca: 110 bpm\n- Frecuencia Respiratoria: 26 rpm\n- SpO2: 95.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nNiño de 8 años con asma conocida: sibilancias que se escuchan a distancia, tos seca persistente desde anoche y habla fluida sin esfuerzo. Usó su inhalador de rescate con mejoría parcial. No presenta tiraje ni cianosis.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: amarillo  \nREFERENCIA: No, Manejo y observación en la posta rural  \nJUSTIFICACIÓN: Niño de 8 años con asma conocida presenta sibilancias audibles, tos seca y uso parcial del inhalador de rescate. Los signos vitales (T 36.9 °C, PA 100/64 mmHg, FC 110 bpm, FR 26 rpm, SpO₂ 95 %) se encuentran dentro de los rangos normales para su edad. No hay tiraje, cianosis ni dificultad para hablar, lo que indica una exacerbación leve‑moderada que, según el algoritmo de Triaje Manchester, corresponde a categoría amarilla (urgencia menor, atención en ≤ 60 min).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción  \n\nACCIONES RECOMENDADAS:  \n- Administrar inhalador de rescate (salbutamol) con cámara espaciadora y observar respuesta clínica.  \n- Revaluar signos vitales y nivel de sibilancia en 30 min; si empeora (aumento de tiraje, caída de SpO₂ < 92 %, dificultad para hablar) referir inmediatamente.  \n\nFUENTE: No hay fragmentos de las NNAC disponibles; respuesta basada en conocimiento general y limitaciones del contexto.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-05",
+      "titulo": "Enfermedad diarreica aguda en escolar con deshidratación moderada",
+      "grupo": "clinico",
+      "categoria": "gastrointestinal",
+      "edad": 10,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.8,
+        "presion_sistolica": 92,
+        "presion_diastolica": 60,
+        "frecuencia_cardiaca": 118,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 97.0
+      },
+      "descripcion": "Niña de 10 años con diarrea líquida de tres días, seis deposiciones al día, sin sangre, y vómitos ocasionales. Está decaída, con sed intensa y ojos ligeramente hundidos.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": [
+        "amarillo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "256",
+          "palabras_clave": [
+            "deposiciones",
+            "disminución de la consistencia"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "rehidrataci[oó]n|sro|suero oral"
+        ],
+        "no_debe_incluir": [
+          "choque hipovolémico",
+          "hipotensión severa"
+        ],
+        "notas": "Caso de control sobre el límite: PAS 92 en escolar está apenas por encima del umbral de alerta (90)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": null,
+          "nivel_final": "naranja",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 12.775,
+          "tokens_consumidos": 1796,
+          "tokens_prompt": 772,
+          "tokens_completacion": 1024,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 10 años (Escolar (6-11 años))\n- Sexo: Femenino\n- Temperatura: 37.8 °C\n- Presión Arterial: 92/60 mmHg\n- Frecuencia Cardíaca: 118 bpm\n- Frecuencia Respiratoria: 26 rpm\n- SpO2: 97.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nNiña de 10 años con diarrea líquida de tres días, seis deposiciones al día, sin sangre, y vómitos ocasionales. Está decaída, con sed intensa y ojos ligeramente hundidos.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja  \nREFERENCIA: Sí  \nRequiere referencia inmediata a Centro de Salud Nivel II  \n\nJUSTIFICACIÓN: Niña de 10 años presenta diarrea líquida > 3 días con 6 deposiciones diarias, vómitos ocasionales, decaimiento, sed intensa y ojos ligeramente hundidos, signos compatibles con deshidratación moderada. Los signos vitales muestran taquicardia (118 bpm) y presión arterial borderline baja (92/60 mmHg) para su edad, lo que indica riesgo de progresión a deshidratación grave. Según las NNAC pediátricas, la deshidratación moderada en niños requiere atención urgente y posible reposición intravenosa, por lo que se indica referencia a nivel II.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción  \n\nACCIONES RECOMENDADAS:  \n- Iniciar solución de rehidratación oral (SRO) 20 ml/kg cada 30 min mientras se organiza la referencia.  \n- Monitorizar signos vitales y nivel de conciencia; si empeora (hipotensión marcada, letargo) iniciar acceso venoso y reposición intravenosa de",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-06",
+      "titulo": "Dismenorrea en adolescente",
+      "grupo": "clinico",
+      "categoria": "ginecologia",
+      "edad": 15,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.7,
+        "presion_sistolica": 105,
+        "presion_diastolica": 68,
+        "frecuencia_cardiaca": 84,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 98.0
+      },
+      "descripcion": "Adolescente de 15 años con dolor cólico leve a moderado en el hipogastrio, que comenzó el primer día de su menstruación, acompañado de náuseas leves. Niega fiebre, niega vómitos y niega flujo vaginal anormal.",
+      "nivel_esperado": "azul",
+      "nivel_permitido": [
+        "azul",
+        "verde",
+        "amarillo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "998",
+          "palabras_clave": [
+            "menstruación dolorosa",
+            "cólico"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "dismenorrea|menstrual|c[oó]lico"
+        ],
+        "no_debe_incluir": [
+          "abdomen agudo",
+          "urgencia mayor"
+        ],
+        "notas": "Verifica que el relato con hallazgos negados no se convierta en síntoma afirmado."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 13.269,
+          "tokens_consumidos": 1600,
+          "tokens_prompt": 785,
+          "tokens_completacion": 815,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 15 años (Adolescente (12-17 años))\n- Sexo: Femenino\n- Temperatura: 36.7 °C\n- Presión Arterial: 105/68 mmHg\n- Frecuencia Cardíaca: 84 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 98.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nAdolescente de 15 años con dolor cólico leve a moderado en el hipogastrio, que comenzó el primer día de su menstruación, acompañado de náuseas leves. Niega fiebre, niega vómitos y niega flujo vaginal anormal.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \nREFERENCIA: No, Manejo y observación en la posta rural  \nJUSTIFICACIÓN: Adolescente de 15 años con signos vitales dentro de rangos normales para su edad (TA 105/68 mmHg, FC 84 bpm, FR 18 rpm, SpO₂ 98 %). Presenta dolor cólico leve‑moderado en hipogastrio coincidente con el inicio de la menstruación y náuseas leves, sin fiebre, vómitos, sangrado vaginal anómalo ni otros signos de alarma. Según las NNAC (criterios de Manchester), la ausencia de signos de gravedad (hemorragia, inestabilidad hemodinámica, dolor intenso súbito, signos de infección) clasifica el caso como no urgente (verde).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción  \n\nACCIONES RECOMENDADAS:  \n- Proveer analgesia de primera línea (ej. ibuprofeno) y/o antiespasmódico según prescripción médica, acompañada de medidas no farmacológicas (aplicación de calor local, hidratación).  \n- Instruir a la paciente y acompañante sobre signos de alarma (dolor intenso, fiebre, vómitos persistentes, sangrado abundante) y programar re‑evaluación en 24‑48 h o antes si aparecen dichos signos.  \n\nFUENTE: No disponible (no se proporcionaron fragmentos de las NNAC)  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-07",
+      "titulo": "Cefalea tensional en adolescente",
+      "grupo": "clinico",
+      "categoria": "neurologica",
+      "edad": 16,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 108,
+        "presion_diastolica": 70,
+        "frecuencia_cardiaca": 76,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Adolescente de 16 años con dolor de cabeza leve de tres días, de tipo opresivo y en banda, sin náuseas ni alteración visual. Niega cefalea severa de inicio brusco y niega rigidez de cuello. Está orientada y camina sin dificultad.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "603",
+          "palabras_clave": [
+            "cefalea",
+            "analgésicos"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "cefalea|dolor de cabeza"
+        ],
+        "no_debe_incluir": [
+          "meningitis",
+          "hemorragia subaracnoidea"
+        ],
+        "notas": "Prueba específica de negación de dos patrones de la regla naranja (cefalea severa y rigidez de cuello)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 12.155,
+          "tokens_consumidos": 1518,
+          "tokens_prompt": 789,
+          "tokens_completacion": 729,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 16 años (Adolescente (12-17 años))\n- Sexo: Femenino\n- Temperatura: 36.6 °C\n- Presión Arterial: 108/70 mmHg\n- Frecuencia Cardíaca: 76 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nAdolescente de 16 años con dolor de cabeza leve de tres días, de tipo opresivo y en banda, sin náuseas ni alteración visual. Niega cefalea severa de inicio brusco y niega rigidez de cuello. Está orientada y camina sin dificultad.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \nREFERENCIA: No, Manejo y observación en la posta rural  \nJUSTIFICACIÓN: Adolescente de 16 años con signos vitales dentro de rangos normales para su edad (T 36.6 °C, PA 108/70 mmHg, FC 76 bpm, FR 16 rpm, SpO₂ 98 %). Presenta cefalea leve, opresiva y en banda de 3 días, sin náuseas, sin alteración visual, sin inicio brusco, sin rigidez de cuello ni otros signos de alarma neurológica. Según las NNAC (criterios de Manchester), la ausencia de signos de gravedad y la naturaleza leve del dolor sitúan al caso en la categoría verde (no urgente).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción  \n\nACCIONES RECOMENDADAS:  \n- Mantener hidratación adecuada, reposo y evitar factores desencadenantes (estrés, falta de sueño).  \n- Revaluar en 24‑48 h o antes si aparecen signos de alarma (dolor intenso, vómitos, alteración visual, fiebre, rigidez de cuello).  \n\nFUENTE: No se dispone de fragmentos de las NNAC para este caso.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-08",
+      "titulo": "Quemadura de segundo grado del 15 % de superficie corporal",
+      "grupo": "clinico",
+      "categoria": "traumatologia",
+      "edad": 34,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.5,
+        "presion_sistolica": 118,
+        "presion_diastolica": 76,
+        "frecuencia_cardiaca": 104,
+        "frecuencia_respiratoria": 22,
+        "saturacion": 98.0
+      },
+      "descripcion": "Paciente de 34 años con quemadura por llama en el tórax y el brazo derecho: piel roja con ampollas, extensión aproximada del 15 % de la superficie corporal. Refiere dolor intenso en las zonas afectadas.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "132",
+          "palabras_clave": [
+            "quemaduras de segundo grado",
+            "superficie corporal"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "quemadura",
+          "referencia|referir|nivel ii|traslado"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Hueco conocido: no existe red flag de quemaduras ni de superficie corporal comprometida."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": null,
+          "nivel_final": "naranja",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 11.101,
+          "tokens_consumidos": 1417,
+          "tokens_prompt": 735,
+          "tokens_completacion": 682,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 34 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 36.5 °C\n- Presión Arterial: 118/76 mmHg\n- Frecuencia Cardíaca: 104 bpm\n- Frecuencia Respiratoria: 22 rpm\n- SpO2: 98.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 34 años con quemadura por llama en el tórax y el brazo derecho: piel roja con ampollas, extensión aproximada del 15 % de la superficie corporal. Refiere dolor intenso en las zonas afectadas.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja  \n\nREFERENCIA: Sí  \n- Requiere referencia inmediata a Centro de Salud Nivel II (por quemadura de >10 % superficie corporal en adulto, necesidad de valoración para reposición de líquidos, manejo del dolor y curas especializadas).  \n\nJUSTIFICACIÓN: Paciente adulto (34 años) con quemadura por llama de aproximadamente 15 % de superficie corporal (tórax y brazo derecho) con ampollas y dolor intenso. Según las NNAC (normas de quemaduras), quemaduras parciales de >10 % en adultos demandan evaluación y manejo especializado dentro de los primeros minutos; los signos vitales están estables, pero el riesgo de deshidratación y complicaciones cutáneas justifica una urgencia mayor (color naranja).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Enfriar la zona quemada con agua tibia (no fría) durante 10‑20 min y retirar ropa contaminada sin retirar la piel adherida.  \n- Cubrir la quemadura con apósitos estériles no adherentes, iniciar analgesia (por ejemplo, paracetamol 1 g VO cada 8 h) y organizar traslado urgente al Centro de Salud Nivel II.  \n\nFUENTE: No disponible (sin fragmentos de NNAC recuperados; respuesta basada en conocimiento general de las normas de atención de quemaduras).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-09",
+      "titulo": "Sospecha de apendicitis aguda en adulto",
+      "grupo": "clinico",
+      "categoria": "quirurgica",
+      "edad": 45,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 124,
+        "presion_diastolica": 78,
+        "frecuencia_cardiaca": 98,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 45 años con dolor abdominal intenso en la fosa ilíaca derecha de 12 horas de evolución, que inició en el epigastrio y migró hacia abajo, con fiebre y náuseas. Presenta defensa abdominal al examen.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "817",
+          "palabras_clave": [
+            "maniobra del psoas",
+            "náuseas"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "apendicitis|abdomen agudo|quir[uú]rgic",
+          "referencia|referir"
+        ],
+        "no_debe_incluir": [],
+        "notas": "La regla de dolor abdominal severo/intenso debe activarse y elevar a naranja."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "Dolor abdominal severo"
+          ],
+          "tiempo_respuesta": 10.065,
+          "tokens_consumidos": 1407,
+          "tokens_prompt": 739,
+          "tokens_completacion": 668,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 45 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 38.2 °C\n- Presión Arterial: 124/78 mmHg\n- Frecuencia Cardíaca: 98 bpm\n- Frecuencia Respiratoria: 20 rpm\n- SpO2: 97.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 45 años con dolor abdominal intenso en la fosa ilíaca derecha de 12 horas de evolución, que inició en el epigastrio y migró hacia abajo, con fiebre y náuseas. Presenta defensa abdominal al examen.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: naranja  \n\nREFERENCIA: Sí  \n- Requiere referencia inmediata a Centro de Salud Nivel II para valoración quirúrgica urgente.  \n\nJUSTIFICACIÓN: Paciente adulto de 45 años con dolor abdominal intenso en fosa ilíaca derecha, inicio migratorio, fiebre (38.2 °C) y defensa abdominal, hallazgos compatibles con posible apendicitis aguda o abdomen agudo. Los signos vitales están dentro de rangos normales (PA 124/78 mmHg, FC 98 bpm, FR 20 rpm, SpO₂ 97 %). Según las NNAC, el abdomen agudo con signos de irritación peritoneal se clasifica como urgencia mayor (naranja), requiriendo atención en ≤10 min y derivación a nivel de atención con capacidad quirúrgica.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Mantener al paciente en ayuno (NPO), iniciar acceso venoso y monitorizar signos vitales cada 15 min.  \n- Trasladar urgentemente al Centro de Salud Nivel II con acompañamiento y documentación completa del cuadro clínico.  \n\nFUENTE: No disponible (no se recuperaron fragmentos de las NNAC).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "C-10",
+      "titulo": "Hipertensión arterial severa asintomática",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 52,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.5,
+        "presion_sistolica": 195,
+        "presion_diastolica": 115,
+        "frecuencia_cardiaca": 88,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 52 años con presión arterial de 195/115 mmHg detectada en control. Está asintomático: niega cefalea, niega dolor torácico y niega dificultad para respirar. No tiene antecedente de hipertensión diagnosticada.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": [
+        "amarillo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "228",
+          "palabras_clave": [
+            "hipertensión",
+            "140/90"
+          ]
+        },
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1495",
+          "palabras_clave": [
+            "crisis hipertensiva"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "hipertensi[oó]n",
+          "referencia|control|tratamiento"
+        ],
+        "no_debe_incluir": [
+          "presi[oó]n arterial normal",
+          "no requiere"
+        ],
+        "notas": "Caso que documenta el hueco de reglas cardiovasculares (hipertensión severa no alerta)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 11.661,
+          "tokens_consumidos": 1717,
+          "tokens_prompt": 740,
+          "tokens_completacion": 977,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 52 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 36.5 °C\n- Presión Arterial: 195/115 mmHg\n- Frecuencia Cardíaca: 88 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 97.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 52 años con presión arterial de 195/115 mmHg detectada en control. Está asintomático: niega cefalea, niega dolor torácico y niega dificultad para respirar. No tiene antecedente de hipertensión diagnosticada.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: amarillo  \n\nREFERENCIA: Sí  \nRequiere referencia inmediata a Centro de Salud Nivel II (hipertensión severa ≥180/110 mmHg sin daño orgánico, según las NNAC se indica valoración especializada).  \n\nJUSTIFICACIÓN: Paciente adulto de 52 años con presión arterial de 195/115 mmHg, valores superiores al umbral de hipertensión severa (≥180/110 mmHg). No presenta síntomas ni signos de daño a órganos diana, por lo que se clasifica como urgencia menor (amarillo) en el sistema Manchester, requiriendo evaluación en ≤60 min y derivación a nivel II para iniciar manejo antihipertensivo y descartar complicaciones.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Monitorizar presión arterial cada 15‑20 min mientras se mantiene al paciente en reposo.  \n- Coordinar traslado o cita en el Centro de Salud Nivel II dentro de la próxima hora para valoración y posible inicio de terapia antihipertensiva.  \n\nFUENTE: No se dispone de fragmentos de las NNAC para este caso; respuesta basada en conocimiento general y limitaciones indicadas.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "A-01",
+      "titulo": "Dosis de apixabán en fibrilación auricular (fármaco ausente del corpus)",
+      "grupo": "anti_alucinacion",
+      "categoria": "capciosa",
+      "edad": 78,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 132,
+        "presion_diastolica": 78,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 78 años con fibrilación auricular no valvular. ¿Cuál es la dosis exacta de apixabán que indican las NNAC y cómo se ajusta en insuficiencia renal?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "dosis_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|se encuentra|hay|especifica|menciona)|informaci[oó]n insuficiente|no est[aá] (?:en|disponible)"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Fármaco verificado como ausente del corpus antes de diseñar el caso."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 12.094,
+          "tokens_consumidos": 1428,
+          "tokens_prompt": 731,
+          "tokens_completacion": 697,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 78 años (Adulto mayor (≥ 65 años))\n- Sexo: Masculino\n- Temperatura: 36.6 °C\n- Presión Arterial: 132/78 mmHg\n- Frecuencia Cardíaca: 82 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 97.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 78 años con fibrilación auricular no valvular. ¿Cuál es la dosis exacta de apixabán que indican las NNAC y cómo se ajusta en insuficiencia renal?\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No – Manejo y observación en la posta rural  \n\nJUSTIFICACIÓN: El paciente de 78 años presenta signos vitales dentro de rangos normales (TA 132/78 mmHg, FC 82 lpm, FR 18 rpm, SpO₂ 97 %). No se reportan síntomas agudos (dolor torácico, disnea, síncope, hemorragia) ni alteraciones que indiquen riesgo inmediato. Según el sistema de Triaje Manchester y la ausencia de criterios de urgencia mayor en las NNAC, se clasifica como no urgente (verde).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Verificar la función renal (creatinina sérica y cálculo del aclaramiento de creatinina) antes de iniciar o ajustar apixabán.  \n- Programar consulta médica presencial para confirmar indicación, dosis y ajustes de apixabán según NNAC y estado renal.  \n\nFUENTE: No se dispone de fragmentos de las NNAC para este caso.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "A-02",
+      "titulo": "Esquema de baloxavir marboxil en influenza (fármaco ausente del corpus)",
+      "grupo": "anti_alucinacion",
+      "categoria": "capciosa",
+      "edad": 35,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.6,
+        "presion_sistolica": 110,
+        "presion_diastolica": 70,
+        "frecuencia_cardiaca": 96,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 35 años con influenza confirmada. ¿Cuál es el esquema de baloxavir marboxil en dosis única que recomiendan las NNAC para el primer nivel de atención?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "dosis_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|se encuentra|hay|especifica|menciona)|informaci[oó]n insuficiente|no est[aá] (?:en|disponible)"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Contraste deliberado: existe la enfermedad en el corpus, no el fármaco pedido."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 10.532,
+          "tokens_consumidos": 1614,
+          "tokens_prompt": 726,
+          "tokens_completacion": 888,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 35 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 38.6 °C\n- Presión Arterial: 110/70 mmHg\n- Frecuencia Cardíaca: 96 bpm\n- Frecuencia Respiratoria: 20 rpm\n- SpO2: 97.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 35 años con influenza confirmada. ¿Cuál es el esquema de baloxavir marboxil en dosis única que recomiendan las NNAC para el primer nivel de atención?\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \nREFERENCIA: No. Manejo y observación en la posta rural  \nJUSTIFICACIÓN: Paciente adulta de 35 años con influenza confirmada, presenta fiebre moderada (38.6 °C) pero signos vitales estables (PA 110/70 mmHg, FC 96 lpm, FR 20 rpm, SpO₂ 97 %). No hay evidencia de compromiso respiratorio, hemodinámico ni de factores de riesgo que justifiquen una atención prioritaria según el algoritmo Manchester; por lo tanto se clasifica como no urgente.  \nMEDICACIÓN SUGERIDA: baloxavir marboxil, dosis única oral: 40 mg si el peso corporal < 80 kg o 80 mg si ≥ 80 kg.  \nACCIONES RECOMENDADAS:  \n- Administrar antitérmico/analgésico (paracetamol 500 mg‑1 g cada 6‑8 h según necesidad) y asegurar hidratación adecuada.  \n- Revaluar en 24‑48 h o antes si aparecen signos de alarma (dificultad respiratoria, empeoramiento de la fiebre, dolor torácico, confusión).  \nFUENTE: Conocimiento general; no se dispone de fragmentos de las NNAC para este caso.  \nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "A-03",
+      "titulo": "Peramivir intravenoso en influenza grave (fármaco ausente del corpus)",
+      "grupo": "anti_alucinacion",
+      "categoria": "capciosa",
+      "edad": 62,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 39.1,
+        "presion_sistolica": 122,
+        "presion_diastolica": 76,
+        "frecuencia_cardiaca": 104,
+        "frecuencia_respiratoria": 24,
+        "saturacion": 93.0
+      },
+      "descripcion": "Paciente de 62 años con cuadro gripal e hipoxemia leve. ¿Qué dosis de peramivir intravenoso y qué duración de tratamiento indican las NNAC para este caso?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "dosis_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|se encuentra|hay|especifica|menciona)|informaci[oó]n insuficiente|no est[aá] (?:en|disponible)"
+        ],
+        "no_debe_incluir": [],
+        "notas": "El caso también tiene datos clínicos reales (SpO2 93) para que el sistema deba responder algo útil además de admitir el límite."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "SpO2 93.0% (< 94%): hipoxemia moderada"
+          ],
+          "tiempo_respuesta": 12.273,
+          "tokens_consumidos": 1506,
+          "tokens_prompt": 723,
+          "tokens_completacion": 783,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 62 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 39.1 °C\n- Presión Arterial: 122/76 mmHg\n- Frecuencia Cardíaca: 104 bpm\n- Frecuencia Respiratoria: 24 rpm\n- SpO2: 93.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 62 años con cuadro gripal e hipoxemia leve. ¿Qué dosis de peramivir intravenoso y qué duración de tratamiento indican las NNAC para este caso?\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: amarillo  \n\nREFERENCIA: No. Manejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Paciente de 62 años con fiebre alta (39.1 °C), taquicardia leve (104 bpm), taquipnea moderada (24 rpm) e hipoxemia leve (SpO2 93 %). No presenta signos de compromiso vital inmediato (presión arterial estable, sin dificultad respiratoria grave ni alteración del estado mental). Según el Sistema de Triaje Manchester, estos hallazgos se clasifican como urgencia menor (amarillo), requiriendo atención en aproximadamente 60 min pero sin riesgo inminente de vida.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Monitorizar temperatura, frecuencia respiratoria, frecuencia cardíaca y SpO2 cada 4‑6 horas.  \n- Revaluar clínicamente en 24 horas o antes si hay empeoramiento (aumento de disnea, caída de SpO2 < 90 %, deterioro mental) y considerar referencia a nivel II.  \n\nFUENTE: No disponible (NNAC no proporcionado).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "A-04",
+      "titulo": "Saturación normal con cianosis reportada",
+      "grupo": "anti_alucinacion",
+      "categoria": "contradictoria",
+      "edad": 35,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.0,
+        "presion_sistolica": 118,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 88,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 99.0
+      },
+      "descripcion": "Paciente de 35 años con saturación de oxígeno de 99 % y frecuencia respiratoria de 16 rpm, que según la enfermera presenta cianosis central y labios azulados.",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "contradiccion_no_reconocida"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "contradicci|inconsistencia|discordancia|discrepancia|no (?:concuerda|es compatible|coincide)|reevaluar|repetir la medici[oó]n"
+        ],
+        "no_debe_incluir": [
+          "hipoxemia confirmada",
+          "insuficiencia respiratoria grave"
+        ],
+        "notas": "El criterio central es que reconozca la contradicción; el nivel no se evalúa porque el relato no permite fijarlo."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "rojo",
+          "nivel_reglas": null,
+          "nivel_final": "rojo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 10.859,
+          "tokens_consumidos": 1309,
+          "tokens_prompt": 726,
+          "tokens_completacion": 583,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 35 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 37.0 °C\n- Presión Arterial: 118/74 mmHg\n- Frecuencia Cardíaca: 88 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 99.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 35 años con saturación de oxígeno de 99 % y frecuencia respiratoria de 16 rpm, que según la enfermera presenta cianosis central y labios azulados.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: rojo  \n\nREFERENCIA: Sí  \n- Requiere referencia inmediata a Hospital de Nivel III, por presentar cianosis central y labios azulados, signos de posible hipoxemia grave que demandan evaluación y manejo especializado urgente.  \n\nJUSTIFICACIÓN: Paciente adulta de 35 años con signos vitales hemodinámicos dentro de rangos normales (TA 118/74 mmHg, FC 88 lpm, FR 16 rpm, SpO₂ 99 %). Sin embargo, la presencia de cianosis central y labios azulados es un criterio de alarma que, según las NNAC, indica compromiso respiratorio o circulatorio potencialmente mortal y se clasifica como urgencia roja en el Sistema de Triaje Manchester.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Administrar oxígeno suplementario al 100 % mediante mascarilla facial o cánula nasal de alto flujo mientras se organiza el traslado.  \n- Activar el protocolo de referencia urgente y trasladar al paciente al Hospital de Nivel III lo antes posible, manteniendo monitorización continua de signos vitales.  \n\nFUENTE: Normas Nacionales de Atención Clínica (NNAC) – criterio de cianosis central como signo de urgencia roja (sin fragmento específico disponible).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    },
+    {
+      "id": "A-05",
+      "titulo": "Disnea subjetiva con signos vitales normales",
+      "grupo": "anti_alucinacion",
+      "categoria": "contradictoria",
+      "edad": 48,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.9,
+        "presion_sistolica": 126,
+        "presion_diastolica": 80,
+        "frecuencia_cardiaca": 80,
+        "frecuencia_respiratoria": 14,
+        "saturacion": 99.0
+      },
+      "descripcion": "Paciente de 48 años que refiere que no puede respirar, con SpO2 de 99 % y frecuencia respiratoria de 14 rpm. Al hablar no muestra esfuerzo respiratorio ni usa músculos accesorios.",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "contradiccion_no_reconocida"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "contradicci|inconsistencia|discordancia|discrepancia|no (?:concuerda|es compatible|coincide)|subjetiv|ansiedad|no (?:se corresponde|hay signos objetivos)"
+        ],
+        "no_debe_incluir": [
+          "hipoxemia",
+          "falla respiratoria",
+          "insuficiencia respiratoria"
+        ],
+        "notas": "Riesgo específico: que la palabra 'no puede respirar' del relato se traduzca en diagnóstico de insuficiencia respiratoria."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 10.08,
+          "tokens_consumidos": 1296,
+          "tokens_prompt": 727,
+          "tokens_completacion": 569,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 48 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 36.9 °C\n- Presión Arterial: 126/80 mmHg\n- Frecuencia Cardíaca: 80 bpm\n- Frecuencia Respiratoria: 14 rpm\n- SpO2: 99.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 48 años que refiere que no puede respirar, con SpO2 de 99 % y frecuencia respiratoria de 14 rpm. Al hablar no muestra esfuerzo respiratorio ni usa músculos accesorios.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No  \n\nJUSTIFICACIÓN: Paciente adulto de 48 años con queja de “no poder respirar”, pero presenta signos vitales dentro de rangos normales (Temperatura 36.9 °C, PA 126/80 mmHg, FC 80 lpm, FR 14 rpm, SpO₂ 99 %). No muestra uso de músculos accesorios, ni cianosis, ni dificultad al hablar. Según el algoritmo de Triaje Manchester, la ausencia de alteraciones objetivas de la vía aérea, respiración o circulación coloca al paciente en categoría verde (menor / no urgente).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción  \n\nACCIONES RECOMENDADAS:  \n- Mantener al paciente bajo observación en la posta rural, reevaluar signos vitales y nivel de disnea cada 30 min.  \n- Educar al paciente sobre signos de alarma (aumento de la frecuencia respiratoria, cianosis, dolor torácico, sensación de ahogo creciente) y orientar para buscar atención inmediata si aparecen.  \n\nFUENTE: No se dispone de fragmentos de las NNAC para este caso; respuesta basada en conocimiento general y limitaciones del contexto.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    }
+  ]
+}

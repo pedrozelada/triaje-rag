@@ -1,0 +1,775 @@
+{
+  "version": 1,
+  "grupo": "clinico",
+  "descripcion": "20 casos clínicos de posta rural para la evaluación técnica (C2.A1). Cada caso trae el nivel esperado, la fuente NNAC que lo respalda (verificada por búsqueda literal en el corpus) y las señales automáticas que el motor de evaluación comprueba. El nivel esperado es una propuesta del tesista derivada de la norma y del sistema Manchester, PENDIENTE de validación por el médico colaborador (C2.A4).",
+  "distribucion": {
+    "por_nivel": {"rojo": 3, "naranja": 6, "amarillo": 6, "verde": 3, "azul": 2},
+    "por_grupo_etario": {
+      "neonato": 1,
+      "lactante": 2,
+      "preescolar": 2,
+      "escolar": 2,
+      "adolescente": 2,
+      "adulto": 7,
+      "adulto_mayor": 4
+    },
+    "regresion_negacion": ["C-11", "C-14", "C-17", "C-20"],
+    "regresion_pediatrica": ["C-01", "C-02", "C-03", "C-04", "C-19"]
+  },
+  "casos": [
+    {
+      "id": "C-01",
+      "titulo": "Onfalitis en recién nacido de 21 días",
+      "grupo": "clinico",
+      "categoria": "neonatal",
+      "edad": 0,
+      "edad_meses": 0,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 62,
+        "presion_diastolica": 38,
+        "frecuencia_cardiaca": 150,
+        "frecuencia_respiratoria": 55,
+        "saturacion": 97.0
+      },
+      "descripcion": "Recién nacido de 21 días, traído por la madre porque el muñón umbilical está enrojecido y con secreción purulenta desde hace dos días (onfalitis). Está algo decaído, mama con menos fuerza que antes y llora débil.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1086",
+          "palabras_clave": ["onfalitis", "muñón umbilical"]
+        }
+      ],
+      "justificacion_esperada": "La norma de afecciones perinatales define la onfalitis como eritema y/o induración con secreción purulenta del muñón umbilical y la piel que lo rodea, generalmente por Staphylococcus aureus, y establece control de la evolución y cambio de antibiótico según cultivos. En un neonato con signos de compromiso general (hipoactividad, succión débil) y con PAS 62 mmHg —por debajo de su umbral de normalidad para la edad— corresponde urgencia mayor con referencia. La cifra de PAS que en un adulto sería normal-alta resultaría anormal en este grupo etario: es el comportamiento que corrigió el commit 3022142.",
+      "origen": "pediatrico",
+      "regresion_de": "3022142",
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["onfalitis|mu[ñn][oó]n", "referencia|referir|nivel ii"],
+        "no_debe_incluir": ["no requiere referencia"],
+        "notas": "La regla de PAS pediátrica debe activarse (62 mmHg < 70 en neonato). Sin la corrección pediátrica, los umbrales de adulto darían rojo (62 < 80), sobrevalorando la urgencia."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-02",
+      "titulo": "Bronquiolitis en lactante de 7 meses",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 7,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 84,
+        "presion_diastolica": 52,
+        "frecuencia_cardiaca": 158,
+        "frecuencia_respiratoria": 62,
+        "saturacion": 92.0
+      },
+      "descripcion": "Lactante de 7 meses con tos y silbidos en el pecho desde hace tres días. Respira rápido, se le hunden las costillas al respirar y no puede dormir por la tos. Come menos de lo habitual.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja", "rojo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "739",
+          "palabras_clave": ["obstrucción bronquial", "viral"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades respiratorias define la bronquiolitis como la obstrucción bronquial aguda de etiología viral sin episodio previo. Con FR 62 rpm (por encima del umbral de alerta del lactante, 60) y SpO2 92 % (hipoxemia moderada, umbral < 94 %) el cuadro exige urgencia mayor: oxígeno y referencia. FC 158 y PAS 84 son normales para la edad y no deben alarmar.",
+      "origen": "pediatrico",
+      "regresion_de": "3022142",
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["bronquiolitis|obstrucci[oó]n bronquial", "referencia|referir|ox[íi]geno"],
+        "no_debe_incluir": [],
+        "notas": "Verdadero positivo de las reglas: FR >= 60 y SpO2 < 94 % elevan a naranja de forma correcta."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-03",
+      "titulo": "Cuadro catarral leve en lactante de 3 meses (regresión pediátrica)",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 3,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 140,
+        "frecuencia_respiratoria": 44,
+        "saturacion": 98.0
+      },
+      "descripcion": "Lactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": ["verde", "azul"],
+      "fuentes_esperadas": [],
+      "justificacion_esperada": "Todos los signos vitales son fisiológicos para un lactante de 3 meses: FC 140 bpm, FR 44 rpm y PAS 85 mmHg están dentro de su rango normal y NO deben interpretarse con umbrales de adulto. El corpus de NNAC no contiene un capítulo de infección respiratoria alta no complicada (verificado por búsqueda literal): es el hueco documentado del corpus, por lo que este caso se evalúa por nivel y no por recuperación. Caso de regresión del commit 3022142: con umbrales de adulto, FR 44 y FC 140 habrían disparado taquipnea y taquicardia (naranja) de forma espuria.",
+      "origen": "pediatrico",
+      "regresion_de": "3022142",
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": ["taquipnea", "taquicardia", "hipoxemia", "dificultad respiratoria grave"],
+        "notas": "Caso de control negativo: el sistema no debe inventar gravedad con signos normales para la edad. El chequeo de 'no_debe_incluir' es consciente de la negación ('no presenta taquipnea' no cuenta como hallazgo)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-04",
+      "titulo": "Crisis asmática leve en escolar",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 8,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.9,
+        "presion_sistolica": 100,
+        "presion_diastolica": 64,
+        "frecuencia_cardiaca": 110,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 95.0
+      },
+      "descripcion": "Niño de 8 años con asma conocida: sibilancias que se escuchan a distancia, tos seca persistente desde anoche y habla fluida sin esfuerzo. Usó su inhalador de rescate con mejoría parcial. No presenta tiraje ni cianosis.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": ["amarillo", "verde"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-pediatria.pdf",
+          "page_label": "40",
+          "palabras_clave": ["crisis asmática", "crisis leve"]
+        }
+      ],
+      "justificacion_esperada": "La norma de pediatría incluye la Tabla 10 con el tratamiento de la crisis asmática según severidad, y describe la crisis leve con oxígeno humidificado y broncodilatadores. Contando con buen estado general, habla fluida, SpO2 95 % y signos vitales dentro de rango para la edad, el manejo corresponde a la posta con observación y control: urgencia menor.",
+      "origen": "pediatrico",
+      "regresion_de": "3022142",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["asma|sibilancia|broncodilatador|salbutamol"],
+        "no_debe_incluir": ["emergencia"],
+        "notas": "Evalúa si el sistema distingue la crisis leve de la grave (misma enfermedad, distinta severidad)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-05",
+      "titulo": "Enfermedad diarreica aguda en escolar con deshidratación moderada",
+      "grupo": "clinico",
+      "categoria": "gastrointestinal",
+      "edad": 10,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.8,
+        "presion_sistolica": 92,
+        "presion_diastolica": 60,
+        "frecuencia_cardiaca": 118,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 97.0
+      },
+      "descripcion": "Niña de 10 años con diarrea líquida de tres días, seis deposiciones al día, sin sangre, y vómitos ocasionales. Está decaída, con sed intensa y ojos ligeramente hundidos.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": ["amarillo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "256",
+          "palabras_clave": ["deposiciones", "disminución de la consistencia"]
+        }
+      ],
+      "justificacion_esperada": "La norma define la enfermedad diarreica aguda como la disminución de la consistencia de las deposiciones con aumento de su frecuencia, y para los menores de cinco años aplica la sistematización de la estrategia AIEPI, extensible a niños mayores. Con signos de deshidratación moderada (sed, ojos hundidos) el manejo es rehidratación oral supervisada y control estrecho, sin criterios de gravedad inmediata: urgencia menor. PAS 92 mmHg es normal-baja para su edad (umbral de alerta 90) y no debe activar hipotensión.",
+      "origen": "vitales",
+      "regresion_de": null,
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["rehidrataci[oó]n|sro|suero oral"],
+        "no_debe_incluir": ["choque hipovolémico", "hipotensión severa"],
+        "notas": "Caso de control sobre el límite: PAS 92 en escolar está apenas por encima del umbral de alerta (90)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-06",
+      "titulo": "Dismenorrea en adolescente",
+      "grupo": "clinico",
+      "categoria": "ginecologia",
+      "edad": 15,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.7,
+        "presion_sistolica": 105,
+        "presion_diastolica": 68,
+        "frecuencia_cardiaca": 84,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 98.0
+      },
+      "descripcion": "Adolescente de 15 años con dolor cólico leve a moderado en el hipogastrio, que comenzó el primer día de su menstruación, acompañado de náuseas leves. Niega fiebre, niega vómitos y niega flujo vaginal anormal.",
+      "nivel_esperado": "azul",
+      "nivel_permitido": ["azul", "verde", "amarillo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "998",
+          "palabras_clave": ["menstruación dolorosa", "cólico"]
+        }
+      ],
+      "justificacion_esperada": "La norma describe la dismenorrea como la menstruación dolorosa tipo cólico en hipogastrio, con eliminación o no de coágulos y otros síntomas sistémicos que aparecen horas antes. Sin fiebre, sin signos peritoneales y con vitales normales, corresponde manejo sintomático y educación: autosanamiento. Caso de control para las reglas de negación: 'niega fiebre' y 'niega vómitos' no deben activar ninguna alerta.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["dismenorrea|menstrual|c[oó]lico"],
+        "no_debe_incluir": ["abdomen agudo", "urgencia mayor"],
+        "notas": "Verifica que el relato con hallazgos negados no se convierta en síntoma afirmado."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-07",
+      "titulo": "Cefalea tensional en adolescente",
+      "grupo": "clinico",
+      "categoria": "neurologica",
+      "edad": 16,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 108,
+        "presion_diastolica": 70,
+        "frecuencia_cardiaca": 76,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Adolescente de 16 años con dolor de cabeza leve de tres días, de tipo opresivo y en banda, sin náuseas ni alteración visual. Niega cefalea severa de inicio brusco y niega rigidez de cuello. Está orientada y camina sin dificultad.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": ["verde", "azul"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "603",
+          "palabras_clave": ["cefalea", "analgésicos"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades del sistema nervioso trata las cefaleas primarias, advierte sobre la cefalea crónica diaria por uso de fármacos y fija los criterios de referencia ante sospecha de patología orgánica (dolor de características distintas a las habituales). Sin banderas de alarma —inicio brusco, rigidez de cuello o compromiso neurológico— corresponde atención diferible con analgesia y control: verde. Regresión de negación: 'niega cefalea severa' y 'niega rigidez de cuello' no deben activar las alertas correspondientes.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["cefalea|dolor de cabeza"],
+        "no_debe_incluir": ["meningitis", "hemorragia subaracnoidea"],
+        "notas": "Prueba específica de negación de dos patrones de la regla naranja (cefalea severa y rigidez de cuello)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-08",
+      "titulo": "Quemadura de segundo grado del 15 % de superficie corporal",
+      "grupo": "clinico",
+      "categoria": "traumatologia",
+      "edad": 34,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.5,
+        "presion_sistolica": 118,
+        "presion_diastolica": 76,
+        "frecuencia_cardiaca": 104,
+        "frecuencia_respiratoria": 22,
+        "saturacion": 98.0
+      },
+      "descripcion": "Paciente de 34 años con quemadura por llama en el tórax y el brazo derecho: piel roja con ampollas, extensión aproximada del 15 % de la superficie corporal. Refiere dolor intenso en las zonas afectadas.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja", "rojo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "132",
+          "palabras_clave": ["quemaduras de segundo grado", "superficie corporal"]
+        }
+      ],
+      "justificacion_esperada": "La norma de quemaduras incluye entre los criterios de referencia las quemaduras de segundo grado que afecten del 15 % al 25 % de superficie corporal en adultos (y del 10 % al 25 % en menores de un año); en la misma sección figuran las quemaduras de segundo grado menores al 15 % como manejo local. Con exactamente 15 % el caso cae en el criterio de referencia: urgencia mayor con traslado. El sistema NO tiene una regla determinista de quemaduras: este caso depende por completo del LLM (hueco documentado en el informe).",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["quemadura", "referencia|referir|nivel ii|traslado"],
+        "no_debe_incluir": [],
+        "notas": "Hueco conocido: no existe red flag de quemaduras ni de superficie corporal comprometida."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-09",
+      "titulo": "Sospecha de apendicitis aguda en adulto",
+      "grupo": "clinico",
+      "categoria": "quirurgica",
+      "edad": 45,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.2,
+        "presion_sistolica": 124,
+        "presion_diastolica": 78,
+        "frecuencia_cardiaca": 98,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 45 años con dolor abdominal intenso en la fosa ilíaca derecha de 12 horas de evolución, que inició en el epigastrio y migró hacia abajo, con fiebre y náuseas. Presenta defensa abdominal al examen.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja", "rojo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "817",
+          "palabras_clave": ["maniobra del psoas", "náuseas"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades quirúrgicas del sistema digestivo describe la apendicitis con dolor migratorio, náuseas y vómitos posteriores al inicio del dolor, frecuencia de pulso generalmente normal —con taquicardia si hay fiebre elevada— y signos como la maniobra del psoas dolorosa. El cuadro es una urgencia quirúrgica que exige referencia: urgencia mayor. Verdadero positivo de la regla de síntomas ('dolor abdominal intenso').",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["apendicitis|abdomen agudo|quir[uú]rgic", "referencia|referir"],
+        "no_debe_incluir": [],
+        "notas": "La regla de dolor abdominal severo/intenso debe activarse y elevar a naranja."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-10",
+      "titulo": "Hipertensión arterial severa asintomática",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 52,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.5,
+        "presion_sistolica": 195,
+        "presion_diastolica": 115,
+        "frecuencia_cardiaca": 88,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 52 años con presión arterial de 195/115 mmHg detectada en control. Está asintomático: niega cefalea, niega dolor torácico y niega dificultad para respirar. No tiene antecedente de hipertensión diagnosticada.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": ["amarillo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "228",
+          "palabras_clave": ["hipertensión", "140/90"]
+        },
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1495",
+          "palabras_clave": ["crisis hipertensiva"]
+        }
+      ],
+      "justificacion_esperada": "La norma de medicina interna establece que los pacientes con presión arterial confirmada ≥ 140/90 mmHg deben iniciar terapia farmacológica además de las medidas de estilo de vida, y la ficha de crisis hipertensiva describe el manejo cuando hay síntomas de aumento brusco. Sin síntomas de daño de órgano blanco, el caso corresponde a urgencia menor con control y tratamiento iniciado en el primer nivel. Limitación conocida del sistema: la hipertensión NO es una red flag determinista (solo la hipotensión lo es), por lo que el nivel depende íntegramente del LLM.",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["hipertensi[oó]n", "referencia|control|tratamiento"],
+        "no_debe_incluir": ["presi[oó]n arterial normal", "no requiere"],
+        "notas": "Caso que documenta el hueco de reglas cardiovasculares (hipertensión severa no alerta)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-11",
+      "titulo": "Cuadro catarral leve con hallazgos negados (caso de la falla reportada)",
+      "grupo": "clinico",
+      "categoria": "respiratoria",
+      "edad": 24,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.6,
+        "presion_sistolica": 112,
+        "presion_diastolica": 72,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": ["verde", "azul"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "731",
+          "palabras_clave": ["mucosa faríngea", "amígdalas"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades respiratorias define la faringoamigdalitis como el estado inflamatorio e infeccioso de la mucosa faríngea y de las amígdalas palatinas. Con signos vitales dentro de rango, un cuadro catarral de vías altas sin criterios de gravedad corresponde a atención diferible o autosanamiento. Es el caso reportado por el tesista: antes de la corrección del manejo de negación (commit 928e7d4) la regla 'Dolor torácico (posible síndrome coronario)' se activaba con el texto 'Niega … dolor torácico' y elevaba el nivel a naranja, contradiciendo al LLM (verde). El hueco de corpus: no existe un capítulo de resfriado común; la página de faringoamigdalitis es la más cercana porque el síntoma principal del relato es el dolor de garganta.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": ["urgencia mayor", "s[íi]ndrome coronario"],
+        "notas": "Caso insignia de la regresión de negación: ninguna alerta debe activarse y el nivel final no puede superar verde."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-12",
+      "titulo": "Sangrado vaginal en gestante de 32 semanas",
+      "grupo": "clinico",
+      "categoria": "obstetricia",
+      "edad": 30,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 118,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 92,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 98.0
+      },
+      "descripcion": "Gestante de 30 años con 32 semanas de embarazo que refiere sangrado vaginal escaso desde esta mañana y dolor lumbar bajo. Las contracciones no son regulares y refiere que el bebé se mueve.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja", "rojo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1208",
+          "palabras_clave": ["hemorragia", "placenta previa"]
+        }
+      ],
+      "justificacion_esperada": "La norma obstétrica indica que ante diagnóstico ecográfico de placenta previa se refiera de inmediato y que en caso de hemorragia masiva se aplique la norma de choque hemorrágico de la embarazada. Con sangrado del tercer trimestre —cualquiera sea su cuantía— corresponde referencia urgente a un nivel resolutivo, porque el primer nivel no puede descartar placenta previa ni desprendimiento: urgencia mayor, con tolerancia a rojo si se interpreta como amenaza vital. Sin regla determinista de obstetricia: depende del LLM.",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["referencia|referir|nivel ii|traslado"],
+        "no_debe_incluir": ["manejo en casa", "no requiere"],
+        "notas": "Hueco conocido: no hay red flag obstétrica (ni de sangrado, salvo 'hemorragia abundante/masiva')."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-13",
+      "titulo": "Accidente bothrópico por mordedura de serpiente",
+      "grupo": "clinico",
+      "categoria": "toxicologia",
+      "edad": 27,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 37.2,
+        "presion_sistolica": 100,
+        "presion_diastolica": 64,
+        "frecuencia_cardiaca": 112,
+        "frecuencia_respiratoria": 22,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 27 años mordido por una serpiente hace dos horas en el pie derecho. Presenta edema progresivo y ascendente, dolor y equimosis en la pierna. Refiere sangrado por las encías al cepillarse.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": ["rojo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "173",
+          "palabras_clave": ["bothrópico", "edema local"]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "175",
+          "palabras_clave": ["mordedura de serpiente"]
+        }
+      ],
+      "justificacion_esperada": "La norma de envenenamientos clasifica el accidente bothrópico en leve, moderado y grave según el edema, el dolor, las hemorragias y el tiempo de coagulación, y detalla en el capítulo de mordedura de serpiente los primeros auxilios y la administración de suero antiofídico. Con edema ascendente, equimosis y sangrado espontáneo (gingivorragia) el cuadro supera el accidente leve y exige suero específico en un nivel resolutivo: emergencia. Se acepta naranja si el evaluador considera que no hay compromiso vital inmediato.",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["suero|antiof[íi]dico", "referencia|referir|emergencia|inmediat"],
+        "no_debe_incluir": ["en casa", "no requiere referencia"],
+        "notas": "Hueco conocido: no hay red flag de mordedura de serpiente ni de signos hemorrágicos."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-14",
+      "titulo": "Diabetes descompensada sin criterios de cetoacidosis",
+      "grupo": "clinico",
+      "categoria": "endocrinologia",
+      "edad": 60,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.7,
+        "presion_sistolica": 118,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 96,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 60 años con diabetes conocida que dejó de tomar su medicación hace una semana. Llega con mucha sed, orina frecuente y cansancio; refiere haber bajado de peso. Niega vómitos y niega dolor abdominal. Está orientada y responde bien.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": ["amarillo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "427",
+          "palabras_clave": ["diabetes mellitus", "hiperglucemia"]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "428",
+          "palabras_clave": ["glucemia en ayunas", "126"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades endócrinas define la diabetes mellitus como el grupo de enfermedades cuya característica principal es la hiperglucemia por déficit absoluto o relativo de insulina, y fija los criterios diagnósticos (glucemia en ayunas ≥ 126 mg/dl). La paciente está orientada, sin vómitos, sin dolor abdominal y con respiración no acidótica: corresponde urgencia menor, con control de glucemia y reinicio del tratamiento en el primer nivel, no un cuadro de emergencia (cetoacidosis, definida aparte en el mismo capítulo). Regresión de negación: 'niega vómitos' y 'niega dolor abdominal' no deben activar alertas.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["diabetes|hiperglucemia|glucemia"],
+        "no_debe_incluir": ["cetoacidosis", "urgencia mayor"],
+        "notas": "Discrimina descompensación sin acidosis (amarillo) de cetoacidosis (naranja/rojo)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-15",
+      "titulo": "Hipotensión severa en adulto mayor",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 72,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.4,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 104,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 96.0
+      },
+      "descripcion": "Paciente de 72 años con debilidad generalizada y mareo al ponerse de pie desde hace dos días. Se observa pálida, con mucosas secas y llenado capilar lento. Refiere que casi no ha bebido agua por falta de apetito.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": ["rojo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "99",
+          "palabras_clave": ["choque", "alteración de conciencia"]
+        }
+      ],
+      "justificacion_esperada": "La norma de emergencias describe el choque por signos clínicos —alteración de conciencia, taquicardia e hipoperfusión— y su tratamiento incluye la reposición de volumen según el tipo de pérdidas, entre ellas las digestivas y por deshidratación. Con PAS 85 mmHg en una paciente de 72 años (umbral de hipotensión severa del grupo adulto mayor: < 90) y signos de hipoperfusión, corresponde emergencia con inicio de reposición de volumen y referencia. Verdadero positivo de la regla determinista de PAS por grupo etario: un adulto joven con 85 mmHg no activaría el umbral rojo (80), pero el adulto mayor tiene umbral propio.",
+      "origen": "vitales",
+      "regresion_de": "3022142",
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["hipotensi[oó]n|choque|rehidrat|hidrataci[oó]n|reposici[oó]n"],
+        "no_debe_incluir": ["valores normales", "no requiere"],
+        "notas": "Verdadero positivo del umbral por grupo etario (adulto mayor: PAS rojo < 90)."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-16",
+      "titulo": "Exacerbación de EPOC con hipoxemia severa",
+      "grupo": "clinico",
+      "categoria": "respiratoria",
+      "edad": 68,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 37.8,
+        "presion_sistolica": 128,
+        "presion_diastolica": 80,
+        "frecuencia_cardiaca": 96,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 89.0
+      },
+      "descripcion": "Paciente de 68 años con EPOC conocido, que en los últimos dos días presenta tos con expectoración purulenta, silbidos en el pecho y empeoramiento de su dificultad para respirar, que ya le impide caminar. Habla en frases cortas.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": ["rojo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "58",
+          "palabras_clave": ["amoxicilina", "antibioticoterapia"]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "113",
+          "palabras_clave": ["broncodilatadores", "EPOC"]
+        }
+      ],
+      "justificacion_esperada": "La norma de medicina interna detalla el manejo de las infecciones respiratorias bajas (broncodilatadores, antibioticoterapia empírica) y la norma de emergencias remite al capítulo de agudización de la EPOC para el broncoespasmo asociado, donde el tratamiento incluye oxígeno y broncodilatadores nebulizados. Con SpO2 89 % (hipoxemia severa, umbral < 90 %) el cuadro es una emergencia que exige oxígeno y referencia inmediata. Verdadero positivo de la regla de saturación.",
+      "origen": "vitales",
+      "regresion_de": null,
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["ox[ií]geno", "referencia|referir|emergencia"],
+        "no_debe_incluir": [],
+        "notas": "La regla de SpO2 < 90 debe activar rojo."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-17",
+      "titulo": "Hipertensión en control en adulto mayor",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 80,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 148,
+        "presion_diastolica": 86,
+        "frecuencia_cardiaca": 88,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 80 años que acude a control de su hipertensión. Refiere cansancio y falta de apetito de dos días. Sin fiebre, niega cefalea, niega dolor torácico y niega vómitos. Está orientada, deambula sin ayuda y conversa con normalidad.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": ["verde", "amarillo"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "228",
+          "palabras_clave": ["hipertensión", "140/90"]
+        }
+      ],
+      "justificacion_esperada": "La norma de medicina interna indica que los pacientes con presión arterial confirmada ≥ 140/90 mmHg deben, además de la terapia de estilo de vida, iniciar y ajustar oportunamente la terapia farmacológica. Con 148/86 mmHg, sin síntomas de daño de órgano blanco y con un examen general conservado, corresponde atención diferible y ajuste del tratamiento: verde. Caso de control de negación y de umbral: 148 mmHg NO debe confundirse con hipotensión; la regla de PA solo alerta por hipotensión.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["hipertensi[oó]n|presi[oó]n arterial"],
+        "no_debe_incluir": ["urgencia mayor", "emergencia", "hipotensi[oó]n"],
+        "notas": "Múltiples negaciones en el relato (cefalea, dolor torácico, vómitos) que no deben activar alertas."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-18",
+      "titulo": "Convulsión febril en preescolar",
+      "grupo": "clinico",
+      "categoria": "neurologica_pediatrica",
+      "edad": 4,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 39.2,
+        "presion_sistolica": 95,
+        "presion_diastolica": 62,
+        "frecuencia_cardiaca": 132,
+        "frecuencia_respiratoria": 28,
+        "saturacion": 97.0
+      },
+      "descripcion": "Niño de 4 años que convulsionó en casa hace 20 minutos, durante un episodio de fiebre, con movimientos generalizados de menos de cinco minutos de duración. La convulsión cedió sola; ahora está somnoliento pero reactivo, sin déficit focal. La madre refiere que es su primera convulsión.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": ["naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "605",
+          "palabras_clave": ["trastorno convulsivo", "fiebre"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades del sistema nervioso define la convulsión febril como el trastorno convulsivo más común de la infancia, que ocurre entre los tres meses y los cinco años, desencadenado por fiebre sin evidencia de infección del sistema nervioso central. Una primera convulsión febril en un niño de 4 años exige evaluación y referencia para descartar causas secundarias: urgencia mayor. Verdadero positivo de la regla determinista de 'convulsión activa o reciente'.",
+      "origen": "sintomas",
+      "regresion_de": null,
+      "estabilidad": true,
+      "criterios": {
+        "debe_incluir": ["convulsi", "referencia|referir|evaluaci[oó]n"],
+        "no_debe_incluir": ["manejo en casa", "no requiere"],
+        "notas": "La regla de síntomas ('convulsion') debe activar naranja."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-19",
+      "titulo": "Neumonía adquirida en la comunidad sin signos de gravedad",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 3,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.8,
+        "presion_sistolica": 95,
+        "presion_diastolica": 60,
+        "frecuencia_cardiaca": 130,
+        "frecuencia_respiratoria": 34,
+        "saturacion": 95.0
+      },
+      "descripcion": "Niña de 3 años con fiebre de dos días, tos y respiración más rápida de lo habitual. Come poco, está irritable pero reactiva, sin tiraje ni quejido. Niega vómitos y niega dificultad para respirar en reposo.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": ["amarillo", "naranja"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-pediatria.pdf",
+          "page_label": "94",
+          "palabras_clave": ["neumonía adquirida en la comunidad"]
+        }
+      ],
+      "justificacion_esperada": "La norma de pediatría dedica el capítulo a la neumonía adquirida en la comunidad con sus criterios clínicos y de tratamiento en el primer nivel. Con fiebre, taquipnea leve (FR 34 rpm, por debajo del umbral de alerta del preescolar: 40) y SpO2 95 %, sin signos de dificultad respiratoria grave, corresponde diagnóstico presuntivo, antibioticoterapia ambulatoria y control en 48 horas: urgencia menor. Caso de contraste con C-02: la misma familia de cuadros respiratorios con distinta severidad.",
+      "origen": "pediatrico",
+      "regresion_de": "3022142",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["neumon[íi]a|antibi[oó]tic|amoxicilina"],
+        "no_debe_incluir": ["emergencia"],
+        "notas": "FR 34 rpm en preescolar NO alcanza el umbral naranja (40); con umbrales de adulto (> 30) habría disparado alerta espuria."
+      },
+      "validacion_gold": "pendiente_medico"
+    },
+    {
+      "id": "C-20",
+      "titulo": "Lumbalgia mecánica sin signos de alarma",
+      "grupo": "clinico",
+      "categoria": "osteomuscular",
+      "edad": 40,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 116,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 78,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Paciente de 40 años con dolor lumbar bajo de cinco días de evolución, que comenzó después de cargar peso y mejora con el reposo. Niega parestesias, niega pérdida de fuerza en las piernas y niega dificultad para orinar.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": ["verde", "azul"],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "941",
+          "palabras_clave": ["fisioterapia", "evolución desfavorable"]
+        }
+      ],
+      "justificacion_esperada": "La norma de enfermedades del sistema osteomuscular describe el manejo de la lumbalgia por niveles de atención, con medidas específicas y referencia al nivel III ante evolución desfavorable en los primeros siete días. Sin banderas rojas (déficit motor, parestesias, alteración de esfínteres, fiebre) corresponde analgesia, educación postural y control: atención diferible. Regresión de negación: 'niega dificultad para orinar' no debe activar la regla de anuria ni las de déficit neurológico.",
+      "origen": "negacion",
+      "regresion_de": "928e7d4",
+      "estabilidad": false,
+      "criterios": {
+        "debe_incluir": ["lumbal|dolor lumbar"],
+        "no_debe_incluir": ["anuria", "cauda equina", "d[eé]ficit neurol[oó]gico"],
+        "notas": "Prueba de negación sobre un patrón que en afirmativo sí alerta (parestesias, déficit)."
+      },
+      "validacion_gold": "pendiente_medico"
+    }
+  ]
+}

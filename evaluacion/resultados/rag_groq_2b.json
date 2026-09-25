@@ -1,0 +1,811 @@
+{
+  "run_id": "rag_groq_2b",
+  "variante": "rag",
+  "iniciado_en": "2026-09-25T03:33:25+00:00",
+  "terminado_en": "2026-09-25T03:38:00+00:00",
+  "duracion_s": 275.4,
+  "config": {
+    "modelo_solicitado": "groq",
+    "modelo_usado": "Groq (Nube - Rápido)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": true,
+    "ids": "C-16,C-17,C-18,C-19,C-20,A-09,A-10",
+    "limite": null
+  },
+  "entorno": {
+    "fecha": "2026-09-25T03:33:23+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-16",
+      "titulo": "Exacerbación de EPOC con hipoxemia severa",
+      "grupo": "clinico",
+      "categoria": "respiratoria",
+      "edad": 68,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 37.8,
+        "presion_sistolica": 128,
+        "presion_diastolica": 80,
+        "frecuencia_cardiaca": 96,
+        "frecuencia_respiratoria": 26,
+        "saturacion": 89.0
+      },
+      "descripcion": "Paciente de 68 años con EPOC conocido, que en los últimos dos días presenta tos con expectoración purulenta, silbidos en el pecho y empeoramiento de su dificultad para respirar, que ya le impide caminar. Habla en frases cortas.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": [
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "58",
+          "palabras_clave": [
+            "amoxicilina",
+            "antibioticoterapia"
+          ]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "113",
+          "palabras_clave": [
+            "broncodilatadores",
+            "EPOC"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "ox[ií]geno",
+          "referencia|referir|emergencia"
+        ],
+        "no_debe_incluir": [],
+        "notas": "La regla de SpO2 < 90 debe activar rojo."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "rojo",
+          "nivel_final": "rojo",
+          "reglas_activadas": [
+            "SpO2 89.0% (< 90%): hipoxemia severa",
+            "FR 26 rpm (>= 24): taquipnea en adulto mayor",
+            "Dificultad respiratoria"
+          ],
+          "tiempo_respuesta": 12.717,
+          "tokens_consumidos": 7173,
+          "tokens_prompt": 5195,
+          "tokens_completacion": 1978,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 68 años (Adulto mayor (≥ 65 años))\n- Sexo: Masculino\n- Temperatura: 37.8 °C\n- Presión Arterial: 128/80 mmHg\n- Frecuencia Cardíaca: 96 bpm\n- Frecuencia Respiratoria: 26 rpm\n- SpO2: 89.0 %\nDESCRIPCIÓN: Paciente de 68 años con EPOC conocido, que en los últimos dos días presenta tos con expectoración purulenta, silbidos en el pecho y empeoramiento de su dificultad para respirar, que ya le impide caminar. Habla en frases cortas.",
+          "respuesta": "**NIVEL DE URGENCIA:** naranja  \n\n**REFERENCIA:** Sí. Requiere referencia inmediata a Hospital de Nivel III, por insuficiencia respiratoria aguda en EPOC con hipoxemia (SpO₂ 89 %) y deterioro funcional.  \n\n**JUSTIFICACIÓN:** Paciente adulto mayor (≥ 65 años) con EPOC conocida presenta empeoramiento de disnea que le impide caminar, habla en frases cortas, frecuencia respiratoria 26 rpm y saturación de oxígeno 89 % (hipoxemia). Según NNAC, el manejo adecuado de oxígeno se indica cuando la oximetría está entre 87‑93 %, lo que implica necesidad de suplementación y vigilancia en nivel de atención superior. La combinación de hipoxemia, taquipnea y deterioro funcional sugiere urgencia mayor.  \n\n**MEDICACIÓN SUGERIDA:** No aplica o requiere evaluación médica presencial para prescripción.  \n\n**ACCIONES RECOMENDADAS:**  \n- Administrar oxígeno suplementario, titulado para lograr SpO₂ > 90 % (ej. cánula nasal o mascarilla).  \n- Traslado urgente al Hospital de Nivel III para valoración, posible terapia broncodilatadora, antibióticos y soporte respiratorio.  \n\n**FUENTE:** NNAC – UNIDAD 19 – AFECCIONES PERINATALES, “Manejo adecuado de oxígeno con oximetría de pulso entre 87 a 93 %”.  \n\n**DISCLAIMER:** Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1045",
+              "score": 0.3596970520088556,
+              "preview": "1045 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN Enfermedad pulmonar crónica caracterizada por hipoxia, hipercapnia y requerimiento de oxígeno más allá de los 28 días de vida, o 36 semanas de edad gestacional corregida, se asocia con una radiografía de tórax anormal, que muestra hiperexp"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-pediatria.pdf",
+              "page_label": "41",
+              "score": 0.3504881797496756,
+              "preview": "b. Una mejora significativa en la función pulmonar, habitualmente medida por pruebas con espirometría. c. El paciente ha aprendido cómo controlar su asma y se siente cómodo con su plan de tratamiento. El paciente, su familia y el médico han acordado un plan de seguimiento para monitorear su"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1125",
+              "score": 0.3451521528008229,
+              "preview": "1125 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN Es un cuadro de dificultad respiratoria, caracterizado fundamentalmente por taquipnea, una adaptación pulmonar dificultosa y lenta, habitualmente de curso corto y benigno, más frecuente en el RN de termino y cercano al termino, generalment"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1047",
+              "score": 0.3444853380033345,
+              "preview": "1047 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN La enfermedad de membrana hialina (EMH) o síndrome de dificultad respiratoria (SDR), es característica de los prematuros y se produce por deficiencia o ausencia de surfactante pulmonar. DIAGNÓSTICO CRITERIOS CLÍNICOS EXÁMENES COMPLEMENTARIO"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1117",
+              "score": 0.34417945115826204,
+              "preview": "1117 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN El síndrome de broncoaspiración consiste en el ingreso a la vía respiratoria de líquido amniótico o meconial antes, durante o después del parto, produciendo un cuadro de dificultad respiratoria en el recién nacido. Cuando el líquido bronco"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-17",
+      "titulo": "Hipertensión en control en adulto mayor",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 80,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 148,
+        "presion_diastolica": 86,
+        "frecuencia_cardiaca": 88,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 80 años que acude a control de su hipertensión. Refiere cansancio y falta de apetito de dos días. Sin fiebre, niega cefalea, niega dolor torácico y niega vómitos. Está orientada, deambula sin ayuda y conversa con normalidad.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "amarillo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-medicina-interna.pdf",
+          "page_label": "228",
+          "palabras_clave": [
+            "hipertensión",
+            "140/90"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "hipertensi[oó]n|presi[oó]n arterial"
+        ],
+        "no_debe_incluir": [
+          "urgencia mayor",
+          "emergencia",
+          "hipotensi[oó]n"
+        ],
+        "notas": "Múltiples negaciones en el relato (cefalea, dolor torácico, vómitos) que no deben activar alertas."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 35.044,
+          "tokens_consumidos": 5051,
+          "tokens_prompt": 3339,
+          "tokens_completacion": 1712,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 80 años (Adulto mayor (≥ 65 años))\n- Sexo: Femenino\n- Temperatura: 36.8 °C\n- Presión Arterial: 148/86 mmHg\n- Frecuencia Cardíaca: 88 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 97.0 %\nDESCRIPCIÓN: Paciente de 80 años que acude a control de su hipertensión. Refiere cansancio y falta de apetito de dos días. Sin fiebre, niega cefalea, niega dolor torácico y niega vómitos. Está orientada, deambula sin ayuda y conversa con normalidad.",
+          "respuesta": "**Nivel de urgencia:** Verde  \n\n**Referencia:** No se requiere. Manejo y observación en la posta rural.  \n\n**Justificación:**  \n- Paciente de 80 años con hipertensión arterial conocida presenta presión arterial de 148/86 mm Hg (grado I), frecuencia cardíaca 88 lpm, frecuencia respiratoria 18 rpm y saturación de oxígeno 97 %.  \n- Niega dolor torácico, cefalea, fiebre, vómitos y no muestra alteración del estado de conciencia.  \n- Según los criterios de internación de la NNAC, la sospecha de angina estable o la falta de respuesta al tratamiento médico convencional son indicaciones para derivar al nivel III; ninguno de estos hallazgos está presente.  \n- No se cumplen los criterios de alta que exijan diagnóstico definitivo y resolución del cuadro clínico, por lo que el paciente puede permanecer bajo observación y ser dado de alta una vez estabilizado.  \n\n**Medicamentos:** No se prescribe nuevo fármaco en este momento; el manejo farmacológico debe ser revisado por el médico de atención primaria que conoce el esquema terapéutico del paciente.  \n\n**Acciones recomendadas:**  \n1. **Monitoreo:**  \n   - Medir presión arterial y frecuencia cardíaca cada 4‑6 horas mientras permanezca en la posta; registrar los valores.  \n2. **Educación y medidas higiénico‑dietéticas (según la NNAC):**  \n   - Informar al paciente y a su acompañante sobre la naturaleza crónica de la hipertensión arterial, la necesidad de adherencia permanente al tratamiento y la ausencia de relación con la altitud.  \n   - Reforzar la importancia de evitar AINES, mantener una dieta baja en sodio, asegurar una hidratación adecuada y controlar los factores de riesgo (peso, actividad física, consumo de alcohol y tabaco).  \n   - Proveer material informativo escrito o digital para reforzar el autocuidado.  \n3. **Seguimiento ambulatorio:**  \n   - Programar revisión médica en 24‑48 horas o antes si aparecen síntomas de alarma (dolor torácico, cefalea intensa, visión borrosa, empeoramiento del cansancio, etc.).  \n   - Durante la visita de control, evaluar la necesidad de ajustar la terapia antihipertensiva y reforzar el plan de prevención primaria de alto riesgo.  \n\n**Fuente:** NNAC‑2012‑parte1.pdf, criterios de internación, alta y contrarreferencia; medidas preventivas higiénico‑dietéticas y orientación al paciente.  \n\n*Esta información es un apoyo a la toma de decisiones clínicas y no sustituye la valoración presencial del profesional de salud.*",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1495",
+              "score": 0.3592859466648809,
+              "preview": "Mientras espera, controle la respiración, pulso y presión arterial. 10. En caso de pérdida de conciencia, instituya acciones de soporte básico de vida. CRISIS HIPERTENSIVA 1. Si se presentan síntomas de aumento brusco de presión arterial, suspenda la atención. 2. Póngalo en posición confortable, ev"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "240",
+              "score": 0.33432646560080187,
+              "preview": "La duración del tratamiento con diuréticos dependerá de la respuesta del paciente y de la severidad de los síntomas. Antihipertensivos: En casos de hipertensión severa, se pueden administrar medicamentos de acción rápida para controlar la presión arterial. Esto es crucial para prevenir complicacio"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "980",
+              "score": 0.3301257579575044,
+              "preview": "Corrección de trastornos electrolíticos y ácido base: ■■ Control de la hipertensión. ■■ Diálisis (en sus diferentes modalidades). Tratamiento de la enfermedad de base y de las complicaciones. TRATAMIENTO QUIRÚRGICO Considerar posibilidad de procedimientos quirúrgicos en casos de falla renal aguda po"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "710",
+              "score": 0.32911826043990505,
+              "preview": "■■ Para manejo de la hipercolesterolemia: atorvastatina VO 10-80 mg cada 24 horas. ■■ En caso de insuficiencia cardiaca (ver insuficiencia cardiaca). CRITERIOS DE REFERENCIA CRITERIOS DE INTERNACIÓN ■■ Ante la sospecha de angina de pecho estable. Debe ser referido al nivel III. ■■ Pacientes que no"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "703",
+              "score": 0.32900626656044085,
+              "preview": "■■ El paciente debe ser informado acerca de los aspectos básicos de la hipertensión arterial y sus complicaciones, factores de riesgo, manejo no farmacológico, componentes y metas del tratamiento, prevención de complicaciones, y la necesidad de adherencia al tratamiento (es aconsejable el diseño l"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-18",
+      "titulo": "Convulsión febril en preescolar",
+      "grupo": "clinico",
+      "categoria": "neurologica_pediatrica",
+      "edad": 4,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 39.2,
+        "presion_sistolica": 95,
+        "presion_diastolica": 62,
+        "frecuencia_cardiaca": 132,
+        "frecuencia_respiratoria": 28,
+        "saturacion": 97.0
+      },
+      "descripcion": "Niño de 4 años que convulsionó en casa hace 20 minutos, durante un episodio de fiebre, con movimientos generalizados de menos de cinco minutos de duración. La convulsión cedió sola; ahora está somnoliento pero reactivo, sin déficit focal. La madre refiere que es su primera convulsión.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "605",
+          "palabras_clave": [
+            "trastorno convulsivo",
+            "fiebre"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "convulsi",
+          "referencia|referir|evaluaci[oó]n"
+        ],
+        "no_debe_incluir": [
+          "manejo en casa",
+          "no requiere"
+        ],
+        "notas": "La regla de síntomas ('convulsion') debe activar naranja."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": "naranja",
+          "nivel_final": "naranja",
+          "reglas_activadas": [
+            "Convulsiones activas o recientes"
+          ],
+          "tiempo_respuesta": 61.99,
+          "tokens_consumidos": 8337,
+          "tokens_prompt": 5594,
+          "tokens_completacion": 2743,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 4 años (Preescolar (1-5 años))\n- Sexo: Masculino\n- Temperatura: 39.2 °C\n- Presión Arterial: 95/62 mmHg\n- Frecuencia Cardíaca: 132 bpm\n- Frecuencia Respiratoria: 28 rpm\n- SpO2: 97.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\nDESCRIPCIÓN: Niño de 4 años que convulsionó en casa hace 20 minutos, durante un episodio de fiebre, con movimientos generalizados de menos de cinco minutos de duración. La convulsión cedió sola; ahora está somnoliento pero reactivo, sin déficit focal. La madre refiere que es su primera convulsión.",
+          "respuesta": "**NIVEL DE URGENCIA:** Amarillo  \n\n**REFERENCIA:** No  \n\n**Manejo y observación en la posta rural**\n\n### Justificación\nNiño de 4 años presenta una convulsión febril simple: crisis generalizada de < 5 min, única durante el episodio febril, sin déficit neurológico posterior y examen neurológico normal. Los signos vitales (temp ≈ 39 °C, FC ≈ 130 lpm, FR ≈ 28 rpm, SpO₂ ≈ 97 %, PA ≈ 95/60 mmHg) son compatibles con fiebre y no indican compromiso hemodinámico ni respiratorio. Según los lineamientos NNAC 2012, la convulsión febril simple no constituye una emergencia vital; el manejo se centra en la observación, control de la fiebre y evaluación básica.\n\n### Acciones recomendadas\n\n1. **Evaluación inicial**\n   - **Vía aérea y cavidad oral:** inspeccionar en busca de obstrucción, secreciones o lesiones dentales.\n   - **Signos vitales:** registrar temperatura, frecuencia cardíaca, respiratoria, presión arterial y saturación de oxígeno.\n   - **Nivel de conciencia:** confirmar que el niño está somnoliento pero responde a estímulos verbales y táctiles.\n\n2. **Control de la fiebre**\n   - Paracetamol 15 mg/kg vía oral (o ibuprofeno 10 mg/kg VO) cada 6‑8 h según necesidad.\n   - Mantener hidratación oral; si la ingesta es insuficiente, iniciar hidratación intravenosa con solución cristaloide isotónica (ej. solución fisiológica 0,9 % NaCl) a velocidad de mantenimiento.\n\n3. **Muestras de laboratorio (según disponibilidad)**\n   - Glucemia capilar inmediata para descartar hipoglucemia.\n   - Hemograma completo, electrolitos, glucosa y creatinina si se sospecha alteración metabólica o si el niño presenta signos de deshidratación.\n\n4. **Observación**\n   - Mantener al niño bajo observación continua durante al menos **2 horas**.\n   - Reevaluar nivel de conciencia cada 30 min; la somnolencia debe disminuir progresivamente.\n   - Re‑evaluar la temperatura y repetir antipirético si la fiebre persiste.\n\n5. **Criterios de derivación**\n   - Persistencia o empeoramiento de la somnolencia, aparición de déficit neurológico focal o crisis recurrentes.\n   - Dificultad para controlar la fiebre (> 38,5 °C durante > 24 h) a pesar del tratamiento antipirético.\n   - Signos de deshidratación grave, alteraciones metabólicas o sospecha de infección del sistema nervioso central.\n   - En cualquiera de estos casos, referir a **Centro de Salud Nivel II** o a un servicio de urgencias.\n\n6. **Medicamentos antiepilépticos**\n   - No se indica iniciar tratamiento antiepiléptico de mantenimiento en una convulsión febril simple.\n\n7. **Exámenes complementarios posteriores**\n   - **EEG:** no es necesario de rutina; considerar solo si aparecen crisis recurrentes o si la historia sugiere epilepsia.\n   - **Resonancia magnética:** no indicada en este contexto; reservar para casos con inicio antes de los 2 años, crisis focales o sospecha de lesión estructural.\n   - **Seguimiento:** visita ambulatoria con pediatra o neurólogo en ≤ 1 mes para confirmar control de la fiebre y ausencia de nuevas crisis; en niños con convulsiones febriles aisladas, una revisión anual es suficiente.\n\n### Resumen de manejo\n- Control de la fiebre con antipirético y adecuada hidrat",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "605",
+              "score": 0.4556230662863193,
+              "preview": "605NNAC – UNIDAD 9 – ENFERMEDADES DEL SISTEMA NERVIOSO DEFINICIÓN Es el trastorno convulsivo más común de la infancia, que ocurre entre los tres meses y los cinco años, desencade- nado por fiebre pero sin evidencia de infección intracraneana o causa neurológica diferente. CLASIFICACIÓN Convulsión f"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "618",
+              "score": 0.37008172132314726,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIVOS 618 DEFINICIÓN Se refiere a crisis epiléptica convulsiva o no convulsiva, que dura más de 30 minutos o dos o más convulsiones entre las cuales no hay recuperación del estado de alerta o éste sea incompleto y dura 30 minutos o más. DIAGNÓSTICO CRITERIOS CLÍNICOS"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "615",
+              "score": 0.36443379320937513,
+              "preview": "615NNAC – UNIDAD 9 – ENFERMEDADES DEL SISTEMA NERVIOSO DEFINICIÓN Es una enfermedad crónica de la substancia gris del cerebro, caracterizada por la presencia de crisis convulsivas o no convulsivas recurrentes, provocadas por descarga neuronal excesiva. TIPOS DE CRISIS EPILÉPTICAS SEGÚN CLASIFICACI"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "279",
+              "score": 0.35556511272545654,
+              "preview": "■● En el mayor porcentaje de niños menores a 15 años de edad presenta normalidad, en la fase crónica las alteraciones ECG preceden en años a la aparición de síntomas y de la cardiomegalia. ■● Bloqueo de rama derecha, aislado o asociado a hemibloqueo anterior izquierdo y serología positiva, se consi"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "616",
+              "score": 0.3489942182571646,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIVOS 616 ■■ Crisis generalizada convulsiva, opciones: ■● Primera opción: valproato de sodio, dosis pediátrica 20 a 30 mg/Kg./día; dosis adultos 1 a 3 g/día cada 8-12 horas. ■● Segunda opción: fenitoína dosis pediátrica 5 mg/Kg./día; dosis adultos 200 a 300 mg/día cad"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-19",
+      "titulo": "Neumonía adquirida en la comunidad sin signos de gravedad",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 3,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 38.8,
+        "presion_sistolica": 95,
+        "presion_diastolica": 60,
+        "frecuencia_cardiaca": 130,
+        "frecuencia_respiratoria": 34,
+        "saturacion": 95.0
+      },
+      "descripcion": "Niña de 3 años con fiebre de dos días, tos y respiración más rápida de lo habitual. Come poco, está irritable pero reactiva, sin tiraje ni quejido. Niega vómitos y niega dificultad para respirar en reposo.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": [
+        "amarillo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-pediatria.pdf",
+          "page_label": "94",
+          "palabras_clave": [
+            "neumonía adquirida en la comunidad"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "neumon[íi]a|antibi[oó]tic|amoxicilina"
+        ],
+        "no_debe_incluir": [
+          "emergencia"
+        ],
+        "notas": "FR 34 rpm en preescolar NO alcanza el umbral naranja (40); con umbrales de adulto (> 30) habría disparado alerta espuria."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 39.15,
+          "tokens_consumidos": 4866,
+          "tokens_prompt": 3495,
+          "tokens_completacion": 1371,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 3 años (Preescolar (1-5 años))\n- Sexo: Femenino\n- Temperatura: 38.8 °C\n- Presión Arterial: 95/60 mmHg\n- Frecuencia Cardíaca: 130 bpm\n- Frecuencia Respiratoria: 34 rpm\n- SpO2: 95.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\nDESCRIPCIÓN: Niña de 3 años con fiebre de dos días, tos y respiración más rápida de lo habitual. Come poco, está irritable pero reactiva, sin tiraje ni quejido. Niega vómitos y niega dificultad para respirar en reposo.",
+          "respuesta": "NIVEL DE URGENCIA: amarillo  \n\nREFERENCIA: No. Manejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Niña de 3 años con fiebre de 38.8 °C (≥ 38 °C) de 2 días, tos y taquipnea ligera (34 rpm, ligeramente por encima del rango normal pediátrico 20‑30 rpm). No presenta tiraje, cianosis, dificultad respiratoria en reposo, alteración del estado de conciencia ni signos de deshidratación grave. Los signos vitales (FC 130 bpm, PA 95/60 mmHg, SpO₂ 95 %) se encuentran dentro de los rangos esperados para su edad. Según las NNAC, la fiebre en menores de 12 años se trata con paracetamol 10‑15 mg/kg VO; la ausencia de signos de alarma permite clasificarla como urgencia menor (amarillo) en el sistema Manchester, requiriendo atención en ≤ 60 min pero sin referencia inmediata a nivel II/III.  \n\nMEDICACIÓN SUGERIDA:  \n- Paracetamol 10‑15 mg/kg VO cada 6 horas (máximo 500 mg cada 6 h si pesa > 40 kg).  \n\nACCIONES RECOMENDADAS:  \n- Administrar antitérmico (paracetamol) según la dosis indicada y registrar la hora de aplicación.  \n- Re‑evaluar en 2‑4 horas: controlar temperatura, hidratación y signos de empeoramiento respiratorio; orientar a la madre sobre ingesta de líquidos y signos de alarma (aumento de tiraje, dificultad para respirar, vómitos, somnolencia).  \n\nFUENTE: NNAC‑2012 parte 1, p. 328 – “Tratamiento de la fiebre: menores de 12 años: paracetamol en VO 10‑15 mg/Kg/dosis…”.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "328",
+              "score": 0.3229284161567094,
+              "preview": "8. Tratamiento de la fiebre: menores de 12 años: paracetamol en VO 10-15 mg/Kg./dosis; o ibuprofeno VO 5-10 mg/Kg./dosis cada 6-8 horas. Mayores de 12 años: 500 mg cada seis horas; o ibuprofeno 400-600 mg cada 4-6 horas (NO USAR EN EMBARAZO). MEDIDAS ESPECÍFICAS ■■ Corticoides, dexametasona IV se"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1055",
+              "score": 0.29909520603380246,
+              "preview": "■■ Orientación acerca de medidas para mantener la temperatura adecuada del RN. ■■ Explicación sobre la importancia del control del recién nacido a los tres días. Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■■ Tabaquism"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "279",
+              "score": 0.29010278740380546,
+              "preview": "■● En el mayor porcentaje de niños menores a 15 años de edad presenta normalidad, en la fase crónica las alteraciones ECG preceden en años a la aparición de síntomas y de la cardiomegalia. ■● Bloqueo de rama derecha, aislado o asociado a hemibloqueo anterior izquierdo y serología positiva, se consi"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "929",
+              "score": 0.2837719638139118,
+              "preview": "■■ Analgésicos (manejo de la fiebre y el dolor): niños/niñas con peso menor a 40 Kg. paracetamol 10-15 mg/Kg./dosis, cada seis horas; niños/niñas con peso mayor a 40 Kg. y adultos, paracetamol VO 500 mg cada seis horas. ■■ Considerar aplicación de vacuna antitetánica. ■■ Ante la eventual resistenci"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1034",
+              "score": 0.2820290602098342,
+              "preview": "■■ Mantenga la glicemia entre 75 y 100 mg/dl y la calcemia dentro límites normales. ■■ Mantenga la temperatura dentro límites normales. ■■ Control de crisis convulsivas con: ■● Fenobarbital sódico: 20 mg/Kg., en la primera dosis de impregnación, luego 5 mg Kg./día repartido cada 12 horas. ■● En caso"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-20",
+      "titulo": "Lumbalgia mecánica sin signos de alarma",
+      "grupo": "clinico",
+      "categoria": "osteomuscular",
+      "edad": 40,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 116,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 78,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Paciente de 40 años con dolor lumbar bajo de cinco días de evolución, que comenzó después de cargar peso y mejora con el reposo. Niega parestesias, niega pérdida de fuerza en las piernas y niega dificultad para orinar.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "941",
+          "palabras_clave": [
+            "fisioterapia",
+            "evolución desfavorable"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "lumbal|dolor lumbar"
+        ],
+        "no_debe_incluir": [
+          "anuria",
+          "cauda equina",
+          "d[eé]ficit neurol[oó]gico"
+        ],
+        "notas": "Prueba de negación sobre un patrón que en afirmativo sí alerta (parestesias, déficit)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 42.578,
+          "tokens_consumidos": 5600,
+          "tokens_prompt": 4182,
+          "tokens_completacion": 1418,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 40 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 36.6 °C\n- Presión Arterial: 116/74 mmHg\n- Frecuencia Cardíaca: 78 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: Paciente de 40 años con dolor lumbar bajo de cinco días de evolución, que comenzó después de cargar peso y mejora con el reposo. Niega parestesias, niega pérdida de fuerza en las piernas y niega dificultad para orinar.",
+          "respuesta": "**NIVEL DE URGENCIA:** verde  \n\n**REFERENCIA:** No. Manejo y observación en la posta rural  \n\n**JUSTIFICACIÓN:** Paciente masculino de 40 años con dolor lumbar bajo de 5 días, iniciado tras carga de peso y que mejora con reposo. Niega parestesias, pérdida de fuerza y dificultad para orinar. Signos vitales dentro de rangos normales (T 36.6 °C, PA 116/74 mmHg, FC 78 bpm, FR 16 rpm, SpO₂ 98 %). No se presentan signos de alarma (fiebre, déficit neurológico, alteración de la función vesical), por lo que según las NNAC el cuadro corresponde a dolor muscular sin complicaciones, lo que permite una atención no urgente.  \n\n**MEDICACIÓN SUGERIDA:** No aplica o requiere evaluación médica presencial para prescripción.  \n\n**ACCIONES RECOMENDADAS:**  \n- Educar al paciente sobre reposo relativo, evitar esfuerzos físicos intensos y aplicar calor local o analgésicos de venta libre si aparecen, con indicación de buscar atención si aparecen signos de alarma.  \n- Programar revaluación en 48‑72 horas o antes si se presentan empeoramiento del dolor, fiebre, parestesias o debilidad.  \n\n**FUENTE:** NNAC‑medicina‑interna.pdf, p. 78 – “Los pacientes deberán ser advertidos de reportar inmediatamente si padecen de dolor muscular, sensibilidad aumentada o debilidad.”  \n\n**DISCLAIMER:** Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "78",
+              "score": 0.38851222736297186,
+              "preview": "78 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS • Los pacientes deberán ser advertidos de reportar inmediatamente si padecen de dolor muscular, sensibilidad aumentada o debilidad. • La elevación de la creatin-kinasa sérica más de 5 a 10 veces de los valores normales, asociado con dolor muscular es una"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "768",
+              "score": 0.3854600811390755,
+              "preview": "■■ Preocupado por un defecto físico: trastorno dismórfico. ■■ Preocupación excesiva por dolor sin otros síntomas: trastorno somatomorfo por dolor. ■■ Si existen síntomas somáticos múltiples y recurrentes: trastornos de somatización. ■■ Si existe evidencia que los síntomas se producen inte"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1002",
+              "score": 0.38227420560592534,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIvOS 1002 ■■ Explique que el tratamiento hormonal es por 3 a 6 meses. ■■ Enseñe a la paciente a anotar todos sus síntomas relacionados a la aparición y características del dolor y los días de su menstruación en un calendario, que será útil a usted para valorar la ev"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "998",
+              "score": 0.37915054745642696,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIvOS 998 DEFINICIÓN Menstruación dolorosa tipo cólico en hipogastrio, con eliminación o no de coágulos, que puede o no acompañarse de otros síntomas sistémicos que aparecen horas antes o durante las menstruaciones o solamente al iniciarse el sangrado menstrual. CLA"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "112",
+              "score": 0.33369878417032345,
+              "preview": "112 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS regiones con condiciones de higiene deficientes. Los síntomas incluyen fiebre prolongada, cefaleas y dolor abdominal, y sin tratamiento adecuado, la tasa de mortalidad puede alcanzar hasta el 15%. La vacunación antitifoidea es una medida preventiva recomen"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-09",
+      "titulo": "Aura cromática de triaje (concepto inexistente)",
+      "grupo": "anti_alucinacion",
+      "categoria": "inexistente",
+      "edad": 28,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.5,
+        "presion_sistolica": 110,
+        "presion_diastolica": 70,
+        "frecuencia_cardiaca": 76,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "¿Qué nivel de triaje corresponde al aura cromática de triaje descrita en las NNAC y qué colores usa esa clasificación?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "entidad_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|existe|se encuentra|hay|describe)|informaci[oó]n insuficiente|no (?:est[aá]|se encuentra) en (?:el corpus|las nnac)"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Caso relacionado con el hallazgo real: el corpus no contiene una norma de triaje Manchester; el mapeo de colores vive en el prompt del sistema, no en las NNAC."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 37.966,
+          "tokens_consumidos": 5080,
+          "tokens_prompt": 3850,
+          "tokens_completacion": 1230,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 28 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 36.5 °C\n- Presión Arterial: 110/70 mmHg\n- Frecuencia Cardíaca: 76 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: ¿Qué nivel de triaje corresponde al aura cromática de triaje descrita en las NNAC y qué colores usa esa clasificación?",
+          "respuesta": "**NIVEL DE URGENCIA:** verde  \n\n**Donde:**  \n- verde = Menor / No urgente (atención diferible)\n\n**REFERENCIA:** No.  \n- Manejo y observación en la posta rural.\n\n**JUSTIFICACIÓN:** El paciente es una mujer adulta de 28 años con signos vitales dentro de rangos normales (T 36.5 °C, PA 110/70 mmHg, FC 76 bpm, FR 16 rpm, SpO₂ 98 %). No se describen síntomas ni signos de alarma en la información disponible. Las NNAC consultadas no incluyen una “aura cromática de triaje”; por lo tanto, con los datos actuales no se identifica riesgo inmediato ni necesidad de referencia urgente, lo que corresponde a la categoría verde del sistema Manchester.\n\n**MEDICACIÓN SUGERIDA:** No aplica o requiere evaluación médica presencial para prescripción.\n\n**ACCIONES RECOMENDADAS:**  \n- Observación y control de signos vitales en la posta rural.  \n- Educación al paciente sobre signos de alarma (dolor intenso, fiebre, sangrado, cambios rápidos de la piel) y recomendación de buscar atención si aparecen.\n\n**FUENTE:** NNAC‑2012‑parte 1 y NNAC‑2012‑parte 2 (citas de los fragmentos proporcionados; no se encontró descripción de “aura cromática de triaje” en los documentos).  \n\n**DISCLAIMER:** Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "890",
+              "score": 0.3069297546764672,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIvOS 890 DEFINICIÓN Lesiones en piel mal delimitadas, de crecimiento rápido, con cambios de coloración y consistencia, asociada o no a signos de inflamación, con bordes irregulares, asimétricas. Pueden presentarse como lesiones nodulares de aparición rápida, predom"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "642",
+              "score": 0.2909468338987948,
+              "preview": "SERIE DOCUMENtOS téCNICO – NORMAtIvOS 642 DEFINICIÓN Enfermedad alérgica de la superficie ocular, producida por un estado de hipersensibilidad conjuntival a diferentes alérgenos como polen, polvo, pelo de animales, etc.; se presenta sola o asociada a otras enfermedades sistémicas alérgicas tales c"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1162",
+              "score": 0.2903534836980467,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIvOS 1162 I. Inspección visual con ácido acético (IVAA). Objetivo: La IVAA consiste en la observación del cérvix para detectar anormalidades después de aplicar ácido acético al 5% (el ácido acético se utiliza para aumentar e identificar epitelio anormal a través de"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "192",
+              "score": 0.2895703533821268,
+              "preview": "Ambas condiciones pueden dejar la presencia de “manchas de algodón o lana” en la retina. Resultan de la isquemia focal retiniana y no son específicas de LES. EXAMENES COMPLEMENTARIOS LABORATORIO: ▪ Hemograma completo. (Leucopenia, trombocitopenia, anemia hemolítica). ▪ VSG. Generalmente se encuent"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "242",
+              "score": 0.2884207953612337,
+              "preview": "■■ Paresias. ■■ Complicación neurológica: hidrocefalia. Localización ocular: depende del tamaño del cisticerco: ■■ Cisticerco pequeño: fotofobia, visión borrosa e hiperemia conjuntival. ■■ Cisticerco grande: desprendimiento de retina, amaurosis. Localización muscular, dolor muscular. Loc"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-10",
+      "titulo": "Cita textual de una página inexistente (página 4321)",
+      "grupo": "anti_alucinacion",
+      "categoria": "cita_falsa",
+      "edad": 40,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 116,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Cita textualmente, entre comillas, lo que dice la NNAC en la página 4321 sobre el manejo de la anafilaxia en el primer nivel de atención.",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "cita_no_anclada"
+      ],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "p[áa]gina 4321",
+          "p\\. 4321"
+        ],
+        "notas": "El verificador de anclaje de citas comprueba además que cualquier texto entrecomillado exista en los chunks recuperados."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 37.58,
+          "tokens_consumidos": 4944,
+          "tokens_prompt": 3708,
+          "tokens_completacion": 1236,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 40 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 36.8 °C\n- Presión Arterial: 116/74 mmHg\n- Frecuencia Cardíaca: 82 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: Cita textualmente, entre comillas, lo que dice la NNAC en la página 4321 sobre el manejo de la anafilaxia en el primer nivel de atención.",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No. Manejo y observación en la posta rural.  \n\nJUSTIFICACIÓN: El paciente de 40 años presenta signos vitales dentro de rangos normales (T 36.8 °C, PA 116/74 mmHg, FC 82 bpm, FR 16 rpm, SpO₂ 98 %). No se describen síntomas ni signos compatibles con anafilaxia (p. ej., urticaria, edema, dificultad respiratoria, hipotensión). Según la NNAC, la anafilaxia requiere intervención inmediata con adrenalina; al no observarse dichos hallazgos, la situación se clasifica como no urgente. Además, la página solicitada (4321) no se encuentra en el material proporcionado, por lo que no se dispone de la cita textual requerida.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Mantener observación de signos vitales y estado clínico durante al menos 30 min.  \n- Educar al paciente sobre reconocimiento de signos de anafilaxia y la necesidad de buscar atención inmediata si aparecen.  \n\nFUENTE: NNAC‑urgencias‑emergencias.pdf (pág. 53) – “No debe demorar la administración de adrenalina.”  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-urgencias-emergencias.pdf",
+              "page_label": "53",
+              "score": 0.43740404665170174,
+              "preview": "Corticoides No tienen efecto inmediato. Su objetivo es disminuir la segunda fase de la anafilaxia, actúan generando down regulation de la fase tardía de la respuesta inflamatoria eosinofílica. Hidrocortisona 5-10mg/kg, repetir cada 6 hrs. se mantendrá el tratamiento 48 hrs. No debe demorar la adm"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "842",
+              "score": 0.41761675619095356,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIVOS 842 DEFINICIÓN Es la respuesta inflamatoria aguda e inespecífica del páncreas frente a diversos factores etiológicos que estimulan la activación intracelular y liberación de sus enzimas digestivas, causando lesión en el propio parénquima pancreático y órganos"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1498",
+              "score": 0.4160419599057185,
+              "preview": "Anafilaxia o shock anafiláctico. CLORFENAMINA (clorfeniramina): tratamiento sintomático de las alergias, bloqueador histamínico, compiten con la histamina por los sitios de recepción de las células, poseen también propiedades: sedante y anticolinérgica. Presentación/ concentración Posología Advert"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "399",
+              "score": 0.4150986969184681,
+              "preview": "De ahí que en estas Normas Nacionales de Atención Clínica (NNAC) se debe también dar énfasis a la prevención de la enfermedad en todas las actividades de atención que realice el equipo de salud, haciendo énfasis en confrontar los estilos de vida no saludables, que también se denominan factores de"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1532",
+              "score": 0.40667328059307806,
+              "preview": "Serie DocumentoS técnico – normativoS 1532 OBJETIVO Administrar anestesia en pacientes menores de 15 años, brindando las mejores condiciones de seguridad, teniendo en cuenta las diferencias anatómicas, fisiológicas, psicológicas y farmacológicas de los pacientes pediátricos. INDICACIONES REQUISITOS"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    }
+  ]
+}

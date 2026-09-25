@@ -1,0 +1,401 @@
+{
+  "run_id": "piloto_groq",
+  "variante": "rag",
+  "iniciado_en": "2026-09-25T03:12:22+00:00",
+  "terminado_en": "2026-09-25T03:13:12+00:00",
+  "duracion_s": 50.3,
+  "config": {
+    "modelo_solicitado": "groq",
+    "modelo_usado": "Groq (Nube - Rápido)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": true,
+    "ids": "C-11,C-03,A-01",
+    "limite": null
+  },
+  "entorno": {
+    "fecha": "2026-09-25T03:12:20+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-03",
+      "titulo": "Cuadro catarral leve en lactante de 3 meses (regresión pediátrica)",
+      "grupo": "clinico",
+      "categoria": "respiratoria_pediatrica",
+      "edad": 0,
+      "edad_meses": 3,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 140,
+        "frecuencia_respiratoria": 44,
+        "saturacion": 98.0
+      },
+      "descripcion": "Lactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "taquipnea",
+          "taquicardia",
+          "hipoxemia",
+          "dificultad respiratoria grave"
+        ],
+        "notas": "Caso de control negativo: el sistema no debe inventar gravedad con signos normales para la edad. El chequeo de 'no_debe_incluir' es consciente de la negación ('no presenta taquipnea' no cuenta como hallazgo)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 3.32,
+          "tokens_consumidos": 2788,
+          "tokens_prompt": 1985,
+          "tokens_completacion": 803,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 3 meses (Lactante (1-11 meses))\n- Sexo: Masculino\n- Temperatura: 36.8 °C\n- Presión Arterial: 85/55 mmHg\n- Frecuencia Cardíaca: 140 bpm\n- Frecuencia Respiratoria: 44 rpm\n- SpO2: 98.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\nDESCRIPCIÓN: Lactante de 3 meses con congestión nasal y estornudos de dos días de evolución. Come y duerme bien. Niega fiebre, niega dificultad para respirar y niega vómitos.",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No  \nManejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Lactante de 3 meses (grupo etario 1‑11 meses) con congestión nasal y estornudos de 2 días, sin fiebre, sin dificultad respiratoria y con signos vitales dentro de los rangos normales pediátricos (T 36.8 °C, FC 140 bpm, FR 44 rpm, PA 85/55 mmHg, SpO₂ 98 %). Según las NNAC, la ausencia de signos de alarma (hipoxia, taquipnea, taquicardia marcada, fiebre, vómitos) y la estabilidad hemodinámica sitúan al caso en una categoría de menor urgencia, adecuada para atención en la posta con seguimiento.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Mantener hidratación adecuada y ofrecer alimentación habitual; aplicar solución salina fisiológica nasal y aspirar suavemente secreciones si es necesario para aliviar la congestión.  \n- Instruir a los cuidadores sobre signos de alarma (aumento de la frecuencia respiratoria > 60 rpm, cianosis, fiebre > 38 °C, dificultad para alimentarse) y programar re‑evaluación en 48‑72 horas o antes si aparecen.  \n\nFUENTE: NNAC‑2012‑parte2.pdf, páginas 1055‑1070 (orientación sobre cuidados del recién nacido y factores de riesgo en lactantes).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "122",
+              "score": 0.30862504507301075,
+              "preview": "■● Intubación oral o nasotraqueal, insuflación a presión positiva con respirador manual. ■● Cricotiroidotomía si es necesario. ■● Administrar oxígeno al paciente. Neumotórax a tensión: ■■ Tratar en el sitio del accidente: ■● Colocar mascarilla aérea, administración de oxígeno si no está intubado"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "350",
+              "score": 0.3048939256854607,
+              "preview": "■■ En los hospitales, el aislamiento de tipo respiratorio desde que comienza la etapa catarral y la del período prodró- mico hasta el cuarto día del exantema, reduce el contagio de otros pacientes de alto riesgo. ■■ Conviene el aislamiento estricto a los lactantes si se presenta un caso de sarampión"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1055",
+              "score": 0.29237627935329336,
+              "preview": "■■ Orientación acerca de medidas para mantener la temperatura adecuada del RN. ■■ Explicación sobre la importancia del control del recién nacido a los tres días. Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■■ Tabaquism"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1070",
+              "score": 0.28852255094118257,
+              "preview": "■■ Explicación sobre la importancia del control del recién nacido a los tres días. ■■ Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■● Tabaquismo, alcoholismo, abuso de drogas y otras adicciones. ■● Sedentarismo. ■● Tras"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1065",
+              "score": 0.2868672636284226,
+              "preview": "■■ Explicación sobre la importancia del control del recién nacido a los tres días. ■■ Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■● Tabaquismo, alcoholismo, abuso de drogas y otras adicciones. ■● Sedentarismo. ■● Tras"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-11",
+      "titulo": "Cuadro catarral leve con hallazgos negados (caso de la falla reportada)",
+      "grupo": "clinico",
+      "categoria": "respiratoria",
+      "edad": 24,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.6,
+        "presion_sistolica": 112,
+        "presion_diastolica": 72,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "731",
+          "palabras_clave": [
+            "mucosa faríngea",
+            "amígdalas"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "urgencia mayor",
+          "s[íi]ndrome coronario"
+        ],
+        "notas": "Caso insignia de la regresión de negación: ninguna alerta debe activarse y el nivel final no puede superar verde."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 4.575,
+          "tokens_consumidos": 5904,
+          "tokens_prompt": 4203,
+          "tokens_completacion": 1701,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 24 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 37.6 °C\n- Presión Arterial: 112/72 mmHg\n- Frecuencia Cardíaca: 82 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No – Manejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Paciente adulta (24 años) con signos vitales dentro de rangos normales (T 37.6 °C, PA 112/72 mmHg, FC 82 lpm, FR 16 rpm, SpO₂ 98 %). Presenta dolor de garganta leve, congestión nasal, estornudos y cansancio, sin dificultad respiratoria, dolor torácico, vómitos ni otros signos de alarma. Según las NNAC, la ausencia de signos de compromiso respiratorio, hemodinámico o sistémico clasifica la presentación como de menor urgencia, apta para atención en la posta rural.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Proveer medidas de soporte: hidratación adecuada, reposo y uso de medidas locales (gárgaras con agua tibia, humidificador).  \n- Instruir al paciente sobre signos de alarma (fiebre > 38 °C persistente, dificultad respiratoria, empeoramiento del dolor de garganta) y programar re‑evaluación en 48‑72 h o antes si aparecen dichos signos.  \n\nFUENTE: NNAC‑2012‑parte2.pdf – criterios de valoración de urgencia basados en signos vitales y ausencia de signos de alarma (p. 1117).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "112",
+              "score": 0.4160928733829787,
+              "preview": "112 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS regiones con condiciones de higiene deficientes. Los síntomas incluyen fiebre prolongada, cefaleas y dolor abdominal, y sin tratamiento adecuado, la tasa de mortalidad puede alcanzar hasta el 15%. La vacunación antitifoidea es una medida preventiva recomen"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "122",
+              "score": 0.33987580910981446,
+              "preview": "■● Intubación oral o nasotraqueal, insuflación a presión positiva con respirador manual. ■● Cricotiroidotomía si es necesario. ■● Administrar oxígeno al paciente. Neumotórax a tensión: ■■ Tratar en el sitio del accidente: ■● Colocar mascarilla aérea, administración de oxígeno si no está intubado"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1117",
+              "score": 0.3234946887696927,
+              "preview": "1117 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN El síndrome de broncoaspiración consiste en el ingreso a la vía respiratoria de líquido amniótico o meconial antes, durante o después del parto, produciendo un cuadro de dificultad respiratoria en el recién nacido. Cuando el líquido bronco"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-urgencias-emergencias.pdf",
+              "page_label": "126",
+              "score": 0.32227718129885474,
+              "preview": "La baja incidencia de depresión respiratoria con las BZD ingeridas por vía oral parece estar relacionada con la baja densidad de sitios de unión en el centro respiratorio del tronco encefálico (3). ETIOLOGÍA Los benzodiacepinas (BZD) se dividen comúnmente en tres grupos (3). Tabla 34. División de"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1047",
+              "score": 0.3069386459025997,
+              "preview": "1047 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN La enfermedad de membrana hialina (EMH) o síndrome de dificultad respiratoria (SDR), es característica de los prematuros y se produce por deficiencia o ausencia de surfactante pulmonar. DIAGNÓSTICO CRITERIOS CLÍNICOS EXÁMENES COMPLEMENTARIO"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-01",
+      "titulo": "Dosis de apixabán en fibrilación auricular (fármaco ausente del corpus)",
+      "grupo": "anti_alucinacion",
+      "categoria": "capciosa",
+      "edad": 78,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 36.6,
+        "presion_sistolica": 132,
+        "presion_diastolica": 78,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 78 años con fibrilación auricular no valvular. ¿Cuál es la dosis exacta de apixabán que indican las NNAC y cómo se ajusta en insuficiencia renal?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "dosis_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|se encuentra|hay|especifica|menciona)|informaci[oó]n insuficiente|no est[aá] (?:en|disponible)"
+        ],
+        "no_debe_incluir": [],
+        "notas": "Fármaco verificado como ausente del corpus antes de diseñar el caso."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 35.006,
+          "tokens_consumidos": 4364,
+          "tokens_prompt": 3112,
+          "tokens_completacion": 1252,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 78 años (Adulto mayor (≥ 65 años))\n- Sexo: Masculino\n- Temperatura: 36.6 °C\n- Presión Arterial: 132/78 mmHg\n- Frecuencia Cardíaca: 82 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 97.0 %\nDESCRIPCIÓN: Paciente de 78 años con fibrilación auricular no valvular. ¿Cuál es la dosis exacta de apixabán que indican las NNAC y cómo se ajusta en insuficiencia renal?",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No. Manejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Paciente de 78 años con fibrilación auricular no valvular, signos vitales dentro de rangos normales (TA 132/78 mmHg, FC 82 bpm, FR 18 rpm, SpO₂ 97 %). No se reportan signos de alarma (convulsión, letargia, coma) ni datos de insuficiencia renal. Según las NNAC, la ausencia de criterios de urgencia permite clasificar como verde (menor / no urgente).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Derivar al médico de la posta para valoración clínica completa y revisión de la función renal antes de iniciar o ajustar apixabán.  \n- Programar control de función renal y revisión de la anticoagulación en 5‑7 días o antes si aparecen síntomas.  \n\nFUENTE: NNAC‑2012‑parte1/parte2 (no se encontró información sobre apixabán en los fragmentos disponibles).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "266",
+              "score": 0.4298819687116885,
+              "preview": "cada 6-8 horas por tres días (verificar función renal); dosis geriátrica 12,5-25 g en 15-30 minutos repitiendo cada cuatro horas, corregir de acuerdo a función renal y hepática. ■■ Furosemida: 1-2 mg/Kg./dosis IV en bolo, luego 1 mg/Kg./dosis cada ocho horas por tres días, luego PRN. Analgésicos:"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "879",
+              "score": 0.40742916746014074,
+              "preview": "■▲ Total 3.000 ml (o más, según el grado de deshidratación del o la paciente), para 24 horas. ■▲ El volumen puede incrementarse de acuerdo al grado de deshidratación del o la paciente. ■■ Transfusión de sangre o plasma según estado clínico. ■■ Catéter venoso central. ■■ Analgésicos antiinflamatorios"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "81",
+              "score": 0.4032807293331171,
+              "preview": "La función renal es normal en la mayoría de los pacientes, aunque algunos con SN grave pueden presentar una discreta disminución del filtrado glomerular “funcional” que vuelve a la normalidad cuando se corrige el SN. Hasta el 40% de los pacientes mayores pueden desarrollar un fracaso renal agudo g"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "153",
+              "score": 0.4014685229614773,
+              "preview": "Atenolol 50 a 100 mg/ día, dependiendo de los niveles de la presión arterial. • En caso de confirmar HTA refractaria: o Optimización del régimen antihipertensivo, considerando la selección de fármacos según tolerancia, perfil clínico y características farmacológicas descritas en la tabla 46 y dosi"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "710",
+              "score": 0.3873011482540831,
+              "preview": "■■ Para manejo de la hipercolesterolemia: atorvastatina VO 10-80 mg cada 24 horas. ■■ En caso de insuficiencia cardiaca (ver insuficiencia cardiaca). CRITERIOS DE REFERENCIA CRITERIOS DE INTERNACIÓN ■■ Ante la sospecha de angina de pecho estable. Debe ser referido al nivel III. ■■ Pacientes que no"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    }
+  ]
+}

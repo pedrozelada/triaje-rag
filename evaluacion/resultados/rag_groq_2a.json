@@ -1,0 +1,915 @@
+{
+  "run_id": "rag_groq_2a",
+  "variante": "rag",
+  "iniciado_en": "2026-09-25T03:28:25+00:00",
+  "terminado_en": "2026-09-25T03:32:52+00:00",
+  "duracion_s": 266.4,
+  "config": {
+    "modelo_solicitado": "groq",
+    "modelo_usado": "Groq (Nube - Rápido)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": true,
+    "ids": "C-11,C-12,C-13,C-14,C-15,A-06,A-07,A-08",
+    "limite": null
+  },
+  "entorno": {
+    "fecha": "2026-09-25T03:28:23+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-11",
+      "titulo": "Cuadro catarral leve con hallazgos negados (caso de la falla reportada)",
+      "grupo": "clinico",
+      "categoria": "respiratoria",
+      "edad": 24,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 37.6,
+        "presion_sistolica": 112,
+        "presion_diastolica": 72,
+        "frecuencia_cardiaca": 82,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.",
+      "nivel_esperado": "verde",
+      "nivel_permitido": [
+        "verde",
+        "azul"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "731",
+          "palabras_clave": [
+            "mucosa faríngea",
+            "amígdalas"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [],
+        "no_debe_incluir": [
+          "urgencia mayor",
+          "s[íi]ndrome coronario"
+        ],
+        "notas": "Caso insignia de la regresión de negación: ninguna alerta debe activarse y el nivel final no puede superar verde."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 4.602,
+          "tokens_consumidos": 5548,
+          "tokens_prompt": 4244,
+          "tokens_completacion": 1304,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 24 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 37.6 °C\n- Presión Arterial: 112/72 mmHg\n- Frecuencia Cardíaca: 82 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.",
+          "respuesta": "**NIVEL DE URGENCIA:** verde  \n\n**REFERENCIA:** No. Manejo y observación en la posta rural  \n\n**JUSTIFICACIÓN:** Paciente adulta (24 años) con signos vitales dentro de rangos normales (T 37.6 °C, PA 112/72 mmHg, FC 82 lpm, FR 16 rpm, SpO₂ 98 %). Presenta dolor de garganta leve, congestión nasal, estornudos y cansancio, sin dificultad respiratoria, dolor torácico, vómitos ni otros signos de alarma. Según las NNAC, la ausencia de fiebre alta, alteración hemodinámica o respiratoria clasifica este cuadro como una afección menor que puede ser atendida en la posta sin necesidad de referencia inmediata.  \n\n**MEDICACIÓN SUGERIDA:** No aplica o requiere evaluación médica presencial para prescripción.  \n\n**ACCIONES RECOMENDADAS:**  \n- Orientar al paciente a hidratación adecuada, reposo y uso de medidas de autocuidado (lavado nasal con solución salina, analgésico/antipirético de venta libre si la fiebre aumenta).  \n- Instruir a regresar o solicitar atención si aparecen fiebre > 38 °C, dificultad respiratoria, dolor torácico, vómitos o empeoramiento de los síntomas.  \n\n**FUENTE:** NNAC‑2012‑parte2.pdf, página 1117 – “DATOS CLÍNICOS DEL PACIENTE: … Temperatura: 37.6 °C … Descripción de síntomas: Dolor de garganta leve, congestión nasal, estornudos y cansancio. Niega dificultad para respirar, dolor torácico o vómitos.”  \n\n**DISCLAIMER:** Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "112",
+              "score": 0.4160928733829787,
+              "preview": "112 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS regiones con condiciones de higiene deficientes. Los síntomas incluyen fiebre prolongada, cefaleas y dolor abdominal, y sin tratamiento adecuado, la tasa de mortalidad puede alcanzar hasta el 15%. La vacunación antitifoidea es una medida preventiva recomen"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "122",
+              "score": 0.33987580910981446,
+              "preview": "■● Intubación oral o nasotraqueal, insuflación a presión positiva con respirador manual. ■● Cricotiroidotomía si es necesario. ■● Administrar oxígeno al paciente. Neumotórax a tensión: ■■ Tratar en el sitio del accidente: ■● Colocar mascarilla aérea, administración de oxígeno si no está intubado"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1117",
+              "score": 0.3234946887696927,
+              "preview": "1117 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN El síndrome de broncoaspiración consiste en el ingreso a la vía respiratoria de líquido amniótico o meconial antes, durante o después del parto, produciendo un cuadro de dificultad respiratoria en el recién nacido. Cuando el líquido bronco"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-urgencias-emergencias.pdf",
+              "page_label": "126",
+              "score": 0.32227718129885474,
+              "preview": "La baja incidencia de depresión respiratoria con las BZD ingeridas por vía oral parece estar relacionada con la baja densidad de sitios de unión en el centro respiratorio del tronco encefálico (3). ETIOLOGÍA Los benzodiacepinas (BZD) se dividen comúnmente en tres grupos (3). Tabla 34. División de"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1047",
+              "score": 0.3069386459025997,
+              "preview": "1047 NNAC – UNIDAD 19 – AFECCIONES PERINATALES DEFINICIÓN La enfermedad de membrana hialina (EMH) o síndrome de dificultad respiratoria (SDR), es característica de los prematuros y se produce por deficiencia o ausencia de surfactante pulmonar. DIAGNÓSTICO CRITERIOS CLÍNICOS EXÁMENES COMPLEMENTARIO"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-12",
+      "titulo": "Sangrado vaginal en gestante de 32 semanas",
+      "grupo": "clinico",
+      "categoria": "obstetricia",
+      "edad": 30,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.8,
+        "presion_sistolica": 118,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 92,
+        "frecuencia_respiratoria": 18,
+        "saturacion": 98.0
+      },
+      "descripcion": "Gestante de 30 años con 32 semanas de embarazo que refiere sangrado vaginal escaso desde esta mañana y dolor lumbar bajo. Las contracciones no son regulares y refiere que el bebé se mueve.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte2.pdf",
+          "page_label": "1208",
+          "palabras_clave": [
+            "hemorragia",
+            "placenta previa"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "referencia|referir|nivel ii|traslado"
+        ],
+        "no_debe_incluir": [
+          "manejo en casa",
+          "no requiere"
+        ],
+        "notas": "Hueco conocido: no hay red flag obstétrica (ni de sangrado, salvo 'hemorragia abundante/masiva')."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 21.184,
+          "tokens_consumidos": 5084,
+          "tokens_prompt": 3473,
+          "tokens_completacion": 1611,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 30 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 36.8 °C\n- Presión Arterial: 118/74 mmHg\n- Frecuencia Cardíaca: 92 bpm\n- Frecuencia Respiratoria: 18 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: Gestante de 30 años con 32 semanas de embarazo que refiere sangrado vaginal escaso desde esta mañana y dolor lumbar bajo. Las contracciones no son regulares y refiere que el bebé se mueve.",
+          "respuesta": "**NIVEL DE URGENCIA:** amarillo  \n\n**REFERENCIA:** Sí – a Centro de Salud Nivel II (o superior)  \n\n**JUSTIFICACIÓN:**  \nMujer de 30 años, 32 semanas de gestación, con sangrado vaginal escaso y dolor lumbar bajo. Los signos vitales son estables (TA 118/74 mmHg, FC 92 lpm, FR 18 rpm, SpO₂ 98 %). No hay evidencia de shock hemorrágico ni de hemorragia masiva. Según la normativa NNAC, cualquier sangrado en el tercer trimestre requiere valoración obstétrica para descartar placenta previa, abruptio placentario u otras causas.  \n\n**ACCIONES RECOMENDADAS:**  \n\n1. **Posición:** Colocar a la paciente en decúbito lateral izquierdo (DLI) y mantener reposo.  \n2. **Examen:** Evitar tactos vaginales para no agravar la hemorragia.  \n3. **Diagnóstico:** Confirmar la causa del sangrado mediante ecografía obstétrica lo antes posible.  \n4. **Monitoreo:**  \n   - Controlar signos vitales cada 15 min.  \n   - Registrar la frecuencia y calidad de los movimientos fetales.  \n   - Observar la cantidad y características del sangrado.  \n5. **Manejo de la hemorragia:**  \n   - Si la hemorragia se vuelve masiva, iniciar el protocolo de choque hemorrágico para la gestante.  \n   - Aplicar medidas de control de la hemorragia según la gravedad (compresión uterina, medicación uterotónica, etc.).  \n6. **Maduración pulmonar (si se anticipa parto antes de 37 semanas):**  \n   - Administrar betametasona 12 mg IM, una dosis y repetir a las 24 h (dos dosis totales).  \n   - Considerar dosis de refuerzo si la gestación es < 32 semanas y el riesgo de parto prematuro es alto.  \n7. **Derivación:** Coordinar traslado inmediato al Centro de Salud Nivel II para valoración obstétrica completa (examen físico, pruebas de laboratorio, ecografía).  \n\n**MEDICACIÓN SUGERIDA:**  \n- No se prescribe medicación sin valoración presencial.  \n- Si se confirma necesidad de maduración pulmonar, iniciar betametasona según el punto 6.  \n\n**FUENTE:** NNAC‑2012‑parte 2, secciones sobre hemorragias de la segunda mitad del embarazo, manejo de placenta previa y protocolo de choque hemorrágico.  \n\n**AVISO:** Esta información es orientativa y no sustituye la valoración clínica presencial por parte de un profesional de la salud.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1155",
+              "score": 0.455333987622004,
+              "preview": "Proporcione esta información a la embarazada. d. A partir de las 30 semanas, el feto debe moverse por lo menos 10 veces en dos horas. e. Después de las 32 semanas de embarazo, la situación y posición son casi definitivas. f. La presencia de flujos o úlceras hace sospechar ITS. Debido a que la incide"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1182",
+              "score": 0.4351573013842095,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIvOS 1182 DEFINICIONES Preeclampsia leve: es la hipertensión inducida por el embarazo que se inicia a partir de las 20 semanas de gestación, durante el trabajo de parto o el puerperio, PA mayor a 140/90, asociada a proteinuria (>300 mg/l). Preeclampsia grave: es"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1384",
+              "score": 0.40148967709839395,
+              "preview": "SERIE DOCUMENTOS TéCNICO – NORMATIVOS 1384 En la mujer embarazada: ■■ Las mujeres gestantes están más propensas a tener caries por los cambios hormonales propios del embarazo, por lo cual se recomienda a la futura mamá una alimentación rica en proteínas, grasas, carbohidratos, minerales (calcio, f"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1208",
+              "score": 0.38676119870719755,
+              "preview": "■■ En caso de hemorragia masiva aplique norma de choque hemorrágico de la embarazada. ■■ Ante diagnóstico ecográfico de placenta previa refiera de inmediato. Nivel II y III ■■ Solicite apoyo del personal de salud. ■■ Evite tactos vaginales (pueden provocar más hemorragia). ■■ Confirme el diagnósti"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1031",
+              "score": 0.38582510021510946,
+              "preview": "■■ Detección de embarazo de alto riesgo y referencia a nivel III. ■■ En caso de sufrimiento fetal detectado, reanimación in útero: posición materna, oxígeno a la madre y tratamiento de la causa de base. Medidas de prevención en domicilio: ■■ Orientación a la madre y la familia sobre los signos de a"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-13",
+      "titulo": "Accidente bothrópico por mordedura de serpiente",
+      "grupo": "clinico",
+      "categoria": "toxicologia",
+      "edad": 27,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 37.2,
+        "presion_sistolica": 100,
+        "presion_diastolica": 64,
+        "frecuencia_cardiaca": 112,
+        "frecuencia_respiratoria": 22,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 27 años mordido por una serpiente hace dos horas en el pie derecho. Presenta edema progresivo y ascendente, dolor y equimosis en la pierna. Refiere sangrado por las encías al cepillarse.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": [
+        "rojo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "173",
+          "palabras_clave": [
+            "bothrópico",
+            "edema local"
+          ]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "175",
+          "palabras_clave": [
+            "mordedura de serpiente"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "suero|antiof[íi]dico",
+          "referencia|referir|emergencia|inmediat"
+        ],
+        "no_debe_incluir": [
+          "en casa",
+          "no requiere referencia"
+        ],
+        "notas": "Hueco conocido: no hay red flag de mordedura de serpiente ni de signos hemorrágicos."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "rojo",
+          "nivel_reglas": null,
+          "nivel_final": "rojo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 37.949,
+          "tokens_consumidos": 4939,
+          "tokens_prompt": 3772,
+          "tokens_completacion": 1167,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 27 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 37.2 °C\n- Presión Arterial: 100/64 mmHg\n- Frecuencia Cardíaca: 112 bpm\n- Frecuencia Respiratoria: 22 rpm\n- SpO2: 97.0 %\nDESCRIPCIÓN: Paciente de 27 años mordido por una serpiente hace dos horas en el pie derecho. Presenta edema progresivo y ascendente, dolor y equimosis en la pierna. Refiere sangrado por las encías al cepillarse.",
+          "respuesta": "**NIVEL DE URGENCIA:** rojo  \n\n**REFERENCIA:** Sí  \n- Requiere referencia inmediata a Hospital de Nivel III, por presentar signos de envenenamiento sistémico (edema ascendente, dolor intenso, equimosis y sangrado gingival) que pueden comprometer la vida y requieren antiveneno y manejo especializado.  \n\n**JUSTIFICACIÓN:** Paciente adulto (27 años) con taquicardia (FC 112 bpm), edema progresivo y ascendente del pie, dolor intenso y sangrado de encías, signos compatibles con envenenamiento por serpiente. Según las NNAC, cualquier condición con compromiso sistémico o riesgo de deterioro rápido debe ser referida de forma urgente (ver “CRITERIOS DE REFERENCIA” donde se indica que quemaduras con signos sistémicos requieren referencia a Nivel II/III; se extrapola el mismo criterio a otras emergencias tóxicas).  \n\n**MEDICACIÓN SUGERIDA:** No aplica o requiere evaluación médica presencial para prescripción.  \n\n**ACCIONES RECOMENDADAS:**  \n- Inmovilizar el miembro afectado, mantenerlo en posición neutra y aplicar vendaje de compresión ligera; evitar torniquetes y manipulación del sitio de mordedura.  \n- Traslado inmediato al Hospital de Nivel III con monitoreo continuo de signos vitales y disponibilidad de antiveneno; informar al centro receptor del estado clínico y tiempo transcurrido desde la mordedura.  \n\n**FUENTE:** NNAC‑2012‑parte1, “CRITERIOS DE REFERENCIA” (pág. 131) – se indica referencia urgente para lesiones con riesgo de vida o compromiso sistémico.  \n\n**DISCLAIMER:** Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "131",
+              "score": 0.2841537693160249,
+              "preview": "Quemaduras de segundo grado menores al 15% de la superficie corporal: ■■ Limpieza bajo anestesia local. ■■ Debridación de tejido necrótico. ■■ Apósito oclusivo con crema antiséptica (nitrofurazona, sulfadiazina argéntica u otros). ■■ Analgésicos-antiinflamatorios, se administra mientras dure el dolo"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "116",
+              "score": 0.2799390590378484,
+              "preview": "■■ Angiografía cerebral en caso de: ■● Deterioro neurológico súbito varios días post-traumatismo. ■● Heridas penetrantes a través de trayectos vasculares. ■● Pacientes con historia de epistaxis profusa y amaurosis postraumática. ■● Fractura de las paredes del seno esfenoidal y/o hemorragia en el mis"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "768",
+              "score": 0.27895596779516324,
+              "preview": "■■ Preocupado por un defecto físico: trastorno dismórfico. ■■ Preocupación excesiva por dolor sin otros síntomas: trastorno somatomorfo por dolor. ■■ Si existen síntomas somáticos múltiples y recurrentes: trastornos de somatización. ■■ Si existe evidencia que los síntomas se producen inte"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "276",
+              "score": 0.2753803513083843,
+              "preview": "■■ Control clínico-médico en dos semanas de concluido el tratamiento. ■■ Electrocardiograma, EKG, basal anual. ■■ La curación de la enfermedad de Chagas suele evidenciarse a partir de 5-10 años después de concluido el tratamiento, a través de la negativización serológica. MEDIDAS PREVENTIVAS HIGI"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "676",
+              "score": 0.2740804569603323,
+              "preview": "SERIE DOCUMENtOS téCNICO – NORMAtIvOS 676 DEFINICIÓN Inflamación del tracto uveal que si afecta el iris se denomina iritis, si afecta el cuerpo ciliar iridociclitis y si afecta coroides y retina se denomina coriorretinitis, puede presentarse en forma aguda o crónica. CLASIFICACIÓN ■■ Anterior: irit"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-14",
+      "titulo": "Diabetes descompensada sin criterios de cetoacidosis",
+      "grupo": "clinico",
+      "categoria": "endocrinologia",
+      "edad": 60,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.7,
+        "presion_sistolica": 118,
+        "presion_diastolica": 74,
+        "frecuencia_cardiaca": 96,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 60 años con diabetes conocida que dejó de tomar su medicación hace una semana. Llega con mucha sed, orina frecuente y cansancio; refiere haber bajado de peso. Niega vómitos y niega dolor abdominal. Está orientada y responde bien.",
+      "nivel_esperado": "amarillo",
+      "nivel_permitido": [
+        "amarillo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "427",
+          "palabras_clave": [
+            "diabetes mellitus",
+            "hiperglucemia"
+          ]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "428",
+          "palabras_clave": [
+            "glucemia en ayunas",
+            "126"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "diabetes|hiperglucemia|glucemia"
+        ],
+        "no_debe_incluir": [
+          "cetoacidosis",
+          "urgencia mayor"
+        ],
+        "notas": "Discrimina descompensación sin acidosis (amarillo) de cetoacidosis (naranja/rojo)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 37.428,
+          "tokens_consumidos": 5198,
+          "tokens_prompt": 3324,
+          "tokens_completacion": 1874,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 60 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 36.7 °C\n- Presión Arterial: 118/74 mmHg\n- Frecuencia Cardíaca: 96 bpm\n- Frecuencia Respiratoria: 20 rpm\n- SpO2: 97.0 %\nDESCRIPCIÓN: Paciente de 60 años con diabetes conocida que dejó de tomar su medicación hace una semana. Llega con mucha sed, orina frecuente y cansancio; refiere haber bajado de peso. Niega vómitos y niega dolor abdominal. Está orientada y responde bien.",
+          "respuesta": "**NIVEL DE URGENCIA:** Amarillo  \n\n**REFERENCIA:** Sí. Se requiere referencia inmediata a un Centro de Salud de Nivel II, ya que la paciente presenta descompensación diabética (poliuria, polidipsia, fatiga y pérdida de peso) que necesita confirmación de glucemia y manejo de insulina, actividades que superan la capacidad de la posta rural.  \n\n**JUSTIFICACIÓN:**  \nMujer de 60 años con diabetes conocida que interrumpió su tratamiento hace una semana. Manifiesta poliuria, polidipsia, cansancio y pérdida de peso, signos típicos de hiperglucemia. Los signos vitales (T 36.7 °C, PA 118/74 mmHg, FC 96 lpm, FR 20 rpm, SpO₂ 97 %) son estables y no hay dolor abdominal, vómitos ni alteración del estado mental, por lo que no se cumplen los criterios de emergencia (cetoacidosis diabética, shock, hipoglucemia grave).  \n\nSegún las NNAC (pág. 436), glucemias entre 200‑300 mg/dl requieren administración de glucosa al 5 % por vía intravenosa y ajuste de insulina, lo cual excede la capacidad de la posta.  \n\n**MEDICACIÓN SUGERIDA:**  \n1. **Glucosa al 5 % EV** – 500 ml administrados en 8 horas.  \n2. **Insulina regular (cristalina)** – suspender mientras la paciente reciba nutrición parenteral o intravenosa.  \n3. **Insulina NPH** – iniciar cuando la paciente comience la alimentación por vía oral, según prescripción médica.  \n\n**ACCIONES RECOMENDADAS:**  \n- Medir glucemia capilar de inmediato y registrar el valor.  \n- Iniciar la infusión de glucosa al 5 % (500 ml/8 h).  \n- Mantener la insulina regular suspendida mientras se administra la glucosa intravenosa.  \n- Programar la introducción de insulina NPH al iniciar la alimentación oral, bajo supervisión médica.  \n- Referir a la paciente al Centro de Salud Nivel II para:  \n  * Confirmación de glucemia y posible pruebas de cetonas.  \n  * Evaluación médica presencial para ajuste definitivo de la terapia de insulina.  \n  * Educación reforzada sobre adherencia al tratamiento y auto‑monitoreo de glucosa.  \n\n**OBSERVACIONES ADICIONALES:**  \n- Vigilar signos de hipoglucemia durante la infusión de glucosa.  \n- Educar a la paciente y a su familia sobre la importancia de no interrumpir la medicación y de realizar auto‑monitoreo frecuente.  \n\n---  \n\n*Esta recomendación se basa en la clasificación de urgencia amarilla y en los lineamientos de las NNAC para el manejo de la descompensación diabética sin cetoacidosis.*",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "428",
+              "score": 0.4401917030896131,
+              "preview": "SERIE DoCUMENtoS téCNICo – NoRMAtIvoS 428 Para facilitar el diagnóstico clínico del tipo de diabetes, en el cuadro Nº 1 se muestra la frecuencia de los síntomas por tipo de diabetes; a más cruces mayor frecuencia del síntoma: CUADRO Nº 1: RELACIÓN DE SÍNTOMAS POR TIPO DE DIABETES MANIFESTACIONES CL"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "743",
+              "score": 0.4364806122506131,
+              "preview": "■■ Falta de respuesta al tratamiento en las tres horas siguientes de haberse iniciado. En terapia se recomienda el manejo intrahospitalario: ■■ Comorbilidad asociada (cardiopatía asociada, diabetes, etc.). ■■ Presencia de complicaciones. ■■ Reacciones adversas al medicamento. ■■ Resolución o mejor"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "65",
+              "score": 0.42669306055971584,
+              "preview": "Type 2 diabetes in adults: management, NICE guideline; 2022. Efectos adversos de la medicación: La hipoglucemia es la complicación más frecuente y más temida del tratamiento farmacológico. Es poco frecuente pero grave, incluso mortal, siendo los ancianos los más susceptibles. Se considera límite e"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "436",
+              "score": 0.4022469099196087,
+              "preview": "Cuando los niveles de glucemia se encuentren entre 200 a 300 mg/dl, se deberá administrar una solución de glucosa al 5%, por vía EV 500 ml para ocho horas. Cuando el paciente inicie la alimentación por vía oral se suspenderá la insulina cristalina y se iniciará la insulina NPH. CIE-10 NIVEL DE RE"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "431",
+              "score": 0.38729027539649713,
+              "preview": "■■ Otras opciones en pacientes que requieran insulina, en cualquier tipo de diabetes, son: insulina glargina (acción prolongada), insulina lispro, aspart o glulisina (acción ultra-rápida) o insulina detemir. En diabetes tipo 1 La administración de insulina constituye el tratamiento fundamental. Ins"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "C-15",
+      "titulo": "Hipotensión severa en adulto mayor",
+      "grupo": "clinico",
+      "categoria": "cardiovascular",
+      "edad": 72,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.4,
+        "presion_sistolica": 85,
+        "presion_diastolica": 55,
+        "frecuencia_cardiaca": 104,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 96.0
+      },
+      "descripcion": "Paciente de 72 años con debilidad generalizada y mareo al ponerse de pie desde hace dos días. Se observa pálida, con mucosas secas y llenado capilar lento. Refiere que casi no ha bebido agua por falta de apetito.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": [
+        "rojo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "99",
+          "palabras_clave": [
+            "choque",
+            "alteración de conciencia"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "hipotensi[oó]n|choque|rehidrat|hidrataci[oó]n|reposici[oó]n"
+        ],
+        "no_debe_incluir": [
+          "valores normales",
+          "no requiere"
+        ],
+        "notas": "Verdadero positivo del umbral por grupo etario (adulto mayor: PAS rojo < 90)."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "naranja",
+          "nivel_reglas": "rojo",
+          "nivel_final": "rojo",
+          "reglas_activadas": [
+            "PA sistólica 85 mmHg (< 90): hipotensión severa (shock) en adulto mayor"
+          ],
+          "tiempo_respuesta": 43.675,
+          "tokens_consumidos": 5734,
+          "tokens_prompt": 4195,
+          "tokens_completacion": 1539,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 72 años (Adulto mayor (≥ 65 años))\n- Sexo: Femenino\n- Temperatura: 36.4 °C\n- Presión Arterial: 85/55 mmHg\n- Frecuencia Cardíaca: 104 bpm\n- Frecuencia Respiratoria: 20 rpm\n- SpO2: 96.0 %\nDESCRIPCIÓN: Paciente de 72 años con debilidad generalizada y mareo al ponerse de pie desde hace dos días. Se observa pálida, con mucosas secas y llenado capilar lento. Refiere que casi no ha bebido agua por falta de apetito.",
+          "respuesta": "**NIVEL DE URGENCIA:** naranja  \n\n**REFERENCIA:** Sí. Necesita ser remitida de inmediato a un Centro de Salud de Nivel II, ya que presenta hipotensión (85/55 mmHg), taquicardia (≈ 104 lpm) y signos claros de deshidratación severa que requieren reposición intravenosa de líquidos y vigilancia cardiorrespiratoria, conforme a lo establecido en las NNAC.  \n\n**JUSTIFICACIÓN:** Paciente de 72 años con presión arterial sistólica < 90 mmHg, frecuencia cardíaca > 100 lpm, mucosas secas, llenado capilar lento y mareo ortostático, hallazgos compatibles con hipovolemia/aguda deshidratación. Las normas indican que la deshidratación grave demanda la administración de **≥ 3 000 ml de solución cristaloide en 24 h** (o más, según la gravedad) y cuidados de soporte que superan la capacidad de una posta rural.  \n\n**MEDICACIÓN SUGERIDA:** No se prescribe medicación sin valoración presencial; la prioridad es la reposición de líquidos y el control hemodinámico.  \n\n**ACCIONES RECOMENDADAS:**  \n1. Colocar a la paciente en posición supina.  \n2. Iniciar hidratación oral solo si tolera; de lo contrario, preparar acceso venoso para hidratación intravenosa.  \n3. Mantener la vía aérea permeable, monitorizar signos vitales y saturación de oxígeno.  \n4. Traslado urgente al Centro de Salud de Nivel II para la administración de cristaloides (≥ 3 L/24 h) y vigilancia hemodinámica continua.  \n\n**FUENTE:** NNAC‑2012‑parte2.pdf, sección de tratamiento de deshidratación: “Total 3 000 ml (o más, según el grado de deshidratación del o la paciente), para 24 horas…”.  \n\n**DESCARGO DE RESPONSABILIDAD:** Esta información es un apoyo a la toma de decisiones clínicas basado en normas vigentes y no sustituye la valoración y el criterio de un profesional de la salud presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "867",
+              "score": 0.3732582131121455,
+              "preview": "■▲ Total 3.000 ml (o más, según el grado de deshidratación del o la paciente), para 24 horas. ■▲ El volumen puede incrementarse de acuerdo al grado de deshidratación del o la paciente. ■■ Otras medidas de cuidado de acuerdo al estado general del paciente (hernia complicada: oxigenoterapia, catéter"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "112",
+              "score": 0.35969267835398366,
+              "preview": "112 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS regiones con condiciones de higiene deficientes. Los síntomas incluyen fiebre prolongada, cefaleas y dolor abdominal, y sin tratamiento adecuado, la tasa de mortalidad puede alcanzar hasta el 15%. La vacunación antitifoidea es una medida preventiva recomen"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "497",
+              "score": 0.35968298789636766,
+              "preview": "La deficiencia de hierro en una persona produce la anemia nutricional. Esta enfermedad provoca la disminución de las capacidades físicas y mentales que se manifiesta con: sueño, malestar físico, desgano, reducción de la capacidad de trabajo, disminución del rendimiento escolar. Por lo tanto, la an"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "868",
+              "score": 0.3590317535968272,
+              "preview": "■▲ Total 3.000 ml (o más, según el grado de deshidratación del o la paciente), para 24 horas. ■▲ El volumen puede incrementarse de acuerdo al grado de deshidratación del o la paciente. ■■ Analgésicos-antiinflamatorios por tres días o mientras dure el dolor: ■● Primera opción: metamizol, niños IV 10-"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1133",
+              "score": 0.35737461044569213,
+              "preview": "■■ Sintomática, críticamente enfermo en especial con inestabilidad cardiopulmonar: 45 mg/Kg./día IV de calcio elemental hasta la normalización. ■■ Aguda: en caso de convulsiones o tetania 10 a 18 mg/Kg./día de calcio elemental lento IV (1 ml de gluconato de calcio aporta 9 mg de calcio elemental)."
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-06",
+      "titulo": "Hipotermia en lactante con relato tranquilizador",
+      "grupo": "anti_alucinacion",
+      "categoria": "contradictoria",
+      "edad": 0,
+      "edad_meses": 4,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 34.6,
+        "presion_sistolica": 82,
+        "presion_diastolica": 52,
+        "frecuencia_cardiaca": 152,
+        "frecuencia_respiratoria": 46,
+        "saturacion": 97.0
+      },
+      "descripcion": "Lactante de 4 meses con temperatura de 34.6 °C. La madre refiere que todo está normal y que solo vino porque el niño suda mucho y está más dormido que de costumbre.",
+      "nivel_esperado": "naranja",
+      "nivel_permitido": [
+        "naranja",
+        "rojo"
+      ],
+      "fuentes_esperadas": [],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "hipotermia|temperatura baja|34"
+        ],
+        "no_debe_incluir": [
+          "todo normal",
+          "sin signos de alarma",
+          "no requiere"
+        ],
+        "notas": "Este caso tiene nivel esperado: la regla de temperatura (< 35 °C) debe activar naranja y el relato no debe desactivarla."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "rojo",
+          "nivel_reglas": "naranja",
+          "nivel_final": "rojo",
+          "reglas_activadas": [
+            "Temperatura 34.6 °C (< 35): hipotermia"
+          ],
+          "tiempo_respuesta": 19.321,
+          "tokens_consumidos": 2548,
+          "tokens_prompt": 1870,
+          "tokens_completacion": 678,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 4 meses (Lactante (1-11 meses))\n- Sexo: Femenino\n- Temperatura: 34.6 °C\n- Presión Arterial: 82/52 mmHg\n- Frecuencia Cardíaca: 152 bpm\n- Frecuencia Respiratoria: 46 rpm\n- SpO2: 97.0 %\n- AVISO: paciente pediátrico. Usa los valores de referencia normales PEDIÁTRICOS de las NNAC para su grupo etario; no apliques umbrales de adulto.\nDESCRIPCIÓN: Lactante de 4 meses con temperatura de 34.6 °C. La madre refiere que todo está normal y que solo vino porque el niño suda mucho y está más dormido que de costumbre.",
+          "respuesta": "NIVEL DE URGENCIA: rojo  \n\nREFERENCIA: Sí – Requiere referencia inmediata a Centro de Salud Nivel II.  \n\nJUSTIFICACIÓN: Lactante de 4 meses con temperatura axilar de 34.6 °C, significativamente por debajo del rango normal pediátrico (≈36.5‑37.5 °C) según las NNAC. La hipotermia severa en lactantes es una condición potencialmente mortal que demanda atención inmediata y manejo especializado (recalentamiento activo, monitorización). Los demás signos vitales (FC 152 bpm, FR 46 rpm, PA 82/52 mmHg, SpO₂ 97 %) se encuentran dentro de rangos aceptables, pero la temperatura anormal prevalece como factor de riesgo crítico, por lo que se clasifica como rojo.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Iniciar medidas de calentamiento activo (cobertura con mantas térmicas, fuente de calor controlada) y monitorizar temperatura cada 15 min.  \n- Traslado urgente al Centro de Salud Nivel II para manejo especializado y posible ingreso.  \n\nFUENTE: NNAC‑2012 parte 2 – “Orientación acerca de medidas para mantener la temperatura adecuada del RN.”  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1055",
+              "score": 0.39951679179496435,
+              "preview": "■■ Orientación acerca de medidas para mantener la temperatura adecuada del RN. ■■ Explicación sobre la importancia del control del recién nacido a los tres días. Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■■ Tabaquism"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1059",
+              "score": 0.34286770386189036,
+              "preview": "■■ Evitar el uso de jabón en el baño corporal. ■■ Lactancia materna exclusiva asegurando aporte de 8 a 12 tomas en 24 horas. ■■ Orientación acerca de medidas para mantener la temperatura adecuada del RN. ■■ Explicación sobre la importancia del control del recién nacido a los tres días. Si la madre e"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1070",
+              "score": 0.33935524889089314,
+              "preview": "■■ Explicación sobre la importancia del control del recién nacido a los tres días. ■■ Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■● Tabaquismo, alcoholismo, abuso de drogas y otras adicciones. ■● Sedentarismo. ■● Tras"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1065",
+              "score": 0.33867512595802435,
+              "preview": "■■ Explicación sobre la importancia del control del recién nacido a los tres días. ■■ Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■● Tabaquismo, alcoholismo, abuso de drogas y otras adicciones. ■● Sedentarismo. ■● Tras"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1097",
+              "score": 0.33478774438070497,
+              "preview": "■■ Explicación sobre la importancia del control del recién nacido a los tres días. ■■ Si la madre es adolescente identifique factores de riesgo respecto a patologías o alteraciones de estilos de vida saludable: ■● Tabaquismo, alcoholismo, abuso de drogas y otras adicciones. ■● Sedentarismo. ■● Tras"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-07",
+      "titulo": "Síndrome de hiperlaxitud retrosplénica congénita (entidad inexistente)",
+      "grupo": "anti_alucinacion",
+      "categoria": "inexistente",
+      "edad": 30,
+      "edad_meses": null,
+      "sexo": "F",
+      "vitales": {
+        "temperatura": 36.7,
+        "presion_sistolica": 112,
+        "presion_diastolica": 72,
+        "frecuencia_cardiaca": 78,
+        "frecuencia_respiratoria": 16,
+        "saturacion": 98.0
+      },
+      "descripcion": "¿Cómo se clasifica y qué manejo indica la NNAC para el síndrome de hiperlaxitud retrosplénica congénita en una paciente de 30 años?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "entidad_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|existe|se encuentra|hay|describe)|informaci[oó]n insuficiente|no (?:est[aá]|se encuentra) en (?:el corpus|las nnac)"
+        ],
+        "no_debe_incluir": [
+          "tratamiento de elecci[oó]n",
+          "se recomienda iniciar"
+        ],
+        "notas": "Verificado: 0 coincidencias de 'retrosplénico' en el corpus."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "verde",
+          "nivel_reglas": null,
+          "nivel_final": "verde",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 40.934,
+          "tokens_consumidos": 5287,
+          "tokens_prompt": 4138,
+          "tokens_completacion": 1149,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 30 años (Adulto (18-64 años))\n- Sexo: Femenino\n- Temperatura: 36.7 °C\n- Presión Arterial: 112/72 mmHg\n- Frecuencia Cardíaca: 78 bpm\n- Frecuencia Respiratoria: 16 rpm\n- SpO2: 98.0 %\nDESCRIPCIÓN: ¿Cómo se clasifica y qué manejo indica la NNAC para el síndrome de hiperlaxitud retrosplénica congénita en una paciente de 30 años?",
+          "respuesta": "NIVEL DE URGENCIA: verde  \n\nREFERENCIA: No. Manejo y observación en la posta rural.  \n\nJUSTIFICACIÓN: La paciente de 30 años presenta signos vitales dentro de rangos normales (T 36.7 °C, PA 112/72 mmHg, FC 78 bpm, FR 16 rpm, SpO₂ 98 %). En el contexto de la NNAC proporcionado no se describe el síndrome de hiperlaxitud retrosplénica congénita ni se indican criterios de urgencia específicos para esta entidad. Al no existir datos de descompensación hemodinámica, dolor torácico, disnea, síncope ni alteraciones del ECG, la condición se considera estable y sin riesgo inmediato de vida, por lo que se clasifica como urgencia menor (verde).  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Orientar a la paciente sobre signos de alarma (dolor torácico intenso, disnea súbita, síncope) y la necesidad de buscar atención inmediata si aparecen.  \n- Programar control ambulatorio en la posta rural o derivación a nivel II para evaluación especializada y estudios complementarios si se presentan síntomas sugestivos.  \n\nFUENTE: NNAC‑2012 parte 1, páginas 268‑279 (no se encontró referencia específica al síndrome de hiperlaxitud retrosplénica congénita).  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "278",
+              "score": 0.45061856924713756,
+              "preview": "También es común encontrar pacientes de edad avanzada que permanecen en la etapa indeterminada. Clasifica en fase crónica, si cumple los siguientes criterios: 1. Transcurridos 20 a 30 años o más, emerge la evidencia clínica de la enfermedad en un 20 a 30%, siendo la manifestación clínica"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "279",
+              "score": 0.439748146144606,
+              "preview": "■● En el mayor porcentaje de niños menores a 15 años de edad presenta normalidad, en la fase crónica las alteraciones ECG preceden en años a la aparición de síntomas y de la cardiomegalia. ■● Bloqueo de rama derecha, aislado o asociado a hemibloqueo anterior izquierdo y serología positiva, se consi"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "268",
+              "score": 0.41470778730254065,
+              "preview": "Serie DocumentoS técnico – normativoS 268 TRATAMIENTO Consideraciones para el tratamiento etiológico: ■■ Todo recién nacido menor de seis meses con micro-método positivo y niños de seis a 12 meses de edad con diagnóstico serológico positivo, deben recibir tratamiento inmediato. ■■ Cuanto más tempra"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "237",
+              "score": 0.40979355737928114,
+              "preview": "Por razones no aclaradas es 2 veces más frecuente en los varones, aunque este predominio masculino no se mantiene en los casos subclínicos. (3) ETIOLOGÍA La expresión clínica del síndrome nefrítico agudo es consecuencia de una lesión glomerular debido a una enfermedad renal primaria, secundaria a"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "499",
+              "score": 0.38834055515917376,
+              "preview": "Las manifestaciones clínicas dependen del grado de la deficiencia y del período de la vida en el que se presentan, tales como: bocio (k’oto = abultamiento de la glándula tiroides en la parte anterior del cuello), sordomudez y cretinismo (enanismo y retardo mental), retraso en el crecimiento, capac"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    },
+    {
+      "id": "A-08",
+      "titulo": "Fiebre de la posta y síndrome de Cotagaita (entidades inexistentes)",
+      "grupo": "anti_alucinacion",
+      "categoria": "inexistente",
+      "edad": 45,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 38.4,
+        "presion_sistolica": 118,
+        "presion_diastolica": 76,
+        "frecuencia_cardiaca": 92,
+        "frecuencia_respiratoria": 20,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 45 años con diagnóstico presuntivo de fiebre de la posta y síndrome de Cotagaita. ¿Qué manejo indica la NNAC para estos cuadros?",
+      "nivel_esperado": null,
+      "nivel_permitido": [],
+      "fuentes_esperadas": [],
+      "detectores": [
+        "entidad_inventada"
+      ],
+      "criterios": {
+        "debe_incluir": [
+          "no (?:figura|consta|aparece|existe|se encuentra|hay|describe)|no (?:son )?cuadros reconocidos|informaci[oó]n insuficiente"
+        ],
+        "no_debe_incluir": [
+          "tratamiento de elecci[oó]n",
+          "se recomienda iniciar"
+        ],
+        "notas": "El paciente tiene fiebre real; la respuesta ideal admite el límite y propone orientar el estudio con las entidades que sí existen."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "amarillo",
+          "nivel_reglas": null,
+          "nivel_final": "amarillo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 53.219,
+          "tokens_consumidos": 7155,
+          "tokens_prompt": 5229,
+          "tokens_completacion": 1926,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "DATOS CLÍNICOS DEL PACIENTE:\n- Edad: 45 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 38.4 °C\n- Presión Arterial: 118/76 mmHg\n- Frecuencia Cardíaca: 92 bpm\n- Frecuencia Respiratoria: 20 rpm\n- SpO2: 97.0 %\nDESCRIPCIÓN: Paciente de 45 años con diagnóstico presuntivo de fiebre de la posta y síndrome de Cotagaita. ¿Qué manejo indica la NNAC para estos cuadros?",
+          "respuesta": "NIVEL DE URGENCIA: amarillo  \n\nREFERENCIA: No  \nManejo y observación en la posta rural  \n\nJUSTIFICACIÓN: Paciente adulto de 45 años con fiebre de 38.4 °C, presión arterial 118/76 mmHg, frecuencia cardíaca 92 lpm, frecuencia respiratoria 20 rpm y SpO₂ 97 %. No presenta signos de alarma descritos en la fase crítica del dengue (dolor abdominal intenso, vómitos persistentes, hepatomegalia > 2 cm, derrame pleural/ascitis, choque) ni alteraciones hemodinámicas. Según la NNAC‑2012 (pág. 250) la ausencia de estos criterios de gravedad permite clasificarlo como urgencia menor (amarillo), requiriendo atención en ≤ 60 min pero sin necesidad de referencia inmediata.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Monitorizar signos vitales cada 4 horas y registrar temperatura, presión arterial, FC, FR y SpO₂.  \n- Instruir al paciente sobre hidratación oral adecuada y signos de alarma (aumento del dolor abdominal, vómitos intensos, sangrado, caída brusca de la temperatura) para acudir de inmediato si aparecen.  \n\nFUENTE: NNAC‑2012‑parte1.pdf, página 250 – descripción de la evolución del dengue y criterios de fase crítica.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": [
+            {
+              "rank": 1,
+              "archivo": "NNAC-medicina-interna.pdf",
+              "page_label": "122",
+              "score": 0.4890637582560736,
+              "preview": "122 SERIE: DOCUMENTOS TÉCNICO NORMATIVOS Derivación a Especialista : Dependiendo de la gravedad de los síntomas, el médico de atención primaria realizará la derivación del paciente a un especialista en enfermedades renales para una evaluación más completa y manejo específico. SEGUNDO NIVEL: Atenc"
+            },
+            {
+              "rank": 2,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "250",
+              "score": 0.48007220012963403,
+              "preview": "Presenta fiebre, además se deben tener en cuenta las siguientes consideraciones clínicas: ■■ Generalmente la primera manifestación clínica, de intensidad variable, puede ser antecedida por diversos pródromos. ■■ Se asocia a cefalea, vómitos, dolores en el cuerpo característicos del “dengue clásico”"
+            },
+            {
+              "rank": 3,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "536",
+              "score": 0.476550967808599,
+              "preview": "Serie DocumentoS técnico – normativoS 536 Una de las finalidades de la entrevista clínica es la identificación de los síntomas de posibles enfermedades. El problema es el de caracterizar adecuadamente y discernir si existen o no estos síntomas. Por ejemplo, cuando un enfermo dice que se encuentra"
+            },
+            {
+              "rank": 4,
+              "archivo": "NNAC-2012-parte1.pdf",
+              "page_label": "252",
+              "score": 0.4727845613551582,
+              "preview": "Serie DocumentoS técnico – normativoS 252 TRATAMIENTO MEDIDAS GENERALES Y ESPECÍFICAS Todo paciente febril debe ser interrogado con pensamiento clínico y epidemiológico para precisar la duración de los síntomas, a partir del primer día con fiebre, además, debe hacérsele un examen físico, para diag"
+            },
+            {
+              "rank": 5,
+              "archivo": "NNAC-2012-parte2.pdf",
+              "page_label": "1106",
+              "score": 0.47065565208339744,
+              "preview": "SERIE DOCUmENTOS TéCNICO – NORmATIvOS 1106 DEFINICIÓN Sepsis es la sospecha clínica de cuadro infeccioso más síndrome de respuesta inflamatoria sistémica (SRIS), causado generalmente por gérmenes Gram positivos como el Streptococcus del grupo B, Staphylococcus sp, Listeria monocitogenes o Gram n"
+            }
+          ],
+          "nivel_final_coincide_con_servicio": true
+        }
+      ]
+    }
+  ]
+}

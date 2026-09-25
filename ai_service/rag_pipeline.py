@@ -498,32 +498,17 @@ Si la información no es suficiente, indica: "No hay suficiente información en 
     )
 
 
-def obtener_query_engine_con_vitales(
-    index: VectorStoreIndex,
-    llm_model,
-    datos_vitales: DatosVitales
-):
-    """
-    Configura el Query Engine con datos vitales inyectados en el contexto.
-
-    Los signos vitales se inyectan en el prompt vía `partial_format` para
-    que el LLM los tenga en cuenta. Los valores no medidos se muestran como
-    "No registrado" (NUNCA se sustituyen por valores normales). El LLM se
-    pasa de forma local (parámetro `llm=`) para evitar condiciones de carrera.
-
-    Args:
-        index: VectorStoreIndex cargado
-        llm_model: Instancia del modelo LLM
-        datos_vitales: DatosVitales con información del paciente (None = no medido)
-
-    Returns:
-        QueryEngine: Motor de consultas configurado con datos vitales
-    """
-    # Bloque de datos del paciente desde la fuente única de verdad
-    # (idéntico al texto de auditoría persistido en la BD).
-    datos_str = datos_vitales.a_texto_prompt()
-
-    qa_prompt_tmpl = """Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.
+#: Plantilla del prompt de triaje con signos vitales.
+#:
+#: Es una constante de módulo —y no una cadena dentro de la función— porque la
+#: evaluación del sistema (Componente 2) necesita construir el MISMO prompt sin
+#: bloque de contexto para medir el desempeño del modelo sin recuperación
+#: (línea base del benchmark). Si la plantilla viviera duplicada, el benchmark
+#: compararía dos prompts distintos y la comparación no valdría nada.
+#:
+#: Marcadores: {context_str} (fragmentos recuperados), {datos_paciente} (signos
+#: vitales) y {query_str} (motivo de consulta).
+PROMPT_TRIAGE_NNAC = """Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.
 Tu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.
 
 INFORMACIÓN DE LAS NNAC (CONTEXTO):
@@ -567,7 +552,34 @@ FUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].
 
 DISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.
 """
-    qa_template = PromptTemplate(qa_prompt_tmpl).partial_format(
+
+
+def obtener_query_engine_con_vitales(
+    index: VectorStoreIndex,
+    llm_model,
+    datos_vitales: DatosVitales
+):
+    """
+    Configura el Query Engine con datos vitales inyectados en el contexto.
+
+    Los signos vitales se inyectan en el prompt vía `partial_format` para
+    que el LLM los tenga en cuenta. Los valores no medidos se muestran como
+    "No registrado" (NUNCA se sustituyen por valores normales). El LLM se
+    pasa de forma local (parámetro `llm=`) para evitar condiciones de carrera.
+
+    Args:
+        index: VectorStoreIndex cargado
+        llm_model: Instancia del modelo LLM
+        datos_vitales: DatosVitales con información del paciente (None = no medido)
+
+    Returns:
+        QueryEngine: Motor de consultas configurado con datos vitales
+    """
+    # Bloque de datos del paciente desde la fuente única de verdad
+    # (idéntico al texto de auditoría persistido en la BD).
+    datos_str = datos_vitales.a_texto_prompt()
+
+    qa_template = PromptTemplate(PROMPT_TRIAGE_NNAC).partial_format(
         datos_paciente=datos_str
     )
 

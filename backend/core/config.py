@@ -42,5 +42,13 @@ class Settings(BaseSettings):
     # recuperaciones inválidas); activando esto se reconstruye automáticamente.
     rag_reconstruccion_automatica: bool = False
 
+    # Mide el consumo real de tokens de cada consulta (el que reporta el
+    # proveedor del LLM) para persistirlo en la auditoría y alimentar las
+    # métricas del Componente 2. Está desactivado por defecto: la medición
+    # engancha un handler al callback manager compartido del LLM, así que se
+    # serializa con las demás consultas medidas. Con el conteo apagado, la
+    # concurrencia no se ve afectada y `tokens_consumidos` queda en None.
+    rag_medir_tokens: bool = False
+
 
 settings = Settings()

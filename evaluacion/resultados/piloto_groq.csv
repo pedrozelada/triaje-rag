@@ -1,0 +1,4 @@
+caso_id,grupo,categoria,repeticion,nivel_esperado,nivel_permitido,nivel_llm,nivel_reglas,nivel_final,coincide,desvio,tiempo_respuesta,tokens_consumidos,n_recuperaciones,top1_archivo,top1_pagina,top1_score,error
+C-03,,respiratoria_pediatrica,1,verde,verde|azul,verde,,verde,True,0,3.32,2788,5,NNAC-2012-parte1.pdf,122,0.30862504507301075,
+C-11,,respiratoria,1,verde,verde|azul,verde,,verde,True,0,4.575,5904,5,NNAC-medicina-interna.pdf,112,0.4160928733829787,
+A-01,,capciosa,1,,,verde,,verde,,,35.006,4364,5,NNAC-2012-parte1.pdf,266,0.4298819687116885,

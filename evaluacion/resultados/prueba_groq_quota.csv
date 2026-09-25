@@ -1,0 +1,2 @@
+caso_id,grupo,categoria,repeticion,nivel_esperado,nivel_permitido,nivel_llm,nivel_reglas,nivel_final,coincide,desvio,tiempo_respuesta,tokens_consumidos,n_recuperaciones,top1_archivo,top1_pagina,top1_score,error
+C-13,,toxicologia,1,rojo,rojo|naranja,rojo,,rojo,True,0,115.99,1371,0,,,,

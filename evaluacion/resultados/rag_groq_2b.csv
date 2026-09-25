@@ -1,0 +1,8 @@
+caso_id,grupo,categoria,repeticion,nivel_esperado,nivel_permitido,nivel_llm,nivel_reglas,nivel_final,coincide,desvio,tiempo_respuesta,tokens_consumidos,n_recuperaciones,top1_archivo,top1_pagina,top1_score,error
+C-16,,respiratoria,1,rojo,rojo,naranja,rojo,rojo,True,0,12.717,7173,5,NNAC-2012-parte2.pdf,1045,0.3596970520088556,
+C-17,,cardiovascular,1,verde,verde|amarillo,verde,,verde,True,0,35.044,5051,5,NNAC-2012-parte2.pdf,1495,0.3592859466648809,
+C-18,,neurologica_pediatrica,1,naranja,naranja,amarillo,naranja,naranja,True,0,61.99,8337,5,NNAC-2012-parte1.pdf,605,0.4556230662863193,
+C-19,,respiratoria_pediatrica,1,amarillo,amarillo|naranja,amarillo,,amarillo,True,0,39.15,4866,5,NNAC-2012-parte1.pdf,328,0.3229284161567094,
+C-20,,osteomuscular,1,verde,verde|azul,verde,,verde,True,0,42.578,5600,5,NNAC-medicina-interna.pdf,78,0.38851222736297186,
+A-09,,inexistente,1,,,verde,,verde,,,37.966,5080,5,NNAC-2012-parte2.pdf,890,0.3069297546764672,
+A-10,,cita_falsa,1,,,verde,,verde,,,37.58,4944,5,NNAC-urgencias-emergencias.pdf,53,0.43740404665170174,

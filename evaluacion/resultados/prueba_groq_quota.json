@@ -1,0 +1,197 @@
+{
+  "run_id": "prueba_groq_quota",
+  "variante": "sin-contexto",
+  "iniciado_en": "2026-09-25T04:10:56+00:00",
+  "terminado_en": "2026-09-25T04:12:52+00:00",
+  "parcial": false,
+  "duracion_s": 116.0,
+  "config": {
+    "modelo_solicitado": "groq",
+    "modelo_usado": "Groq (Nube - Rápido)",
+    "temperature": 0.1,
+    "repeticiones": 1,
+    "solo_estabilidad": false,
+    "pausa_s": 0.0,
+    "medir_tokens": false,
+    "ids": "C-13",
+    "limite": null
+  },
+  "entorno": {
+    "fecha": "2026-09-25T04:10:54+00:00",
+    "commit": "8ad6245e83277bfc39f50af14ade4df81bdde759",
+    "commit_corto": "8ad6245e",
+    "arbol_con_cambios_sin_commitear": true,
+    "python": "3.14.6",
+    "so": "Windows-11-10.0.26200-SP0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "chunk_size": 768,
+    "chunk_overlap": 128,
+    "data_dir": "./data",
+    "chroma_path": "./chroma_db",
+    "corpus": {
+      "coleccion": "nnac_triaje",
+      "data_dir": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\data",
+      "chroma_path": "C:\\Users\\RYZEN 7.. SERIE 7000\\Documents\\LLM\\triaje-rag.worktrees\\triaje-rag1.3\\chroma_db",
+      "existe_indice": true,
+      "chunks": 3683,
+      "archivos": [
+        {
+          "nombre": "NNAC-2012-parte1.pdf",
+          "sha256": "8ffdd1874804b83700cce098d8b9a221f1663ae95f812a0b5c5d940d46d1c55b",
+          "tamano": 7363673,
+          "chunks": 1378
+        },
+        {
+          "nombre": "NNAC-2012-parte2.pdf",
+          "sha256": "d7f49a4b1bd60e52ee2fb0a3fb9db4499660fb0b9a448b7c6d3771d4f97c8ba0",
+          "tamano": 6982260,
+          "chunks": 1229
+        },
+        {
+          "nombre": "NNAC-medicina-interna.pdf",
+          "sha256": "f21fdfbb11ee8700ae7d20f2b48331a483bfb6bcfba8eec0bf6301dedd1757f2",
+          "tamano": 15067783,
+          "chunks": 395
+        },
+        {
+          "nombre": "NNAC-pediatria.pdf",
+          "sha256": "5b12297bb8f3ac1f042e49ef314e52575f0579f99037a1cfecef48ac82228e7d",
+          "tamano": 11092972,
+          "chunks": 209
+        },
+        {
+          "nombre": "NNAC-referencia.pdf",
+          "sha256": "bcd45ab489337bd86c4f608418378086901ede694a7b1b9f5e4e162455e4161a",
+          "tamano": 4251421,
+          "chunks": 79
+        },
+        {
+          "nombre": "NNAC-urgencias-emergencias.pdf",
+          "sha256": "ac05cb3e8e8e148185e376243f1086510c4fbd2c124c0fc394ca7962761f039d",
+          "tamano": 11001129,
+          "chunks": 393
+        }
+      ],
+      "completo": true,
+      "adoptado": true,
+      "adoptara": false,
+      "indexado_en": "2026-09-24T04:00:05+00:00",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "chunk_size": 768,
+      "chunk_overlap": 128,
+      "plan": {
+        "nuevos": [],
+        "modificados": [],
+        "eliminados": [],
+        "sin_cambios": [
+          "NNAC-2012-parte1.pdf",
+          "NNAC-2012-parte2.pdf",
+          "NNAC-medicina-interna.pdf",
+          "NNAC-pediatria.pdf",
+          "NNAC-referencia.pdf",
+          "NNAC-urgencias-emergencias.pdf"
+        ],
+        "motivo_reconstruccion": null,
+        "requiere_reconstruccion": false,
+        "requiere_abortar": false,
+        "a_indexar": [],
+        "a_eliminar": []
+      },
+      "actualizado": true,
+      "error": null
+    },
+    "paginas_indexadas_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 760,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "pagina_maxima_por_archivo": {
+      "NNAC-2012-parte1.pdf": 806,
+      "NNAC-2012-parte2.pdf": 1566,
+      "NNAC-medicina-interna.pdf": 286,
+      "NNAC-pediatria.pdf": 166,
+      "NNAC-referencia.pdf": 56,
+      "NNAC-urgencias-emergencias.pdf": 300
+    },
+    "hashes_casos": {
+      "casos_clinicos.json": "2ef15f93063b971e80c42bfd738247e1dec23a955b4c0bf9b11265818b1345cd",
+      "casos_antialucinacion.json": "cfef7f4c3982ab6840957bc9c616eeff81aa4691d87833ce07781ce1b8599ed6"
+    }
+  },
+  "casos": [
+    {
+      "id": "C-13",
+      "titulo": "Accidente bothrópico por mordedura de serpiente",
+      "grupo": "clinico",
+      "categoria": "toxicologia",
+      "edad": 27,
+      "edad_meses": null,
+      "sexo": "M",
+      "vitales": {
+        "temperatura": 37.2,
+        "presion_sistolica": 100,
+        "presion_diastolica": 64,
+        "frecuencia_cardiaca": 112,
+        "frecuencia_respiratoria": 22,
+        "saturacion": 97.0
+      },
+      "descripcion": "Paciente de 27 años mordido por una serpiente hace dos horas en el pie derecho. Presenta edema progresivo y ascendente, dolor y equimosis en la pierna. Refiere sangrado por las encías al cepillarse.",
+      "nivel_esperado": "rojo",
+      "nivel_permitido": [
+        "rojo",
+        "naranja"
+      ],
+      "fuentes_esperadas": [
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "173",
+          "palabras_clave": [
+            "bothrópico",
+            "edema local"
+          ]
+        },
+        {
+          "archivo": "NNAC-2012-parte1.pdf",
+          "page_label": "175",
+          "palabras_clave": [
+            "mordedura de serpiente"
+          ]
+        }
+      ],
+      "detectores": [],
+      "criterios": {
+        "debe_incluir": [
+          "suero|antiof[íi]dico",
+          "referencia|referir|emergencia|inmediat"
+        ],
+        "no_debe_incluir": [
+          "en casa",
+          "no requiere referencia"
+        ],
+        "notas": "Hueco conocido: no hay red flag de mordedura de serpiente ni de signos hemorrágicos."
+      },
+      "repeticiones": [
+        {
+          "repeticion": 1,
+          "error": null,
+          "nivel_llm": "rojo",
+          "nivel_reglas": null,
+          "nivel_final": "rojo",
+          "reglas_activadas": [],
+          "tiempo_respuesta": 115.99,
+          "tokens_consumidos": 1371,
+          "tokens_prompt": 738,
+          "tokens_completacion": 633,
+          "tokens_origen": "proveedor",
+          "modelo_utilizado": "Groq (Nube - Rápido)",
+          "prompt_utilizado": "Eres un asistente de triaje médico experto para postas rurales (Primer Nivel de Atención) en Bolivia.\nTu tarea es clasificar el nivel de urgencia según el sistema de Triaje Manchester (colores) y dar recomendaciones basándote ÚNICAMENTE en la información de las Normas Nacionales de Atención Clínica (NNAC) proporcionada en el contexto.\n\nINFORMACIÓN DE LAS NNAC (CONTEXTO):\n(Sin contexto recuperado: no se dispone de fragmentos de las NNAC para este caso. Responde con tu conocimiento general e indica explícitamente los límites de tu respuesta.)\n\nDATOS CLÍNICOS DEL PACIENTE:\n- Edad: 27 años (Adulto (18-64 años))\n- Sexo: Masculino\n- Temperatura: 37.2 °C\n- Presión Arterial: 100/64 mmHg\n- Frecuencia Cardíaca: 112 bpm\n- Frecuencia Respiratoria: 22 rpm\n- SpO2: 97.0 %\n\nDESCRIPCIÓN DE SÍNTOMAS Y PRESENTACIÓN:\nPaciente de 27 años mordido por una serpiente hace dos horas en el pie derecho. Presenta edema progresivo y ascendente, dolor y equimosis en la pierna. Refiere sangrado por las encías al cepillarse.\n\nIMPORTANTE: si algún signo vital figura como \"No registrado\", NO lo asumas ni\ninventes su valor: menciónalo como limitación en la justificación y clasifica\ncon la información disponible.\n\nResponde en este formato EXACTO y sin añadir texto adicional:\n\nNIVEL DE URGENCIA: [rojo / naranja / amarillo / verde / azul]\nDonde:\n- rojo = Emergencia (atención inmediata, riesgo de vida)\n- naranja = Urgencia Mayor (atención muy prioritaria, ~10 min)\n- amarillo = Urgencia Menor (atención en ~60 min)\n- verde = Menor / No urgente (atención diferible)\n- azul = No urgente / autosanamiento (orientación)\n\nREFERENCIA: [Sí / No].\n- Si es \"Sí\", especifica: \"Requiere referencia inmediata a Centro de Salud Nivel II\" o \"Hospital de Nivel III\", justificando brevemente según las NNAC.\n- Si es \"No\", indica: \"Manejo y observación en la posta rural\".\n\nJUSTIFICACIÓN: [Explica por qué, citando la edad, signos vitales o síntomas específicos y cómo se relacionan con las NNAC].\n\nMEDICACIÓN SUGERIDA (Solo si es amarillo/verde y está en las NNAC):\n- [Nombre del fármaco, dosis exacta y vía de administración según el texto].\n- Si el contexto no menciona medicación o es rojo/naranja, escribe: \"No aplica o requiere evaluación médica presencial para prescripción\".\n\nACCIONES RECOMENDADAS:\n- [Acción inmediata 1]\n- [Acción de seguimiento 2]\n\nFUENTE: [Nombre del documento NNAC y breve cita textual del chunk recuperado].\n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.\n",
+          "respuesta": "NIVEL DE URGENCIA: rojo  \n\nREFERENCIA: Sí. Requiere referencia inmediata a Hospital de Nivel III, por sospecha de envenenamiento sistémico por serpiente que demanda antiveneno y manejo avanzado.  \n\nJUSTIFICACIÓN: Paciente adulto (27 años) con mordedura de serpiente hace 2 h, presenta edema progresivo y ascendente, dolor intenso, equimosis y sangrado gingival, signos de alteración de la coagulación. Los signos vitales muestran taquicardia (112 bpm) y presión arterial borderline (100/64 mmHg), lo que indica posible compromiso hemodinámico. Según las NNAC, la presencia de signos locales extensos + manifestaciones hemorrágicas constituye una emergencia que requiere atención inmediata para evitar complicaciones graves o muerte.  \n\nMEDICACIÓN SUGERIDA: No aplica o requiere evaluación médica presencial para prescripción.  \n\nACCIONES RECOMENDADAS:  \n- Inmovilizar el miembro afectado, mantenerlo a nivel del corazón y evitar la manipulación.  \n- Iniciar transporte urgente al Hospital de Nivel III; monitorizar continuamente frecuencia cardíaca, presión arterial y saturación mientras se espera la llegada.  \n\nFUENTE: No se dispone de fragmentos específicos de las NNAC en el contexto; respuesta basada en conocimiento general y los límites indicados.  \n\nDISCLAIMER: Esta es una herramienta de apoyo a la decisión clínica basada en normas. No reemplaza el criterio y la evaluación médica profesional presencial.",
+          "recuperaciones": []
+        }
+      ]
+    }
+  ]
+}

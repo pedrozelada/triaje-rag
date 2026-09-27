@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # tenga las tablas registradas ANTES del create_all del fixture `client`.
 import backend.app.main  # noqa: F401,E402
 from backend.db.models import ConsultaTriage  # noqa: E402
+from tests.helpers import registrar_y_loguear  # noqa: E402
 
 ADMIN = {
     "ci": "4100004",
@@ -22,16 +23,6 @@ PACIENTE = {
     "ci": "7777777", "nombre": "Maria", "apellido": "Gonzalez",
     "fecha_nacimiento": "1992-08-15", "sexo": "F",
 }
-
-
-def registrar_y_loguear(client, datos):
-    r = client.post("/api/auth/registro", json=datos)
-    assert r.status_code == 201, r.text
-    r = client.post(
-        "/api/auth/login", json={"email": datos["email"], "password": datos["password"]}
-    )
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
 
 
 def _agregar_consulta(paciente_id, nivel="rojo"):

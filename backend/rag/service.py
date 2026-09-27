@@ -13,27 +13,26 @@ PDF). Por eso se añade `recuperaciones`, que no reemplaza a `fuentes`: es
 información adicional que no altera ninguna decisión del triaje.
 """
 
-import time
 import logging
+import time
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from threading import Lock
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.core.callbacks import CBEventType, CallbackManager
-from llama_index.core.callbacks.base_handler import BaseCallbackHandler
-from llama_index.core.callbacks.token_counting import get_tokens_from_response
-
-from ai_service.models import DatosVitales
 from ai_service.indice import ParametrosIndice
+from ai_service.models import DatosVitales
+from ai_service.providers import get_llm_models
 from ai_service.rag_pipeline import (
     cargar_o_crear_indice,
     estado_indice,
     obtener_query_engine_con_vitales,
 )
-from ai_service.providers import get_llm_models
 from ai_service.red_flags import Alerta, evaluar_reglas, nivel_maximo
 from ai_service.utils import obtener_nivel_urgencia_color
 from backend.core.config import settings
+from backend.rag.tokens import ContadorTokens
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +52,8 @@ class Recuperacion:
 
     rank: int
     archivo: str
-    page_label: Optional[str] = None
-    score: Optional[float] = None
+    page_label: str | None = None
+    score: float | None = None
     preview: str = ""
 
     def to_dict(self) -> dict[str, Any]:
@@ -72,106 +71,29 @@ class ResultadoTriage:
     """Resultado estructurado de una consulta de triaje."""
 
     respuesta: str
-    nivel_urgencia: Optional[str]
+    nivel_urgencia: str | None
     prompt_utilizado: str
     modelo_utilizado: str
     tiempo_respuesta: float
-    tokens_consumidos: Optional[int] = None
+    tokens_consumidos: int | None = None
     fuentes: list = field(default_factory=list)
     reglas_activadas: list[str] = field(default_factory=list)
     #: Chunks recuperados, en orden de similitud descendente (evidencia de C2).
     recuperaciones: list[Recuperacion] = field(default_factory=list)
     #: Desglose de tokens cuando el proveedor los reporta (None = no disponible).
-    tokens_prompt: Optional[int] = None
-    tokens_completacion: Optional[int] = None
+    tokens_prompt: int | None = None
+    tokens_completacion: int | None = None
     #: "proveedor" si los tokens los reportó la API; None si no se midieron.
-    tokens_origen: Optional[str] = None
-
-
-class _ContadorTokens(BaseCallbackHandler):
-    """Handler de llama-index que suma los tokens reportados por el PROVEEDOR.
-
-    No estima: usa `get_tokens_from_response`, que lee el bloque de uso de la
-    respuesta cruda (`usage` / `usage_metadata`) con las claves de OpenAI, Groq,
-    Gemini y compatibles. Si un evento no trae uso, el token queda **no
-    disponible** en lugar de inventarse con un tokenizador aproximado, porque el
-    consumo se cita en la tesis como evidencia y debe ser reproducible.
-
-    Se registra además `reportado`: solo si TODOS los eventos de LLM trajeron
-    uso se publica un total; con uno solo sin reportar, el total sería una cota
-    inferior y se descarta (mejor None que un número que miente).
-    """
-
-    def __init__(self) -> None:
-        super().__init__(event_starts_to_ignore=[], event_ends_to_ignore=[])
-        self._eventos: list[tuple[int, int, bool]] = []
-
-    # --- Interfaz de BaseCallbackHandler ---
-    def start_trace(self, trace_id: Optional[str] = None) -> None:
-        return None
-
-    def end_trace(
-        self, trace_id: Optional[str] = None, trace_map: Optional[dict] = None
-    ) -> None:
-        return None
-
-    def on_event_start(
-        self,
-        event_type: CBEventType,
-        payload: Optional[dict[str, Any]] = None,
-        event_id: str = "",
-        parent_id: str = "",
-        **kwargs: Any,
-    ) -> str:
-        return event_id
-
-    def on_event_end(
-        self,
-        event_type: CBEventType,
-        payload: Optional[dict[str, Any]] = None,
-        event_id: str = "",
-        parent_id: str = "",
-        **kwargs: Any,
-    ) -> None:
-        if event_type != CBEventType.LLM or not payload:
-            return
-        prompt_tokens, completacion_tokens = self._uso_de(payload)
-        reportado = bool(prompt_tokens or completacion_tokens)
-        self._eventos.append((prompt_tokens, completacion_tokens, reportado))
-
-    @staticmethod
-    def _uso_de(payload: dict[str, Any]) -> tuple[int, int]:
-        """Tokens (prompt, completación) del payload del evento, o (0, 0)."""
-        respuesta = payload.get("response") or payload.get("completion")
-        if respuesta is None:
-            return 0, 0
-        try:
-            return get_tokens_from_response(respuesta)
-        except Exception as e:  # proveedor con un formato de uso inesperado
-            logger.debug("No se pudo leer el uso de tokens: %s", e)
-            return 0, 0
-
-    # --- Resultados ---
-    @property
-    def reportado(self) -> bool:
-        """True solo si hubo eventos y todos trajeron tokens del proveedor."""
-        return bool(self._eventos) and all(e[2] for e in self._eventos)
-
-    @property
-    def tokens_prompt(self) -> int:
-        return sum(e[0] for e in self._eventos)
-
-    @property
-    def tokens_completacion(self) -> int:
-        return sum(e[1] for e in self._eventos)
-
-    @property
-    def tokens_totales(self) -> int:
-        return self.tokens_prompt + self.tokens_completacion
+    tokens_origen: str | None = None
 
 
 class RAGService:
-    """Wrapper del motor RAG para el backend."""
+    """Wrapper del motor RAG para el backend.
+
+    `analizar()` es el punto de entrada; los pasos del recorrido (elegir el
+    modelo, armar el prompt, medir tokens, leer las fuentes, resolver el nivel)
+    están separados para poder leerlos y probarlos por partes.
+    """
 
     def __init__(self):
         self._index = None
@@ -234,12 +156,123 @@ class RAGService:
             self._llm_models = get_llm_models()
         return list(self._llm_models.keys())
 
+    # ------------------------------------------------------------------
+    # Pasos del triaje
+    # ------------------------------------------------------------------
+
+    def _elegir_modelo(self, modelo_nombre: str | None) -> tuple[str, Any]:
+        """Modelo pedido, o el primero disponible si no se pidió ninguno válido."""
+        if modelo_nombre and modelo_nombre in self._llm_models:
+            return modelo_nombre, self._llm_models[modelo_nombre]
+        modelo_usado = next(iter(self._llm_models))
+        return modelo_usado, self._llm_models[modelo_usado]
+
+    @staticmethod
+    def _construir_prompt(datos_vitales: DatosVitales, sintomas: str) -> str:
+        """Texto de auditoría, idéntico al bloque que ve el LLM en el prompt.
+
+        Se arma desde la fuente única de verdad (`a_texto_prompt`) para que lo
+        guardado y lo enviado no puedan divergir.
+        """
+        return (
+            f"DATOS CLÍNICOS DEL PACIENTE:\n"
+            f"{datos_vitales.a_texto_prompt()}\n"
+            f"DESCRIPCIÓN: {sintomas}"
+        )
+
+    @contextmanager
+    def _conteo_de_tokens(
+        self, llm: Any, activo: bool
+    ) -> Iterator[ContadorTokens | None]:
+        """Engancha el contador al LLM mientras dura la consulta.
+
+        El handler se añade DESPUÉS de construir el engine, porque
+        `as_query_engine` pasa por `resolve_llm`, que reasigna
+        `llm.callback_manager`: un handler añadido antes quedaría descartado y
+        el conteo nunca llegaría. Se retira al terminar, incluso si la consulta
+        falla, y el lock (tomado solo cuando la medición está activa) evita que
+        dos consultas medidas se atribuyan los tokens de la otra.
+        """
+        if not activo:
+            yield None
+            return
+
+        contador = ContadorTokens()
+        self._lock_conteo.acquire()
+        try:
+            llm.callback_manager.add_handler(contador)
+            yield contador
+        finally:
+            llm.callback_manager.remove_handler(contador)
+            self._lock_conteo.release()
+
+    @staticmethod
+    def _tokens_publicados(
+        contador: ContadorTokens | None,
+    ) -> tuple[int | None, int | None, int | None, str | None]:
+        """Tokens que se pueden publicar como evidencia.
+
+        Solo si el proveedor reportó el uso en TODOS los eventos de LLM de la
+        consulta: un consumo no medido es preferible a un número estimado que
+        parezca medido.
+        """
+        if contador is None or not contador.reportado:
+            return None, None, None, None
+        return (
+            contador.tokens_totales,
+            contador.tokens_prompt,
+            contador.tokens_completacion,
+            "proveedor",
+        )
+
+    @staticmethod
+    def _extraer_recuperaciones(response: Any) -> tuple[list[str], list[Recuperacion]]:
+        """Nombres de archivo (formato histórico) y chunks con su procedencia."""
+        fuentes: list[str] = []
+        recuperaciones: list[Recuperacion] = []
+        for rank, node in enumerate(getattr(response, "source_nodes", []) or [], 1):
+            meta = getattr(node, "metadata", {}) or {}
+            archivo = meta.get("archivo", "Desconocido")
+            fuentes.append(archivo)
+            page_label = meta.get("page_label")
+            score = getattr(node, "score", None)
+            texto = str(getattr(node, "text", "") or "")
+            recuperaciones.append(
+                Recuperacion(
+                    rank=rank,
+                    archivo=archivo,
+                    page_label=None if page_label is None else str(page_label),
+                    score=None if score is None else float(score),
+                    preview=" ".join(texto[:LARGO_PREVIEW].split()),
+                )
+            )
+        return fuentes, recuperaciones
+
+    @staticmethod
+    def _resolver_nivel(respuesta_texto: str, alertas: list[Alerta]) -> str | None:
+        """Nivel final: el más urgente entre el LLM y las reglas.
+
+        Las reglas NUNCA bajan el nivel del LLM; si el LLM no produjo nivel
+        parseable pero hay reglas activas, manda el nivel de la regla.
+        """
+        nivel_llm = obtener_nivel_urgencia_color(respuesta_texto)
+        nivel_reglas: str | None = None
+        for alerta in alertas:
+            nivel_reglas = nivel_maximo(nivel_reglas, alerta.nivel)
+
+        if nivel_llm is None:
+            logger.warning(
+                "Respuesta del LLM sin nivel parseable (queda sin_clasificar para "
+                "revisión manual)."
+            )
+        return nivel_maximo(nivel_llm, nivel_reglas)
+
     def analizar(
         self,
         datos_vitales: DatosVitales,
         sintomas: str,
-        modelo_nombre: Optional[str] = None,
-        medir_tokens: Optional[bool] = None,
+        modelo_nombre: str | None = None,
+        medir_tokens: bool | None = None,
     ) -> ResultadoTriage:
         """
         Ejecuta el triaje RAG y devuelve un resultado estructurado.
@@ -258,21 +291,8 @@ class RAGService:
         if medir_tokens is None:
             medir_tokens = settings.rag_medir_tokens
 
-        # Seleccionar modelo
-        if modelo_nombre and modelo_nombre in self._llm_models:
-            llm = self._llm_models[modelo_nombre]
-            modelo_usado = modelo_nombre
-        else:
-            modelo_usado = next(iter(self._llm_models))
-            llm = self._llm_models[modelo_usado]
-
-        # Construir el texto del paciente (auditoría) desde la fuente única
-        # de verdad: idéntico al bloque que ve el LLM en el prompt.
-        prompt_utilizado = (
-            f"DATOS CLÍNICOS DEL PACIENTE:\n"
-            f"{datos_vitales.a_texto_prompt()}\n"
-            f"DESCRIPCIÓN: {sintomas}"
-        )
+        modelo_usado, llm = self._elegir_modelo(modelo_nombre)
+        prompt_utilizado = self._construir_prompt(datos_vitales, sintomas)
 
         # Reglas deterministas de seguridad (evaluadas SIEMPRE, antes del LLM).
         alertas: list[Alerta] = evaluar_reglas(datos_vitales, sintomas)
@@ -281,79 +301,18 @@ class RAGService:
             self._index, llm, datos_vitales
         )
 
-        # Conteo de tokens: el handler se engancha a `llm.callback_manager`
-        # DESPUÉS de construir el engine, porque `as_query_engine` pasa por
-        # `resolve_llm`, que reasigna ese atributo del LLM (un handler añadido
-        # antes quedaría descartado y el conteo nunca llegaría). Se retira al
-        # terminar, incluso si la consulta falla, para no dejar estado
-        # compartido; el lock evita que dos consultas medidas se atribuyan los
-        # tokens de la otra.
-        contador: Optional[_ContadorTokens] = None
-        if medir_tokens:
-            contador = _ContadorTokens()
-            self._lock_conteo.acquire()
-            try:
-                llm.callback_manager.add_handler(contador)
-            except Exception:
-                self._lock_conteo.release()
-                raise
-
-        try:
+        # El conteo de tokens engancha su handler alrededor de la consulta.
+        with self._conteo_de_tokens(llm, medir_tokens) as contador:
             start = time.time()
             response = query_engine.query(sintomas)
             elapsed = time.time() - start
-        finally:
-            if contador is not None:
-                llm.callback_manager.remove_handler(contador)
-                self._lock_conteo.release()
 
         respuesta_texto = str(getattr(response, "response", "") or "").strip()
-        nivel_llm = obtener_nivel_urgencia_color(respuesta_texto)
-
-        # Nivel final = el más urgente entre el LLM y las reglas. Las reglas
-        # NUNCA bajan el nivel del LLM; si el LLM no produjo nivel parseable
-        # pero hay reglas activas, manda el nivel de la regla.
-        nivel_reglas: Optional[str] = None
-        for alerta in alertas:
-            nivel_reglas = nivel_maximo(nivel_reglas, alerta.nivel)
-        nivel = nivel_maximo(nivel_llm, nivel_reglas)
-
-        if nivel_llm is None:
-            logger.warning(
-                "Respuesta del LLM sin nivel parseable (queda sin_clasificar para revisión manual)."
-            )
-
-        # Tokens: se publican solo si el proveedor reportó el uso en TODOS los
-        # eventos de LLM de esta consulta. Si no, queda None: un consumo no
-        # medido es preferible a un número estimado que parezca medido.
-        tokens: Optional[int] = None
-        tokens_prompt: Optional[int] = None
-        tokens_completacion: Optional[int] = None
-        tokens_origen: Optional[str] = None
-        if contador is not None and contador.reportado:
-            tokens = contador.tokens_totales
-            tokens_prompt = contador.tokens_prompt
-            tokens_completacion = contador.tokens_completacion
-            tokens_origen = "proveedor"
-
-        fuentes = []
-        recuperaciones: list[Recuperacion] = []
-        for rank, node in enumerate(getattr(response, "source_nodes", []) or [], 1):
-            meta = getattr(node, "metadata", {}) or {}
-            archivo = meta.get("archivo", "Desconocido")
-            fuentes.append(archivo)
-            page_label = meta.get("page_label")
-            score = getattr(node, "score", None)
-            texto = str(getattr(node, "text", "") or "")
-            recuperaciones.append(
-                Recuperacion(
-                    rank=rank,
-                    archivo=archivo,
-                    page_label=None if page_label is None else str(page_label),
-                    score=None if score is None else float(score),
-                    preview=" ".join(texto[:LARGO_PREVIEW].split()),
-                )
-            )
+        nivel = self._resolver_nivel(respuesta_texto, alertas)
+        tokens, tokens_prompt, tokens_completacion, tokens_origen = (
+            self._tokens_publicados(contador)
+        )
+        fuentes, recuperaciones = self._extraer_recuperaciones(response)
 
         return ResultadoTriage(
             respuesta=respuesta_texto,

@@ -5,6 +5,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from tests.helpers import registrar_y_loguear
+
 ADMIN = {
     "ci": "7000007",
     "nombre_completo": "Admin Seguridad",
@@ -17,16 +19,6 @@ PACIENTE = {
     "ci": "1234567", "nombre": "Juan", "apellido": "Perez",
     "fecha_nacimiento": "1990-05-10", "sexo": "M",
 }
-
-
-def registrar_y_loguear(client, datos):
-    r = client.post("/api/auth/registro", json=datos)
-    assert r.status_code == 201, r.text
-    r = client.post(
-        "/api/auth/login", json={"email": datos["email"], "password": datos["password"]}
-    )
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
 
 
 class TestAutenticacionObligatoria:

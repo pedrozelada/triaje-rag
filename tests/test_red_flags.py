@@ -1,19 +1,17 @@
 """Tests del motor de reglas deterministas (red flags)."""
 
-import pytest
 
 from ai_service.models import DatosVitales
+from ai_service.rangos_pediatricos import clasificar_grupo_etario
 from ai_service.red_flags import (
     FC_NARANJA_ALTA,
     FR_NARANJA_ALTA,
     PAS_NARANJA,
     SPO2_NARANJA,
     TEMP_NARANJA_ALTA,
-    Alerta,
     evaluar_reglas,
     nivel_maximo,
 )
-from ai_service.rangos_pediatricos import clasificar_grupo_etario
 
 
 def vitales(**kwargs) -> DatosVitales:
@@ -73,12 +71,15 @@ class TestReglasVitales:
         assert any(a.nivel == "rojo" for a in alertas)
 
     def test_pas_frontera_naranja(self):
-        alertas = evaluar_reglas(vitales(presion_sistolica=PAS_NARANJA - 1, presion_diastolica=60), None)
+        alertas = evaluar_reglas(
+            vitales(presion_sistolica=PAS_NARANJA - 1, presion_diastolica=60), None
+        )
         assert any(a.nivel == "naranja" for a in alertas)
 
     def test_fc_extrema_es_rojo(self):
-        assert any(a.nivel == "rojo" for a in evaluar_reglas(vitales(frecuencia_cardiaca=39), None))
-        assert any(a.nivel == "rojo" for a in evaluar_reglas(vitales(frecuencia_cardiaca=161), None))
+        for frecuencia in (39, 161):
+            alertas = evaluar_reglas(vitales(frecuencia_cardiaca=frecuencia), None)
+            assert any(a.nivel == "rojo" for a in alertas)
 
     def test_fc_140_es_naranja(self):
         alertas = evaluar_reglas(vitales(frecuencia_cardiaca=FC_NARANJA_ALTA), None)
@@ -101,8 +102,9 @@ class TestReglasVitales:
         assert any(a.nivel == "naranja" for a in alertas)
 
     def test_fr_extrema_es_rojo(self):
-        assert any(a.nivel == "rojo" for a in evaluar_reglas(vitales(frecuencia_respiratoria=42), None))
-        assert any(a.nivel == "rojo" for a in evaluar_reglas(vitales(frecuencia_respiratoria=7), None))
+        for frecuencia in (42, 7):
+            alertas = evaluar_reglas(vitales(frecuencia_respiratoria=frecuencia), None)
+            assert any(a.nivel == "rojo" for a in alertas)
 
 
 class TestReglasSintomas:

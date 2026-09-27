@@ -6,6 +6,9 @@ logs/
 __pycache__/
 *.pyc
 .pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 triaje.db
 triaje.db-wal
 triaje.db-shm

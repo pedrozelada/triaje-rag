@@ -1,4 +1,4 @@
-"""Dependencias compartidas de la API: autenticación opcional/obligatoria."""
+"""Dependencias compartidas de la API: autenticación y autorización."""
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -36,6 +36,23 @@ def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuario no encontrado o inactivo.",
+        )
+    return usuario
+
+
+def require_admin(usuario: Usuario = Depends(get_current_user)) -> Usuario:
+    """
+    Exige rol de administrador (403 para el resto).
+    Uso: rutas del panel de administración.
+
+    Es una dependencia y no una comprobación manual dentro de cada endpoint:
+    así el 403 aparece en la documentación de la ruta y no se puede olvidar en
+    una ruta nueva.
+    """
+    if usuario.rol != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Se requiere rol de administrador.",
         )
     return usuario
 

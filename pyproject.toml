@@ -47,11 +47,37 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
+    "pytest-cov>=6.0",
+    "ruff>=0.9",
 ]
 
-[tool.setuptools]
-packages = ["ai_service", "ai_service.providers", "backend"]
+# Los subpaquetes (backend.api.admin, backend.services, backend.reports...) se
+# descubren solos: una lista explícita se olvida de los nuevos y deja una
+# instalación incompleta.
+[tool.setuptools.packages.find]
+include = ["ai_service*", "backend*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+# 100 y no 88: el proyecto ya venía con ese ancho de línea en mente.
+line-length = 100
+target-version = "py314"
+extend-exclude = ["venv", "chroma_db", "data", "docs", "logs", ".kilo"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI declara las dependencias como valor por defecto (`Depends(get_db)`),
+# que B008 marca como llamada en argumento por defecto.
+"backend/api/**" = ["B008"]
+
+[tool.coverage.run]
+source = ["backend"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

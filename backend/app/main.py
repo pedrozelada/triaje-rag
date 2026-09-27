@@ -3,13 +3,15 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
+from backend.api import admin, auth, informes, pacientes, triage
 from backend.core.config import settings
+from backend.db import session as db_session
 from backend.db.base import Base
-from backend.db.session import engine
-from backend.api import admin, auth, pacientes, triage, informes
+from backend.services.errores import ErrorDeNegocio
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,17 +24,52 @@ if settings.secret_key == "cambia-este-secreto-en-produccion":
     )
 
 
+def _migraciones_ligeras() -> None:
+    """Migraciones idempotentes para SQLite (puente hasta adoptar Alembic).
+
+    create_all no altera tablas existentes, así que las columnas nuevas se
+    agregan aquí con ALTER TABLE protegido por inspección.
+    """
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(db_session.engine)
+    if "consulta_triage" not in inspector.get_table_names():
+        return
+    columnas = {c["name"] for c in inspector.get_columns("consulta_triage")}
+    if "reglas_activadas" not in columnas:
+        with db_session.engine.begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE consulta_triage "
+                "ADD COLUMN reglas_activadas TEXT DEFAULT '[]' NOT NULL"
+            ))
+        logger.info("Migración aplicada: consulta_triage.reglas_activadas añadida.")
+
+
+def _preparar_base_de_datos() -> None:
+    """Crea las tablas y aplica las migraciones ligeras.
+
+    Se resuelve el engine en el momento de la llamada (no al importar el
+    módulo): así los tests apuntan a su propia base en memoria y ninguna
+    importación de la app tiene efectos sobre `triaje.db`.
+    """
+    Base.metadata.create_all(bind=db_session.engine)
+    _migraciones_ligeras()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Precalienta el índice RAG al arrancar (una vez, no en cada triaje).
+    """Prepara la base y precalienta el índice RAG al arrancar.
 
     El índice se carga de forma perezosa en el primer triaje; precalentarlo aquí
     evita que el primer paciente tras un reinicio espere la carga de los modelos
     (y de paso deja ver en el arranque si el corpus quedó desactualizado).
 
-    Un fallo NO impide arrancar la API: si el modelo no puede cargarse (p. ej.
-    sin red), el login, los pacientes y los informes deben seguir funcionando.
+    Un fallo del índice NO impide arrancar la API: si el modelo no puede
+    cargarse (p. ej. sin red), el login, los pacientes y los informes deben
+    seguir funcionando.
     """
+    _preparar_base_de_datos()
+
     if settings.rag_precalentar_al_arrancar:
         try:
             from backend.rag.service import rag_service
@@ -65,32 +102,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Crear tablas al arrancar (SQLite/desarrollo). En producción usar Alembic.
-Base.metadata.create_all(bind=engine)
 
+@app.exception_handler(ErrorDeNegocio)
+async def _traducir_error_de_negocio(request: Request, exc: ErrorDeNegocio) -> JSONResponse:
+    """Convierte un error de dominio en la respuesta HTTP que ya conoce el frontend.
 
-def _migraciones_ligeras():
-    """Migraciones idempotentes para SQLite (puente hasta adoptar Alembic).
-
-    create_all no altera tablas existentes, así que las columnas nuevas se
-    agregan aquí con ALTER TABLE protegido por inspección.
+    Los servicios no lanzan `HTTPException` para no depender de FastAPI; el
+    cuerpo se mantiene idéntico (`{"detail": ...}`) para no romper el cliente.
     """
-    from sqlalchemy import inspect, text
+    return JSONResponse(status_code=exc.codigo, content={"detail": exc.mensaje})
 
-    inspector = inspect(engine)
-    if "consulta_triage" not in inspector.get_table_names():
-        return
-    columnas = {c["name"] for c in inspector.get_columns("consulta_triage")}
-    if "reglas_activadas" not in columnas:
-        with engine.begin() as conn:
-            conn.execute(text(
-                "ALTER TABLE consulta_triage "
-                "ADD COLUMN reglas_activadas TEXT DEFAULT '[]' NOT NULL"
-            ))
-        logger.info("Migración aplicada: consulta_triage.reglas_activadas añadida.")
-
-
-_migraciones_ligeras()
 
 app.include_router(auth.router)
 app.include_router(pacientes.router)

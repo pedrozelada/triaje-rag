@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import backend.rag.service as rag_service_module
 from ai_service.red_flags import evaluar_reglas
 from backend.rag.service import ResultadoTriage
+from tests.helpers import registrar_y_loguear
 
 ADMIN = {
     "ci": "9100001",
@@ -27,14 +28,6 @@ PACIENTE = {
     "ci": "7777777", "nombre": "Rosa", "apellido": "Mamani",
     "fecha_nacimiento": "1985-04-12", "sexo": "F",
 }
-
-
-def registrar_y_loguear(client, datos):
-    client.post("/api/auth/registro", json=datos)
-    r = client.post(
-        "/api/auth/login", json={"email": datos["email"], "password": datos["password"]}
-    )
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
 
 
 def crear_paciente(client, headers, ci="7777777"):
@@ -250,7 +243,9 @@ class TestReglasYSinClasificar:
         """Si el LLM no da nivel parseable, el doble devuelve None y se persiste NULL."""
         headers = registrar_y_loguear(client, ADMIN)
         paciente_id = crear_paciente(client, headers, ci="7777784")
-        _instalar_doble_analizar(monkeypatch, respuesta_llm="No hay suficiente información en las NNAC.")
+        _instalar_doble_analizar(
+            monkeypatch, respuesta_llm="No hay suficiente información en las NNAC."
+        )
 
         r = client.post("/api/triage", json={
             "paciente_id": paciente_id,

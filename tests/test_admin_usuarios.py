@@ -5,6 +5,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from tests.helpers import registrar_y_loguear
+
 ADMIN = {
     "ci": "1000001",
     "nombre_completo": "Admin Root",
@@ -12,16 +14,6 @@ ADMIN = {
     "password": "admin123",
     "rol": "admin",
 }
-
-
-def registrar_y_loguear(client, datos):
-    """Registra un usuario y devuelve los headers con su JWT."""
-    assert client.post("/api/auth/registro", json=datos).status_code == 201
-    r = client.post(
-        "/api/auth/login", json={"email": datos["email"], "password": datos["password"]}
-    )
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
 
 
 class TestUsuariosAdmin:

@@ -1,7 +1,6 @@
 """Schemas de ConsultaTriage."""
 
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -40,7 +39,7 @@ class TriageOut(BaseModel):
 
     id: int
     paciente_id: int
-    usuario_id: Optional[int] = None
+    usuario_id: int | None = None
     fecha_hora: datetime
     temperatura: float | None = None
     presion_sistolica: int | None = None

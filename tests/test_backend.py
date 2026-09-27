@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from datetime import date, timedelta
 
 from backend.db.models import calcular_edad, calcular_edad_en_meses
+from tests.helpers import registrar_y_loguear
 
 # Usuario admin de prueba (el registro permite el primer admin como bootstrap).
 ADMIN = {
@@ -18,17 +19,6 @@ ADMIN = {
     "password": "admin123",
     "rol": "admin",
 }
-
-
-def registrar_y_loguear(client, datos):
-    """Registra un usuario y devuelve headers con su JWT."""
-    r = client.post("/api/auth/registro", json=datos)
-    assert r.status_code == 201, r.text
-    r = client.post(
-        "/api/auth/login", json={"email": datos["email"], "password": datos["password"]}
-    )
-    assert r.status_code == 200, r.text
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
 
 
 class TestCalcularEdad:

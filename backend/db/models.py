@@ -3,18 +3,18 @@
 from datetime import date, datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     Date,
     DateTime,
-    Enum as SAEnum,
     ForeignKey,
     Integer,
-    JSON,
     Numeric,
     String,
     Text,
     func,
 )
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.db.base import Base
@@ -66,7 +66,7 @@ class Paciente(Base):
         DateTime, onupdate=func.now(), nullable=True
     )
 
-    consultas: Mapped[list["ConsultaTriage"]] = relationship(
+    consultas: Mapped[list[ConsultaTriage]] = relationship(
         back_populates="paciente", cascade="all, delete-orphan"
     )
 
@@ -95,7 +95,7 @@ class Usuario(Base):
     centro_salud: Mapped[str | None] = mapped_column(String, nullable=True)
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    consultas: Mapped[list["ConsultaTriage"]] = relationship(
+    consultas: Mapped[list[ConsultaTriage]] = relationship(
         back_populates="usuario"
     )
 
@@ -140,5 +140,5 @@ class ConsultaTriage(Base):
     # Auditoría de la capa de red flags independiente del LLM.
     reglas_activadas: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
 
-    paciente: Mapped["Paciente"] = relationship(back_populates="consultas")
-    usuario: Mapped["Usuario | None"] = relationship(back_populates="consultas")
+    paciente: Mapped[Paciente] = relationship(back_populates="consultas")
+    usuario: Mapped[Usuario | None] = relationship(back_populates="consultas")

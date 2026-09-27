@@ -39,17 +39,26 @@ triaje-rag/
 │       ├── openai.py         # OpenAI (nube, opcional)
 │       └── ollama.py         # Local (Ollama/LM Studio)
 ├── backend/                  # API REST (FastAPI)
-│   ├── app/main.py           # App FastAPI + routers
-│   ├── api/                  # Endpoints
+│   ├── app/main.py           # App FastAPI, lifespan (BD + índice) y errores de dominio
+│   ├── api/                  # Routers: solo HTTP (validación y respuesta)
 │   │   ├── auth.py           # Login, registro, /me
 │   │   ├── pacientes.py      # CRUD pacientes
 │   │   ├── triage.py         # Consultas de triaje + /modelos
-│   │   ├── informes.py       # Reportes por paciente
-│   │   ├── admin.py          # Estadísticas + usuarios
-│   │   └── deps.py           # Dependencias de auth
+│   │   ├── informes.py       # Reportes por paciente (JSON, texto, PDF)
+│   │   ├── admin/            # Panel: estadisticas.py, usuarios.py, indice.py
+│   │   └── deps.py           # Dependencias de auth (get_current_user, require_admin)
+│   ├── services/             # Lógica de aplicación, sin FastAPI
+│   │   ├── estadisticas.py   # Núcleo único de agregados del panel
+│   │   ├── usuarios.py       # Altas, ediciones y bajas con sus reglas
+│   │   ├── triaje.py         # Vitales + motor RAG + auditoría
+│   │   ├── informes.py       # Historial de un paciente
+│   │   ├── demografia.py     # Rangos etarios
+│   │   ├── palabras_clave.py # Conteo de motivos frecuentes
+│   │   └── errores.py        # Errores de dominio (con su código HTTP)
+│   ├── reports/              # Presentación de informes: pdf.py, texto.py
 │   ├── core/                 # Config (carga .env vía load_dotenv) + JWT
 │   ├── db/                   # SQLAlchemy models + session
-│   ├── rag/service.py        # Wrapper del motor RAG (listar_modelos, analizar)
+│   ├── rag/                  # service.py (wrapper del motor) + tokens.py (conteo)
 │   └── schemas/              # Pydantic schemas
 ├── frontend/                 # SPA React
 │   ├── src/
@@ -201,6 +210,22 @@ npm run dev
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | `GET` | `/api/health` | Health check |
+
+### Capas del backend
+
+```
+api/        Routers: validan la petición y devuelven la respuesta. Sin consultas
+            complejas ni reglas de negocio.
+services/   Lógica de aplicación. No importan FastAPI: cuando algo no se puede
+            hacer lanzan un ErrorDeNegocio (backend/services/errores.py), que
+            app/main.py traduce a HTTP con el mismo cuerpo {"detail": ...}.
+reports/    Cómo se ven los informes (PDF, texto plano).
+rag/        El motor RAG y el conteo de tokens del proveedor.
+```
+
+Regla práctica: si una cifra o una regla se usa en más de un endpoint, vive en
+`services/`. Así los dos endpoints de estadísticas comparten el mismo núcleo de
+agregados en lugar de tener dos copias que se desincronizan.
 
 ### Autenticación
 
@@ -582,13 +607,31 @@ script guarda una copia con marca de tiempo en lugar de fallar.
 ## Testing
 
 ```bash
-pytest tests/ -v
+pytest tests/ -v                       # suite completa
+pytest tests/ -q --cov                 # con cobertura del backend (94 % hoy)
+pytest tests/test_rutas.py -q          # contrato de rutas de la API
 ```
 
 Los tests cubren, además del sistema, la instrumentación de la evaluación
 (`tests/test_metricas_rag.py`): evidencia de recuperación con puntaje y página,
 conteo de tokens reportado por el proveedor (nunca estimado) y las regresiones
 de negación y umbrales pediátricos que motivan el Componente 2.
+
+`tests/test_rutas.py` congela el conjunto de rutas de la API: si un refactor
+pierde o renombra un endpoint, el test falla antes de que lo note el frontend.
+Los tests usan una base SQLite en memoria (nunca `triaje.db`) y ningún test
+llama a un modelo real: el motor RAG se reemplaza por un doble.
+
+## Estilo y lint
+
+```bash
+ruff check backend tests     # lint (E, F, I, UP, B, SIM; línea de 100)
+ruff check backend --fix     # arreglos automáticos
+```
+
+La configuración está en `pyproject.toml`. El formato (`ruff format`) todavía no
+se adoptó —pide cambios en 28 archivos— y `ai_service/` conserva sus avisos de
+lint: son los siguientes pasos.
 
 ## Logging
 

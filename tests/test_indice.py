@@ -16,6 +16,7 @@ directorios temporales, así que ningún test toca el `data/` ni el `chroma_db/`
 reales.
 """
 
+import json
 import os
 import sys
 
@@ -185,7 +186,7 @@ class TestManifestSerializacion:
         assert recuperado.completo is True
 
     def test_json_corrupto_falla(self):
-        with pytest.raises(Exception):
+        with pytest.raises(json.JSONDecodeError):
             Manifest.from_json("no es json")
 
     def test_manifest_vacio_no_es_valido(self):

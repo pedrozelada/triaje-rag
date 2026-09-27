@@ -3,15 +3,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.core.security import (
-    create_access_token,
-    hash_password,
-    verify_password,
-)
 from backend.api.deps import get_current_user
-from backend.db.models import ROL_ENUM, Usuario
+from backend.core.security import create_access_token, verify_password
+from backend.db.models import Usuario
 from backend.db.session import get_db
 from backend.schemas.usuario import LoginRequest, Token, UsuarioCreate, UsuarioOut
+from backend.services import usuarios as servicio_usuarios
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -26,36 +23,7 @@ def registrar(usuario: UsuarioCreate, db: Session = Depends(get_db)):
       no exista ningún administrador activo en la base de datos. Después,
       los administradores solo pueden crearse desde el panel de administración.
     """
-    if usuario.rol not in ROL_ENUM:
-        raise HTTPException(status_code=400, detail="Rol inválido.")
-
-    if usuario.rol == "admin":
-        hay_admin = (
-            db.query(Usuario).filter(Usuario.rol == "admin", Usuario.activo.is_(True)).first()
-        )
-        if hay_admin:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Ya existe un administrador. Los administradores solo pueden crearse desde el panel de administración.",
-            )
-
-    if db.query(Usuario).filter(Usuario.email == usuario.email).first():
-        raise HTTPException(status_code=400, detail="El email ya está registrado.")
-    if db.query(Usuario).filter(Usuario.ci == usuario.ci).first():
-        raise HTTPException(status_code=400, detail="La cédula ya está registrada.")
-
-    nuevo = Usuario(
-        ci=usuario.ci,
-        nombre_completo=usuario.nombre_completo,
-        email=usuario.email,
-        password_hash=hash_password(usuario.password),
-        rol=usuario.rol,
-        centro_salud=usuario.centro_salud,
-    )
-    db.add(nuevo)
-    db.commit()
-    db.refresh(nuevo)
-    return nuevo
+    return servicio_usuarios.registrar(db, usuario)
 
 
 @router.post("/login", response_model=Token)

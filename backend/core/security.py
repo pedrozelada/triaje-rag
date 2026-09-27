@@ -1,7 +1,6 @@
 """Utilidades de seguridad: hashing de contraseñas y JWT."""
 
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -22,7 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
     """
     Crea un JWT de acceso.
 
@@ -33,7 +32,7 @@ def create_access_token(subject: str, expires_delta: Optional[timedelta] = None)
     Returns:
         str: Token JWT firmado.
     """
-    expire = datetime.now(timezone.utc) + (
+    expire = datetime.now(UTC) + (
         expires_delta
         or timedelta(minutes=settings.access_token_expire_minutes)
     )
@@ -41,7 +40,7 @@ def create_access_token(subject: str, expires_delta: Optional[timedelta] = None)
     return jwt.encode(to_encode, settings.secret_key, algorithm=settings.jwt_algorithm)
 
 
-def decode_access_token(token: str) -> Optional[str]:
+def decode_access_token(token: str) -> str | None:
     """
     Decodifica un JWT y devuelve el `sub` o None si es inválido/expirado.
     """
